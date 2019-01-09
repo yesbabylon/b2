@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  wetty:
+    container_name: ${DOMAIN_NAME}
+    image: docked-wetty:latest
+    environment:
+      - VIRTUAL_HOST=${DOMAIN_NAME}
+      - VIRTUAL_PORT=3000
+      # - HTTPS_METHOD=noredirect
+      - LETSENCRYPT_HOST=${DOMAIN_NAME}
+      - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
+    expose:
+      - '3000'
+    networks:
+      - proxynet
+    ports:
+      - "3000:3000"
+    restart: always
+networks:
+  proxynet:
+    external: true
