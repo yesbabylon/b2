@@ -1,0 +1,30 @@
+version: '3.3'
+
+# This file expects some .env file (within same dir) defining the following vars:
+#   DOMAIN_NAME
+#   DOMAIN_CONTACT
+
+# We define all services and dependencies under the 'services' section, so that all related containers run within the same stack
+services:
+   docs:
+     container_name: ${DOMAIN_NAME}
+     image: docked-mkdocs
+     restart: always
+     networks:
+       - proxynet
+     ports:
+       # it is necessary to use distinct ports if we run several mkdocs instances
+       - "8001:8000"
+     volumes:
+       - /home/${DOMAIN_NAME}/doc:/workdir
+     environment:
+       - VIRTUAL_HOST=${DOMAIN_NAME}
+       - HTTPS_METHOD=noredirect
+       - LETSENCRYPT_HOST=${DOMAIN_NAME}
+       - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
+
+# To expose the services, we use the 'proxynet' which contains a nginx reverse proxy.
+# Only services having a VIRTUAL_HOST environment variable set will be accessible.
+networks:
+  proxynet:
+    external: true

@@ -1,0 +1,3 @@
+#!/bin/bash
+container_name=`whoami`
+docker exec -it -u root $container_name /bin/bash

@@ -1,0 +1,34 @@
+version: '2.1'
+
+services:
+  nginx-proxy:
+    container_name: nginx-proxy
+    restart: always
+    image: docked-nginx:latest
+    networks: 
+      - proxynet
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /srv/docker/nginx/certs:/etc/nginx/certs:ro
+      - /srv/docker/nginx/conf.d:/etc/nginx/conf.d:rw
+      - /srv/docker/nginx/htpasswd:/etc/nginx/htpasswd
+      - /srv/docker/nginx/html:/usr/share/nginx/html
+      - /etc/nginx/vhost.d      
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  nginx-proxy-companion:
+    container_name: letsencrypt-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks: 
+      - proxynet      
+    volumes:
+      - /srv/docker/nginx/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    volumes_from:
+      - nginx-proxy
+
+networks:
+  proxynet:
+    external: true

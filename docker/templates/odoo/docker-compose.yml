@@ -1,0 +1,51 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: sql.${DOMAIN_NAME}
+    image: postgres:10.5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+    networks:
+      - proxynet
+    restart: always
+
+  odoo:
+    container_name: ${DOMAIN_NAME}
+    image: docked-odoo:latest
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - DB_PORT_5432_TCP_ADDR=db
+      # virtual host is the FQDN
+      - VIRTUAL_HOST=${DOMAIN_NAME}
+      # redirect all requests to 8069 port
+      - VIRTUAL_PORT=8069
+      # allow non SSL HTTTP requests
+      - HTTPS_METHOD=noredirect
+      # create a certificate with FQDN
+      - LETSENCRYPT_HOST=${DOMAIN_NAME}
+      - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
+    expose:
+      - '8069'
+    networks:
+      - proxynet
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./www:/var/lib/odoo:rw
+      - ./odoo:/etc/odoo
+    restart: always
+
+networks:
+  proxynet:
+    external: true
+volumes:
+  db_data:

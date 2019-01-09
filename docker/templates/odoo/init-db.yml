@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: sql.${DOMAIN_NAME}
+    image: postgres:10.5
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+    networks:
+      - proxynet
+    restart: always
+
+  odoo:
+    container_name: ${DOMAIN_NAME}
+    image: docked-odoo:latest
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - DB_PORT_5432_TCP_ADDR=db
+    networks:
+      - proxynet
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./www:/var/lib/odoo:rw
+      - ./odoo:/etc/odoo      
+    # in this docker-compose file, we ask odoo 
+    # to wait until postgresql server is up, 
+    # then to create and initialise the database, 
+    # and finally to stop
+    command: ./wait-for-postgres.sh db odoo -i base --without-demo=all --stop-after-init --db_host=db -d ${DB_NAME} -r ${DB_USER} -w ${DB_PASSWORD}
+
+networks:
+  proxynet:
+    external: true
+volumes:
+  db_data:

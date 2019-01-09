@@ -1,0 +1,5 @@
+site_name: Example Docs
+site_url: https://doc.example.com/
+docs_dir: docs
+dev_addr: doc.example.com
+theme: readthedocs
