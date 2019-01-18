@@ -9,4 +9,4 @@ cd /home/docker/images/docked-wordpress/
 
 # assign ownership to user and www-data (group)
 chown -R $USERNAME:www-data /home/$USERNAME/www
-chown g+w -R /home/$USERNAME/www
+chmod g+w -R /home/$USERNAME/www
