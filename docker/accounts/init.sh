@@ -13,6 +13,8 @@ then
         echo "PASSWORD={user-password}"        
         echo "TEMPLATE={account-template}"
     else
+        # todo : we should check USERNAME against the max 32 chars length
+        if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit; fi
 
         # create a new user
         adduser --force-badname --disabled-password --gecos ",,," $USERNAME
