@@ -26,6 +26,19 @@ services:
        - MYSQL_DATABASE=${MYSQL_DATABASE}
        - MYSQL_USER=${MYSQL_USER}
        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+   phpmyadmin:
+     container_name: phpmyadmin.${DOMAIN_NAME}
+     image: phpmyadmin/phpmyadmin
+     links:
+       - db:db
+     ports:
+       - "8080:8080"
+     networks:
+       - proxynet
+     environment:
+       - HTTPS_METHOD=noredirect
+       - VIRTUAL_PORT=80
+       - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
    wordpress:
      container_name: ${DOMAIN_NAME}
      depends_on:
