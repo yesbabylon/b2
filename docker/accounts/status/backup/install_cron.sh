@@ -7,6 +7,7 @@ then
     . ./../../.env
 
     touch /var/spool/cron/crontabs/root
+    (crontab -l ; echo "0 0 * * * /usr/bin/php /home/docker/backup/ftp/cleanup.php $DOMAIN_NAME")| crontab -
     (crontab -l ; echo "0 */6 * * * /home/docker/backup/backup.sh $DOMAIN_NAME")| crontab -
     (crontab -l ; echo "30 */6 * * * /usr/bin/php /home/docker/backup/ftp/export.php $DOMAIN_NAME")| crontab -
 
