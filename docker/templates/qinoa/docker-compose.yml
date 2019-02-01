@@ -1,0 +1,76 @@
+version: '3.3'
+
+# This file expects some .env file (within same dir) defining the following vars:
+# DOMAIN_NAME
+# DOMAIN_CONTACT
+# MYSQL_ROOT_PASSWORD
+# MYSQL_DATABASE
+# MYSQL_USER
+# MYSQL_PASSWORD
+
+
+# We define all services and dependencies under the 'services' section, so that all related containers run within the same stack
+services:
+   db:
+     container_name: sql.${DOMAIN_NAME}
+     image: mysql:5.7
+     # allow packets up to 512 MB (for imports)
+     command: --max_allowed_packet=536870912
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     networks:
+       - proxynet
+     environment:
+       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+       - MYSQL_DATABASE=${MYSQL_DATABASE}
+       - MYSQL_USER=${MYSQL_USER}
+       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+   phpmyadmin:
+     container_name: phpmyadmin.${DOMAIN_NAME}
+     image: phpmyadmin/phpmyadmin
+     links:
+       - db:db
+     ports:
+       - "8080:8080"
+     networks:
+       - proxynet
+     environment:
+       - HTTPS_METHOD=noredirect
+       - VIRTUAL_PORT=80
+       - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
+   qinoa:
+     container_name: ${DOMAIN_NAME}
+     depends_on:
+       - db
+     image: docked-qinoa:latest
+     volumes:
+       - /home/${DOMAIN_NAME}/www:/var/www/html
+       # map local file for custom config (e.g. upload_max_filesize)
+       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+     restart: always
+     ports:
+       - "81:80"
+     networks:
+       - proxynet
+     environment:
+       - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+       - WORDPRESS_DB_HOST=db:3306
+       - WORDPRESS_DB_USER=${MYSQL_USER}
+       - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+       - HTTPS_METHOD=noredirect
+       - VIRTUAL_PORT=80
+       - VIRTUAL_HOST=${DOMAIN_NAME}
+       - LETSENCRYPT_HOST=${DOMAIN_NAME}
+       - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
+
+
+# To expose the services, we use the 'proxynet' which contains a nginx reverse proxy.
+# Only services having a VIRTUAL_HOST environment variable set will be accessible.
+networks:
+  proxynet:
+    external: true
+
+volumes:
+  db_data:
+       
