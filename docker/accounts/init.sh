@@ -25,7 +25,7 @@ then
         mkdir /home/$USERNAME/export
 
         # directories for dealing with status
-        cp -r /home/docker/accounts/status /home/$USERNAME/
+        cp -r /home/docker/accounts/status /home/$USERNAME/status
         
         # set the home directory of the new user (FTP access)
         mkdir /home/$USERNAME/www
