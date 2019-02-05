@@ -3,7 +3,7 @@ version: '3.3'
 services:
   db:
     container_name: sql.${DOMAIN_NAME}
-    image: postgres:10.5
+    image: postgres:9.6
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
