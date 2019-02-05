@@ -41,6 +41,8 @@ services:
        - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
    qinoa:
      container_name: ${DOMAIN_NAME}
+     links:
+       - db:db
      depends_on:
        - db
      image: docked-qinoa:latest
