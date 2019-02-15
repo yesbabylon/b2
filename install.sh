@@ -75,6 +75,10 @@ cd /home/docker/images/docked-nginx/
 docker-compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 # make sur a default maintenance page is available
 cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
+# add custom nginx conf in the newly created dir env
+cp ./nginx.conf /srv/docker/nginx/conf.d/custom.conf
+# force nginx to load new config
+docker exec -ti nginx-proxy service nginx reload
 
 # Edit account parameters and then Run script for account creation
 cd /home/docker/accounts

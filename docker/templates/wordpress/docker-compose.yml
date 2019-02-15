@@ -11,7 +11,7 @@ version: '3.3'
 
 # We define all services and dependencies under the 'services' section, so that all related containers run within the same stack
 services:
-   db:
+   {db_ID}:
      container_name: sql.${DOMAIN_NAME}
      image: mysql:5.7
      # allow packets up to 512 MB (for imports)
@@ -28,11 +28,11 @@ services:
        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
    phpmyadmin:
      container_name: phpmyadmin.${DOMAIN_NAME}
+     depends_on:
+       - {db_ID}
      image: phpmyadmin/phpmyadmin
      links:
-       - db:db
-     ports:
-       - "8080:8080"
+       - {db_ID}:db
      networks:
        - proxynet
      environment:
@@ -42,18 +42,18 @@ services:
    wordpress:
      container_name: ${DOMAIN_NAME}
      depends_on:
-       - db
+       - {db_ID}
      image: docked-wp:latest
      volumes:
        - /home/${DOMAIN_NAME}/www:/var/www/html
        # map local file for custom config (e.g. upload_max_filesize)
-       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini       
+       - ./php.ini:/usr/local/etc/php/conf.d/docker-custom.ini       
      restart: always
      networks:
        - proxynet
      environment:
        - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
-       - WORDPRESS_DB_HOST=db:3306
+       - WORDPRESS_DB_HOST={db_ID}:3306
        - WORDPRESS_DB_USER=${MYSQL_USER}
        - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
        - HTTPS_METHOD=noredirect

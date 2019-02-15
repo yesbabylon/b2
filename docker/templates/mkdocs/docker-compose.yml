@@ -16,7 +16,7 @@ services:
        # it is necessary to use distinct ports if we run several mkdocs instances
        - "8001:8000"
      volumes:
-       - /home/${DOMAIN_NAME}/doc:/workdir
+       - /home/${DOMAIN_NAME}/docs:/docs
      environment:
        - VIRTUAL_HOST=${DOMAIN_NAME}
        - HTTPS_METHOD=noredirect

@@ -1,4 +1,4 @@
-FROM polinux/mkdocs
+FROM squidfunk/mkdocs-material
 LABEL Description="Latest version of MkDocs with Apache UID and GUID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
