@@ -33,9 +33,12 @@ cp ./vsftpd.conf /etc/vsftpd.conf
 systemctl restart vsftpd
 
 # Install Docker
-yes | apt install docker.io
-systemctl start docker
-systemctl enable docker
+yes | apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+yes | add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+yes | apt update
+yes | apt-get install docker-ce docker-ce-cli containerd.io
+
 
 # Install Docker-Compose
 curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose

@@ -1,5 +1,6 @@
 #!/bin/bash
 sudo docker stop portainer && sudo docker rm portainer
+sudo docker stop netdata && sudo docker rm netdata
 sudo docker run --name portainer -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
 sudo docker run -d --name=netdata \
   -p 19999:19999 \
