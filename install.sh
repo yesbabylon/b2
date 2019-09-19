@@ -14,7 +14,7 @@ yes | apt-get update
 
 # Allow using domains as user names
 mv /etc/adduser.conf /etc/adduser.conf.orig
-cp ./adduser.conf /etc/adduser.conf
+cp ./conf/etc/adduser.conf /etc/adduser.conf
 
 # Install Apache utilities (htpasswd)
 yes | apt-get install apache2-utils
@@ -27,10 +27,22 @@ yes | apt-get install vsftpd
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
-cp ./vsftpd.conf /etc/vsftpd.conf
+cp ./conf/etc/vsftpd.conf /etc/vsftpd.conf
 
-#restart FTP service
+# Restart FTP service
 systemctl restart vsftpd
+
+# Install F2B service
+yes | apt-get install fail2ban
+cp ./conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
+cp ./conf/etc/fail2ban/action.d/docker-action.conf /etc/fail2ban/action.d/docker-action.conf
+cp ./conf/etc/fail2ban/filter.d/wp-login.conf /etc/fail2ban/filter.d/wp-login.conf
+
+# Restart F2B service
+systemctl restart fail2ban
+
+# Add logrotate directive for nginx
+cp ./conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
 
 # Install Docker
 yes | apt install apt-transport-https ca-certificates curl software-properties-common
@@ -46,9 +58,10 @@ chmod +x /usr/local/bin/docker-compose
 
 # Prepare directory structure
 cp -r ./docker /home/docker
-cp ./ssh-login /usr/local/bin/ssh-login
+cp ./conf/ssh-login /usr/local/bin/ssh-login
 
 mkdir /srv/docker/nginx/htpasswd
+mkdir /var/log/nginx
 
 # Create a odoo user (to link host with VM), no home, no login, no prompt
 adduser --no-create-home --disabled-login --gecos "" odoo
@@ -79,7 +92,7 @@ docker-compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 # make sur a default maintenance page is available
 cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 # add custom nginx conf in the newly created dir env
-cp ./nginx.conf /srv/docker/nginx/conf.d/custom.conf
+cp ./conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
 # force nginx to load new config
 docker exec -ti nginx-proxy service nginx reload
 
