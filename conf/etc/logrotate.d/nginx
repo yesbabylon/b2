@@ -1,0 +1,11 @@
+# logrotate -f /etc/logrotate.d/nginx
+
+/var/log/nginx/*log { 
+        create 640 root root
+        # do not output error if logfile is missing
+        missingok
+        # keep 7 days
+        rotate 7
+        # rotate daily
+        daily
+}

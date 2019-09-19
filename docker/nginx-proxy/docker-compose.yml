@@ -15,7 +15,8 @@ services:
       - /srv/docker/nginx/conf.d:/etc/nginx/conf.d:rw
       - /srv/docker/nginx/htpasswd:/etc/nginx/htpasswd
       - /srv/docker/nginx/html:/usr/share/nginx/html
-      - /etc/nginx/vhost.d      
+      - /var/log/nginx:/var/log/nginx
+      - /etc/nginx/vhost.d
       - /var/run/docker.sock:/tmp/docker.sock:ro
 
   nginx-proxy-companion:
