@@ -1,6 +1,4 @@
-# logrotate -f /etc/logrotate.d/nginx
-
-/var/log/nginx/*log { 
+/var/log/nginx/*log {
         create 640 root root
         # do not output error if logfile is missing
         missingok
@@ -8,4 +6,8 @@
         rotate 7
         # rotate daily
         daily
+        # reload nginx service with related container
+        postrotate
+           docker container exec nginx-proxy nginx -s reload
+        endscript
 }
