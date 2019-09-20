@@ -89,12 +89,14 @@ cd /home/docker/images/docked-nginx/
 
 # Start reverse proxy and let's encrypt companion
 docker-compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
-# make sur a default maintenance page is available
+# wait for the services to be fully started (to prevent following files to be overwritten)
+sleep 5
+# make sure a default maintenance page is available
 cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 # add custom nginx conf in the newly created dir env
 cp ./conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
 # force nginx to load new config
-docker exec -ti nginx-proxy service nginx reload
+docker exec nginx-proxy nginx -s reload
 
 # Edit account parameters and then Run script for account creation
 cd /home/docker/accounts
