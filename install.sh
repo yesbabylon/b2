@@ -9,6 +9,10 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Stop and uninstall postfix, if present
+service postfix stop
+yes | apt-get remove postfix
+
 # Make sure aptitude cache is up-to-date
 yes | apt-get update 
 
