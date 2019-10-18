@@ -1,8 +1,7 @@
 <?php
-
 /**
 *
-* export backup / upload
+* Export backup / upload
 */
 
 if(!isset($argv) || !isset($argv[1])) {
