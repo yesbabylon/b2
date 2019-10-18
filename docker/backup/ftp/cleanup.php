@@ -1,11 +1,8 @@
 <?php
-
 /**
 *
 * Clean up backup storage: keep only those with acceptable TTL
 */
-
-
 
 if(!isset($argv) || !isset($argv[1])) {
     die('missing mandatory argument');
@@ -23,7 +20,7 @@ require_once('/home/'.DOMAIN_NAME.'/status/backup/config.inc.php');
 ) or die('missing mandatory constant: check config file');
 
 
-$current_date = intval(date('Ymd'));
+$current_time = time();
 // establish FTP connection
 $conn_id = ftp_connect(FTP_HOST);
 // log into the FTP host
@@ -43,9 +40,11 @@ if($files) {
         $re = "/(${escaped_domain})_([0-9]{4}[0-9]{2}[0-9]{2})_([0-9]{1,3}).*/";
         if(preg_match($re, $filename, $matches)) {
             $target = intval($matches[1]);
-            $file_date = intval($matches[2]);
-            $ttl = intval($matches[3]);
-            $diff = $current_date - $file_date;
+            $date = intval($matches[2]);
+            $ttl = intval($matches[3]);            
+            list($year, $month, $day) = [substr($date, 0, 4), substr($date, 4, 2), substr($date, 6, 2)];
+            $file_time = mktime(0, 0, 0, $month, $day, $year);
+            $diff = round( ($current_time - $file_time) / (60*60*24) );
             if($ttl < $diff) {
                 ftp_delete($conn_id, $filename);
                 echo "removed $filename\n";
