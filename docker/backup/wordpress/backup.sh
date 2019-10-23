@@ -7,7 +7,7 @@ rm /home/$DOMAIN_NAME/export/backup.tar
 cd /home/$DOMAIN_NAME/export
 
 # generate a SQL dump (raw text) with table drop instructions, then compress it with gzip
-docker exec sql.$DOMAIN_NAME /usr/bin/mysqldump -u root --password=wordpress wordpress | gzip > database.sql.gz
+docker exec sql.$DOMAIN_NAME /usr/bin/mysqldump -u root --password=wordpress --single-transaction=TRUE wordpress | gzip > database.sql.gz
 
 # create a compressed archive with the whole content of the filestore
 tar -zcf filestore.tar.gz /home/$DOMAIN_NAME/www
