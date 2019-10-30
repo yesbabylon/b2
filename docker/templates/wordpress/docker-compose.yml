@@ -18,6 +18,7 @@ services:
      command: --max_allowed_packet=536870912
      volumes:
        - db_data:/var/lib/mysql
+       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf       
      restart: always
      networks:
        - proxynet
