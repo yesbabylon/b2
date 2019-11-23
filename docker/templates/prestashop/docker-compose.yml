@@ -13,13 +13,13 @@ version: '3.3'
 services:
    {db_ID}:
      container_name: sql.${DOMAIN_NAME}
-     image: mysql:5.7
+     image: mysql:5.6
      # allow packets up to 512 MB (for imports)
      # commented - should be included in the `mysql.cnf` below
      # command: --max_allowed_packet=536870912
      volumes:
        - db_data:/var/lib/mysql
-       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf      
+       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf       
      restart: always
      networks:
        - proxynet
@@ -30,37 +30,39 @@ services:
        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
    phpmyadmin:
      container_name: phpmyadmin.${DOMAIN_NAME}
-     image: phpmyadmin/phpmyadmin
      depends_on:
-       - {db_ID}     
+       - {db_ID}
+     image: phpmyadmin/phpmyadmin
+     volumes:
+       # map local file for custom config (e.g. upload_max_filesize)
+       - ./php.ini:/usr/local/etc/php/conf.d/docker-custom.ini
      links:
        - {db_ID}:db
      networks:
        - proxynet
      environment:
-       - HTTPS_METHOD=noredirect
+       # login page requires HTTPS, so we must redirect even if no valid certificate is set
+       # - HTTPS_METHOD=noredirect
        - VIRTUAL_PORT=80
        - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
-   qinoa:
+   wordpress:
      container_name: ${DOMAIN_NAME}
-     links:
-       - {db_ID}:db
      depends_on:
-       - {db_ID} 
-     image: docked-qinoa:latest
+       - {db_ID}
+     image: docked-wp:latest
      volumes:
        - /home/${DOMAIN_NAME}/www:/var/www/html
        # map local file for custom config (e.g. upload_max_filesize)
-       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+       - ./php.ini:/usr/local/etc/php/conf.d/docker-custom.ini       
      restart: always
      networks:
        - proxynet
      environment:
-       - QN_DB_NAME=${MYSQL_DATABASE}
-       - QN_DB_HOST={db_ID}
-       - QN_DB_PORT=3306       
-       - QN_DB_USER=${MYSQL_USER}
-       - QN_DB_PASSWORD=${MYSQL_PASSWORD}
+       - PS_DB_NAME=${MYSQL_DATABASE}
+       - PS_DB_HOST={db_ID}:3306
+       - PS_DB_USER=${MYSQL_USER}
+       - PS_DB_PASSWORD=${MYSQL_PASSWORD}
+       # remember to disable following line once the SSL certificate has been set up
        - HTTPS_METHOD=noredirect
        - VIRTUAL_PORT=80
        - VIRTUAL_HOST=${DOMAIN_NAME}
@@ -76,4 +78,3 @@ networks:
 
 volumes:
   db_data:
-       

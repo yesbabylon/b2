@@ -51,7 +51,9 @@ $file_remote = DOMAIN_NAME."_{$current_date}_{$ttl}.tar";
 // establish FTP connection
 $conn_id = ftp_connect(FTP_HOST);
 // log into the FTP host
-$login_result = ftp_login($conn_id, FTP_USERNAME, FTP_PASSWORD);
+if(!@ftp_login($conn_id, FTP_USERNAME, FTP_PASSWORD)) {
+    die("error: login failed");
+}
 // switch to remote directory
 if(!ftp_chdir($conn_id, FTP_REMOTE_DIR)) {
     die("error: unable to find remote backup dir");

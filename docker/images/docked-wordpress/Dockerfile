@@ -14,5 +14,8 @@ RUN apt-get update && apt-get install -y \
     vim \    
     && /usr/sbin/usermod -u $apache_uid www-data \
     && /usr/sbin/groupmod -g $apache_gid www-data
-    
+
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql; \
+    docker-php-ext-install pdo pdo_mysql;
+        
 COPY ./mpm_prefork.conf /etc/apache2/mods-available/
