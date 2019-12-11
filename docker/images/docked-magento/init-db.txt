@@ -1,0 +1,4 @@
+CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento';
+GRANT ALL PRIVILEGES ON *.* TO 'magento'@'localhost' WITH GRANT OPTION;
+CREATE USER 'magento'@'%' IDENTIFIED BY 'magento';
+GRANT ALL PRIVILEGES ON *.* TO 'magento'@'%' WITH GRANT OPTION;
