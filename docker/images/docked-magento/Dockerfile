@@ -6,11 +6,12 @@ LABEL   Description="Magento 1.9 with Apache UID and GUID injection" \
 ARG apache_uid
 ARG apache_gid
 ENV MAGENTO_VERSION 1.9.3.8
-
+ENV INSTALL_DIR /var/www/html
 RUN cd /tmp && \
     curl https://codeload.github.com/OpenMage/magento-mirror/tar.gz/$MAGENTO_VERSION -o $MAGENTO_VERSION.tar.gz && \
     tar xvf $MAGENTO_VERSION.tar.gz && \
-    mv magento-mirror-$MAGENTO_VERSION/* magento-mirror-$MAGENTO_VERSION/.htaccess $INSTALL_DIR
+    mv magento-mirror-$MAGENTO_VERSION/* magento-mirror-$MAGENTO_VERSION/.htaccess $INSTALL_DIR && \
+    chown -R www-data:www-data $INSTALL_DIR
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -29,21 +30,32 @@ RUN set -ex; \
         apt-get update; \
         apt-get install -y --no-install-recommends \
                 libjpeg-dev \
+                libjpeg62-turbo-dev \
                 libpng-dev \
-				libtidy-dev \
-                libmcrypt-dev \                
+                libtidy-dev \
+                libmcrypt-dev \
                 libzip-dev \
+                libbz2-dev \
                 zip \
+                libicu-dev \
                 libfreetype6-dev \
                 libxml2-dev \
+                libxslt-dev \
         ; \
         \
-        docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr; \
+        pecl install mcrypt-1.0.1; \
+        \
+        docker-php-ext-configure gd --with-gd --with-png-dir=/usr --with-jpeg-dir=/usr --with-freetype-dir=/usr; \
         docker-php-ext-configure zip --with-libzip; \
-        docker-php-ext-configure mcrypt; \
-        docker-php-ext-install soap; \
-        docker-php-ext-install pdo_mysql; \
-        docker-php-ext-install gd soap pdo_mysql opcache zip tidy mcrypt; \        
+        docker-php-ext-configure bcmath --enable-bcmath; \
+        docker-php-ext-configure intl --enable-intl; \
+        docker-php-ext-configure pcntl --enable-pcntl; \
+        docker-php-ext-configure mysqli --with-mysqli; \
+        docker-php-ext-configure pdo_mysql --with-pdo-mysql; \
+        docker-php-ext-configure mbstring --enable-mbstring; \
+        docker-php-ext-configure soap --enable-soap; \
+        docker-php-ext-install gd bcmath intl pcntl exif iconv soap xmlrpc xsl mysqli pdo_mysql mbstring opcache bz2 zip tidy; \
+        docker-php-ext-enable mcrypt; \
         \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
         apt-mark auto '.*' > /dev/null; \

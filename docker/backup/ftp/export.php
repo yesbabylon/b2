@@ -27,16 +27,17 @@ function get_ttl() {
     if($dayofweek == 0) {
         $dayofweek = 7;
     }
-    // assign TTL based on current day (14 backups)
+    // assign TTL based on current day (17 backups)
     $ttl_map = [
         1 => 7,    // one week
-        2 => 14,   // two weeks
-        3 => 21,   // three weeks
-        4 => 28,   // one month
-        5 => 56,   // two months
-        6 => 84,   // three months
-        7 => 112   // four months
+        2 => 7,    // one week
+        3 => 7,    // one week
+        4 => 7,    // one week
+        5 => 7,    // one week
+        6 => 28,   // four weeks
+        7 => 56    // two months        
     ];
+    
     return $ttl_map[$dayofweek];
 }
 

@@ -20,14 +20,8 @@ yes | apt-get update
 mv /etc/adduser.conf /etc/adduser.conf.orig
 cp ./conf/etc/adduser.conf /etc/adduser.conf
 
-# Install Apache utilities (htpasswd)
-yes | apt-get install apache2-utils
-
-# Install PHP cli (for scripts)
-yes | apt-get install php-cli
-
-# Install FTP service
-yes | apt-get install vsftpd
+# Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for scripts), FTP service
+yes | apt-get install apache2-utils vnstat php-cli vsftpd
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig

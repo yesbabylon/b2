@@ -88,6 +88,11 @@ proxy_set_header X-Forwarded-Port $proxy_x_forwarded_port;
 proxy_set_header Proxy "";
 {{ end }}
 
+# define request limit zones
+
+limit_req_zone $binary_remote_addr zone=by_ip:10m rate=12r/s;
+limit_req_zone $request_uri zone=by_uri:10m rate=1r/s;
+
 {{ $enable_ipv6 := eq (or ($.Env.ENABLE_IPV6) "") "true" }}
 server {
 	server_name _; # This is just an invalid value which will never trigger on a real hostname.
@@ -298,7 +303,16 @@ server {
 		if (-f $document_root/$host/maintenance) {
 			return 503;
 		}
-    
+
+
+        # apply rate limiting
+
+        # queue up to 100 requests by IP by second (enough for most pages)
+        limit_req zone=by_ip burst=100;
+        # queue up to 15 requests by URI by second (= concurrent visitors)
+        limit_req zone=by_uri burst=15;
+
+
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
 		uwsgi_pass {{ trim $proto }}://{{ trim $upstream_name }};
@@ -360,6 +374,14 @@ server {
 		if (-f $document_root/$host/maintenance) {
 			return 503;
 		}
+
+
+        # apply rate limiting
+
+        # queue up to 100 requests by IP (enough for most HTML pages)
+        limit_req zone=by_ip burst=100;
+        # queue up to 15 requests by URI (= concurrent visitors)
+        limit_req zone=by_uri burst=15;
     
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -421,7 +443,14 @@ server {
 		if (-f $document_root/$host/maintenance) {
 			return 503;
 		}
-            
+
+        # apply rate limiting
+
+        # queue up to 100 requests by IP (enough for most HTML pages)
+        limit_req zone=by_ip burst=100;
+        # queue up to 15 requests by URI (= concurrent visitors)
+        limit_req zone=by_uri burst=15;
+        
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
 		uwsgi_pass {{ trim $proto }}://{{ trim $upstream_name }};
