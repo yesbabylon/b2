@@ -71,6 +71,19 @@ findtime = 1d
 bantime  = 1w
 
 
+[nginx-req-limit]
+enabled  = true
+port     = http,https
+filter   = nginx-req-limit
+banaction = docker-action
+logpath  = /var/log/nginx/error.log*
+# on average, we allow 50 req-limit per minute within a 5 min interval
+maxretry = 250
+findtime = 5m
+# in any case, we limit the ban to 30 seconds
+bantime  = 30s
+
+
 [wordpress]
 enabled  = true
 port     = http,https

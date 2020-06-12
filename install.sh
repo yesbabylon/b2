@@ -16,6 +16,9 @@ yes | apt-get remove postfix
 # Make sure aptitude cache is up-to-date
 yes | apt-get update 
 
+# Set timezone to UTC (for synch with containers having UTC as default TZ)
+timedatectl set-timezone UTC
+
 # Allow using domains as user names
 mv /etc/adduser.conf /etc/adduser.conf.orig
 cp ./conf/etc/adduser.conf /etc/adduser.conf
