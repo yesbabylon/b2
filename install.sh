@@ -36,8 +36,8 @@ systemctl restart vsftpd
 # Install F2B service
 yes | apt-get install fail2ban
 cp ./conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
-cp ./conf/etc/fail2ban/action.d/docker-action.conf /etc/fail2ban/action.d/docker-action.conf
-cp ./conf/etc/fail2ban/filter.d/wp-login.conf /etc/fail2ban/filter.d/wp-login.conf
+cp ./conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
+cp ./conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 
 # Restart F2B service
 systemctl restart fail2ban
