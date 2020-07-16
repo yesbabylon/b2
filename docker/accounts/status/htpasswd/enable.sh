@@ -15,8 +15,7 @@ then
 
         # restart nginx
         cd /home/docker/nginx-proxy
-        docker stop nginx-proxy
-        docker-compose up -d      
+        docker-compose restart     
     fi
 
     # stop auto export
