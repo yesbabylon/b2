@@ -34,6 +34,7 @@ function terminal($command) {
         }
         //exec
         else if(function_exists('exec')) {
+                $output = '';
                 exec($command , $output , $return_var);
                 $output = implode("\n", $output);
         }

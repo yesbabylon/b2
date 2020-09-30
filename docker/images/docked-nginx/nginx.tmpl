@@ -90,7 +90,11 @@ proxy_set_header Proxy "";
 
 # define request limit zones
 
+# stack up to 160k IP addresses and ...
+
+# limit access by IP to 12 requests by second
 limit_req_zone $binary_remote_addr zone=by_ip:10m rate=12r/s;
+# limit access to URI to 1 request by second
 limit_req_zone $request_uri zone=by_uri:10m rate=1r/s;
 
 {{ $enable_ipv6 := eq (or ($.Env.ENABLE_IPV6) "") "true" }}
@@ -311,7 +315,6 @@ server {
         limit_req zone=by_ip burst=100;
         # queue up to 15 requests by URI by second (= concurrent visitors)
         limit_req zone=by_uri burst=15;
-
 
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;

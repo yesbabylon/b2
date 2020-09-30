@@ -1,4 +1,16 @@
 #!/bin/bash
+
+if [ -z "$1" ]
+then
+    SCRIPT=`realpath $0`
+    CURRENT=`dirname $SCRIPT`
+else
+    DOMAIN_NAME="$1"
+    CURRENT="/home/$DOMAIN_NAME/status/maintenance"
+fi
+
+cd $CURRENT
+
 if [ -f ./../../.env ]
 then
     # export vars from .env file

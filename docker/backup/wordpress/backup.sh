@@ -21,7 +21,7 @@ fi
 
 # enable maintenance mode (at nginx level)
 echo "Switching to maintenance mode..."
-/home/$DOMAIN_NAME/status/maintenance/enable.sh
+/home/$DOMAIN_NAME/status/maintenance/enable.sh $DOMAIN_NAME
 
 # wait a bit
 echo "Waiting for pending processes to terminate..."
@@ -34,7 +34,7 @@ echo "Database dump OK."
 
 # disable maintenance mode (at nginx level)
 echo "Switching back to production mode..."
-/home/$DOMAIN_NAME/status/maintenance/disable.sh
+/home/$DOMAIN_NAME/status/maintenance/disable.sh $DOMAIN_NAME
 
 # compress DB dump to a `database.sql.gz` file
 gzip database.sql
