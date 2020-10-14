@@ -77,7 +77,7 @@ port     = http,https
 filter   = nginx-req-limit
 banaction = docker-action
 logpath  = /var/log/nginx/error.log*
-# on average, we allow 50 req-limit per minute within a 5 min interval
+# on average, we allow 50 req-limit per second with a burst of 150, within a 5 min interval
 maxretry = 250
 findtime = 5m
 # in any case, we limit the ban to 30 seconds

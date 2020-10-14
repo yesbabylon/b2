@@ -93,7 +93,7 @@ proxy_set_header Proxy "";
 # stack up to 160k IP addresses and ...
 
 # limit access by IP to 12 requests by second
-limit_req_zone $binary_remote_addr zone=by_ip:10m rate=12r/s;
+limit_req_zone $binary_remote_addr zone=by_ip:10m rate=50r/s;
 # limit access to URI to 1 request by second
 limit_req_zone $request_uri zone=by_uri:10m rate=1r/s;
 
@@ -312,9 +312,9 @@ server {
         # apply rate limiting
 
         # queue up to 100 requests by IP by second (enough for most pages)
-        limit_req zone=by_ip burst=100;
+        limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI by second (= concurrent visitors)
-        limit_req zone=by_uri burst=15;
+        limit_req zone=by_uri burst=3;
 
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -382,9 +382,9 @@ server {
         # apply rate limiting
 
         # queue up to 100 requests by IP (enough for most HTML pages)
-        limit_req zone=by_ip burst=100;
+        limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI (= concurrent visitors)
-        limit_req zone=by_uri burst=15;
+        limit_req zone=by_uri burst=3;
     
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -450,9 +450,9 @@ server {
         # apply rate limiting
 
         # queue up to 100 requests by IP (enough for most HTML pages)
-        limit_req zone=by_ip burst=100;
+        limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI (= concurrent visitors)
-        limit_req zone=by_uri burst=15;
+        limit_req zone=by_uri burst=3;
         
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;

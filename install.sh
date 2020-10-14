@@ -91,7 +91,7 @@ cd /home/docker/images/docked-nginx/
 # Start reverse proxy and let's encrypt companion
 docker-compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 # wait for the services to be fully started (to prevent following files to be overwritten)
-sleep 5
+sleep 10
 # make sure a default maintenance page is available
 cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 # add custom nginx conf in the newly created dir env
