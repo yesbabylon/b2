@@ -65,8 +65,10 @@ services:
        # remember to disable following line once the SSL certificate has been set up
        - HTTPS_METHOD=noredirect
        - VIRTUAL_PORT=80
-       - VIRTUAL_HOST=${DOMAIN_NAME}, www.${DOMAIN_NAME}
-       - LETSENCRYPT_HOST=${DOMAIN_NAME}, www.${DOMAIN_NAME}
+       # nginx config is set to add a www. subdomain to each virtual host
+       - VIRTUAL_HOST=${DOMAIN_NAME}
+       # all domains that require a SSL cert (necessary fr direct HTTPS connection)
+       - LETSENCRYPT_HOST=${DOMAIN_NAME},www.${DOMAIN_NAME}
        - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
 
 
