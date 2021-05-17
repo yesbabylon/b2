@@ -1,4 +1,4 @@
-FROM wordpress:4.9.8
+FROM wordpress:5.7.2
 LABEL   Description="Latest version of Wordpress with Apache UID and GUID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
