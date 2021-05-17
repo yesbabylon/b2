@@ -9,6 +9,9 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Store current directory path
+INSTALL_DIR=$(pwd)
+
 # Stop and uninstall postfix, if present
 service postfix stop
 yes | apt-get remove postfix
@@ -21,29 +24,29 @@ timedatectl set-timezone UTC
 
 # Allow using domains as user names
 mv /etc/adduser.conf /etc/adduser.conf.orig
-cp ./conf/etc/adduser.conf /etc/adduser.conf
+cp $INSTALL_DIR/conf/etc/adduser.conf /etc/adduser.conf
 
 # Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for scripts), FTP service
 yes | apt-get install apache2-utils vnstat php-cli vsftpd
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
-cp ./conf/etc/vsftpd.conf /etc/vsftpd.conf
+cp $INSTALL_DIR/conf/etc/vsftpd.conf /etc/vsftpd.conf
 
 # Restart FTP service
 systemctl restart vsftpd
 
 # Install F2B service
 yes | apt-get install fail2ban
-cp ./conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
-cp ./conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
-cp ./conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
+cp $INSTALL_DIR/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
+cp $INSTALL_DIR/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
+cp $INSTALL_DIR/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 
 # Restart F2B service
 systemctl restart fail2ban
 
 # Add logrotate directive for nginx
-cp ./conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
+cp $INSTALL_DIR/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
 
 # Install Docker
 yes | apt install apt-transport-https ca-certificates curl software-properties-common
@@ -58,8 +61,8 @@ curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compos
 chmod +x /usr/local/bin/docker-compose
 
 # Prepare directory structure
-cp -r ./docker /home/docker
-cp ./conf/ssh-login /usr/local/bin/ssh-login
+cp -r $INSTALL_DIR/docker /home/docker
+cp $INSTALL_DIR/conf/ssh-login /usr/local/bin/ssh-login
 
 mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
@@ -81,7 +84,7 @@ docker network create proxynet
 docker volume create portainer_data
 
 # Install OVH real time monitoring
-wget -qO - https://last-public-ovh-infra-yak.snap.mirrors.ovh.net/yak/archives/apply.sh | OVH_PUPPET_MANIFEST=distribyak/catalog/master/puppet/manifests/common/rtmv2.pp bash
+# wget -qO - https://last-public-ovh-infra-yak.snap.mirrors.ovh.net/yak/archives/apply.sh | OVH_PUPPET_MANIFEST=distribyak/catalog/master/puppet/manifests/common/rtmv2.pp bash
 
 
 # Build docked-nginx image
@@ -95,13 +98,14 @@ sleep 10
 # make sure a default maintenance page is available
 cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 # add custom nginx conf in the newly created dir env
-cp ./conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
+cp $INSTALL_DIR/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
+
 # force nginx to load new config
 docker exec nginx-proxy nginx -s reload
 
 # Edit account parameters and then Run script for account creation
 cd /home/docker/accounts
-vi .env ; /home/docker/accounts/init.sh
+# vi .env ; /home/docker/accounts/init.sh
 
 # Start Portainer
 /home/docker/console_start.sh
