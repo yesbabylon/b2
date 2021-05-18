@@ -64,7 +64,7 @@ if (ftp_put($conn_id, $file_remote, $file_local, FTP_BINARY)) {
     echo "uploaded backup.tar\n";
 }
 else {
-    echo "error: unable to upload file\n";
+    echo "error: unable to upload file $file_local to $file_remote\n";
 }
 // close FTP connection
 ftp_close($conn_id);

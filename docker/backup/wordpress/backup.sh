@@ -21,6 +21,7 @@ fi
 
 # enable maintenance mode (at nginx level)
 echo "Switching to maintenance mode..."
+chmod +x /home/$DOMAIN_NAME/status/maintenance/enable.sh
 /home/$DOMAIN_NAME/status/maintenance/enable.sh $DOMAIN_NAME
 
 # wait a bit
