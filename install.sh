@@ -41,6 +41,7 @@ yes | apt-get install fail2ban
 cp $INSTALL_DIR/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
 cp $INSTALL_DIR/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
 cp $INSTALL_DIR/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
+touch /etc/fail2ban/emptylog
 
 # Restart F2B service
 systemctl restart fail2ban

@@ -49,7 +49,7 @@ services:
      container_name: ${DOMAIN_NAME}
      depends_on:
        - {db_ID}
-     image: docked-wp:latest
+     image: docked-joomla:latest
      volumes:
        - /home/${DOMAIN_NAME}/www:/var/www/html
        # map local file for custom config (e.g. upload_max_filesize)

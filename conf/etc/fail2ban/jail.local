@@ -43,12 +43,14 @@ bantime = 10m
 enabled  = true
 port     = ftp,ftp-data,ftps,ftps-data
 logpath  = %(vsftpd_log)s
+            /etc/fail2ban/emptylog
 
 [vsftpd-recidive]
 enabled  = true
 filter   = vsftpd
 port     = ftp,ftp-data,ftps,ftps-data
 logpath  = %(vsftpd_log)s
+            /etc/fail2ban/emptylog
 maxretry = 10
 findtime = 1d
 bantime  = 1w
@@ -117,7 +119,6 @@ logpath  = /var/log/nginx/access.log*
 maxretry = 10
 findtime = 1d
 bantime  = 1w
-
 
 [joomla]
 enabled  = true
