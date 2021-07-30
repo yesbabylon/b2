@@ -30,7 +30,7 @@ sleep 60
 
 # generate a SQL dump (raw text) with table drop instructions 
 echo "Dumping database..."
-docker exec sql.$DOMAIN_NAME /usr/bin/mysqldump -u root --password=wordpress --single-transaction --skip-lock-tables wordpress > database.sql
+docker exec sql.$DOMAIN_NAME /usr/bin/mysqldump -u root --password=joomla --single-transaction --skip-lock-tables joomla > database.sql
 echo "Database dump OK."
 
 # disable maintenance mode (at nginx level)

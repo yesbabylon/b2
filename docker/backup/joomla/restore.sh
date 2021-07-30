@@ -11,7 +11,7 @@ then
     # import filestore
     tar -zxf filestore.tar.gz -C /
     # import database backup (with drop table statements)
-    cat database.sql | docker exec -i sql.$DOMAIN_NAME /usr/bin/mysql -u root --password=wordpress wordpress
+    cat database.sql | docker exec -i sql.$DOMAIN_NAME /usr/bin/mysql -u root --password=joomla joomla
     
     # remove everything from /home/FQDN/import
     rm -rf /home/$DOMAIN_NAME/import/*
