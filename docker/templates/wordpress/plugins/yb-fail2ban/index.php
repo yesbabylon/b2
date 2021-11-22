@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: wp-fail2ban 
+ * Plugin Name: yb-fail2ban 
  * Description: Adds a hook to force HTTP 403 status when login fails and enable fail2ban on WP logs
  * Version: 1.0
  * Author: Cedric Francoys
