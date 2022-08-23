@@ -94,8 +94,8 @@ proxy_set_header Proxy "";
 
 # limit access by IP to 50 requests by second (below we define a burst of 150)
 limit_req_zone $binary_remote_addr zone=by_ip:10m rate=50r/s;
-# limit access to URI to 5 requests by second (below we define a burst of 10)
-limit_req_zone $request_uri zone=by_uri:10m rate=5r/s;
+# limit access to URI to 5 requests by second (below we define a burst of 150)
+limit_req_zone $request_uri zone=by_uri:10m rate=50r/s;
 
 {{ $enable_ipv6 := eq (or ($.Env.ENABLE_IPV6) "") "true" }}
 server {
@@ -378,7 +378,7 @@ server {
         # queue up to 100 requests by IP by second (enough for most pages)
         limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI by second (= concurrent visitors)
-        limit_req zone=by_uri burst=10;
+        limit_req zone=by_uri burst=150;
 
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -448,7 +448,7 @@ server {
         # queue up to 100 requests by IP (enough for most HTML pages)
         limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI (= concurrent visitors)
-        limit_req zone=by_uri burst=10;
+        limit_req zone=by_uri burst=150;
     
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -516,7 +516,7 @@ server {
         # queue up to 100 requests by IP (enough for most HTML pages)
         limit_req zone=by_ip burst=150;
         # queue up to 15 requests by URI (= concurrent visitors)
-        limit_req zone=by_uri burst=10;
+        limit_req zone=by_uri burst=150;
         
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;

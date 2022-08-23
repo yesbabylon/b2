@@ -1,5 +1,5 @@
 FROM php:7.3-apache
-LABEL   Description="Latest version of Qinoa with Apache UID and GUID injection" \
+LABEL   Description="Latest version of eQual with Apache UID and GUID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
         Version="1.0"
