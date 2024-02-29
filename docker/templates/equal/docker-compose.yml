@@ -44,6 +44,7 @@ services:
        - UPLOAD_LIMIT=100M
        - MAX_EXECUTION_TIME=3600
        - MEMORY_LIMIT=128M
+       - PMA_HOST={db_ID}
    equal_srv:
      image: equalframework/equal:latest
      container_name: ${DOMAIN_NAME}
