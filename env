@@ -1,0 +1,16 @@
+USERNAME=www.equalpress.com
+PASSWORD=arbitrary_password
+APP_USERNAME=root
+APP_PASSWORD=test
+
+DOMAIN=equal.local
+
+DB_HOST=equal_db
+DB_PORT=3306
+DB_NAME=equal
+
+EQ_VERSION=dev-2.0
+
+WP_VERSION=latest
+WP_TITLE=eQualpress
+WP_EMAIL=root@host.local
