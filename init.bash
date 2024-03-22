@@ -101,6 +101,9 @@ then
         yes | git clone -b "$EQ_VERSION" https://github.com/equalframework/equal.git /home/"$USERNAME"
         print_color "cyan" "Clone of eQual framework done."
 
+        # Compute DB_PORT with the number of directories inside /home
+        DB_PORT=$(( 3306 + $(ls -l /home | grep -c ^d) ))
+
         print_color "yellow" "Replacing placeholders in files..."
         cp -r eQualPress_template .eQualPress_template
 
