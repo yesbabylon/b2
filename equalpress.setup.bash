@@ -44,7 +44,6 @@ print_color "cyan" "Clone of eQual framework done."
 print_color "yellow" "Replacing placeholders in files..."
 cp -r eQualPress_template .eQualPress_template
 
-# Iterate over files in the directory and its subdirectories
 find ".eQualPress_template" -type f -print0 | while IFS= read -r -d '' file; do
     # Replace placeholders in each file
     while IFS='=' read -r key value; do
@@ -53,6 +52,8 @@ find ".eQualPress_template" -type f -print0 | while IFS= read -r -d '' file; do
     done < .env
 done
 
+print_color "green" "Move config files"
+print_color "yellow" "Waiting 5 seconds for the config files to be moved..."
 # Move files from source to destination while preserving directory structure
 source_directory=".eQualPress_template"
 destination_directory="../$USERNAME"
@@ -63,6 +64,7 @@ find "$source_directory" -type f -print0 | while IFS= read -r -d '' file; do
     # Move the file to the destination directory
     mv "$file" "$destination_directory/$relative_path"
 done
+sleep 5
 
 cd ../"$USERNAME" || exit
 
@@ -83,14 +85,11 @@ mv packages-core/{core,demo} packages/
 rm -rf packages-core
 "
 
-print_color "green" "Move config files"
-print_color "yellow" "Move config/config.json file"
-print_color "yellow" "Move public/assets/env/config.json file"
+#print_color "yellow" "Move config/config.json file"
+#print_color "yellow" "Move public/assets/env/config.json file"
 #docker exec -ti "$DOMAIN" bash -c "
 #sh equal.run ./equal.run --do=config_generate
 #"
-print_color "yellow" "Waiting 5 seconds for the config files to be moved..."
-sleep 5
 
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
