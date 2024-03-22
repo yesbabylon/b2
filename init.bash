@@ -102,7 +102,7 @@ then
         print_color "cyan" "Clone of eQual framework done."
 
         # Compute DB_PORT with the number of directories inside /home
-        DB_PORT=$(( 3306 + $(ls -l /home | grep -c ^d) ))
+        DB_PORT=$(( 3305 + $(ls -l /home | grep -c ^d) ))
 
         print_color "yellow" "Replacing placeholders in files..."
         cp -r eQualPress_template .eQualPress_template
