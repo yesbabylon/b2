@@ -1,8 +1,8 @@
 {
 "production": true,
 "parent_domain": {USERNAME},
-"backend_url": "http://{USERNAME}",
-"rest_api_url": "http://{USERNAME}/",
+"backend_url": "http://{USERNAME}:{EQ_PORT}",
+"rest_api_url": "http://{USERNAME}:{EQ_PORT}/",
 "lang": "en",
 "locale": "en",
 "company_name": "eQual Framework",
