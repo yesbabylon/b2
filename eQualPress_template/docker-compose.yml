@@ -1,5 +1,5 @@
 version: '3'
-name: equalpress
+name: {CONTAINER_NAME}
 services:
   equal_srv:
     image: equalframework/equal
