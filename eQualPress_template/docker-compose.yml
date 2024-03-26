@@ -1,5 +1,5 @@
 version: '3'
-name: eQualPress
+name: equalpress
 services:
   equal_srv:
     image: equalframework/equal
