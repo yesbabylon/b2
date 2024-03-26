@@ -19,7 +19,7 @@ services:
       - EQ_DB_PASS={APP_PASSWORD}
       - EQ_DB_NAME={DB_NAME}
     links:
-      - "{DB_HOST}"
+      - "mysql"
   mysql:
     image: mysql:5.7
     container_name: {DB_HOST}
@@ -41,4 +41,4 @@ services:
       - PMA_USER={APP_USERNAME}
       - PMA_PASSWORD={APP_PASSWORD}
     links:
-      - "{DB_HOST}"
+      - "mysql"
