@@ -20,7 +20,7 @@ services:
       - EQ_DB_NAME={DB_NAME}
     links:
       - "{DB_HOST}"
-  {DB_HOST}:
+  mysql:
     image: mysql:5.7
     container_name: {DB_HOST}
     restart: always
