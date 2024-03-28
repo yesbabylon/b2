@@ -25,11 +25,13 @@ process_instance() {
 
     print_color "yellow" "setup of instance N° $instance_number"
 
+    username="equal.local$instance_number"
+
     # Create .env file inside .eQualPress_template directory
     touch .env
 
     # fill the .env file with the instance number
-    echo "USERNAME=equal.local$instance_number
+    echo "USERNAME=$username
 PASSWORD=arbitrary_password
 APP_USERNAME=root
 APP_PASSWORD=test
@@ -43,14 +45,17 @@ WP_TITLE=eQualpress$instance_number
 WP_EMAIL=root@host.local" > .env
 
     # Launch script init.bash with the instance number as parameter by default: 'equalpress'
-    bash init.bash --instance_number "$instance_number"
+    bash init.bash --instance_number "$instance_number" --with_sb --with_wp
 
     # shellcheck disable=SC2010
     EQ_PORT=$(( 80 - 1 + $(ls -l /home | grep -c ^d) ))
 
+    # Define the address of the instance
+    address="http://$username:$EQ_PORT"
+
     # Assert test with wget for having a code 200 else error code: instance $instance_number problem
-    print_color "cyan" "Testing Wordpress instance http://equal.local$instance_number:$EQ_PORT"
-    wget -qO- http://equal.local"$instance_number":"$EQ_PORT" | grep -q "eQualpress$instance_number"
+    print_color "cyan" "Testing Wordpress instance $address"
+    wget -qO- "$address" | grep -q "eQualpress$instance_number"
     # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
         print_color "bggreen" "Instance Wordpress OK"
@@ -61,8 +66,8 @@ WP_EMAIL=root@host.local" > .env
     # Insert break line
     echo ""
 
-    print_color "cyan" "Testing eQual instance http://equal.local$instance_number:$EQ_PORT/welcome"
-    wget -qO- http://equal.local"$instance_number":"$EQ_PORT"/welcome | grep -q "Documentation"
+    print_color "cyan" "Testing eQual instance $address/welcome"
+    wget -qO- "$address"/welcome | grep -q "Documentation"
     # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
         print_color "bggreen" "Instance eQual OK"
