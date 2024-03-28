@@ -90,9 +90,8 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
 
 ##### equalpress.setup.bash | si ``--with_wp`` ou ``-w``
 8. **Installation de Wordpress dans eQual :**
-   - **Renommage du Fichier PHP pour Éviter les Conflits :**
-     - Renommage du fichier `index.php` en `equal.php` pour éviter les conflits avec WordPress.
-     - Remplacement du fichier `.htaccess` pour rendre Wordpress compatible.
+  - Remplacement du fichier `.htaccess` pour rendre Wordpress compatible.
+  - Renommage du fichier `index.php` en `equal.php` pour éviter les conflits avec WordPress.
 
    - **Téléchargement, Installation et Configuration de WordPress :**
      - Téléchargement du WP-CLI pour l'automatisation des tâches d'installation de WordPress.
