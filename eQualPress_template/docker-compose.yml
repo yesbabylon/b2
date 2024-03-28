@@ -14,7 +14,7 @@ services:
     hostname: {USERNAME}
     domainname: local
     environment:
-      - EQ_DB_HOST={DB_HOST}
+      - EQ_DB_HOST={DB_HOSTNAME}
       - EQ_DB_USER={APP_USERNAME}
       - EQ_DB_PASS={APP_PASSWORD}
       - EQ_DB_NAME={DB_NAME}
@@ -22,7 +22,7 @@ services:
       - "mysql"
   mysql:
     image: mysql:5.7
-    container_name: {DB_HOST}
+    container_name: {DB_HOSTNAME}
     restart: always
     ports:
       - "{DB_PORT}:3306"
@@ -31,13 +31,13 @@ services:
       - MYSQL_ROOT_PASSWORD={APP_PASSWORD}
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: {PHPMYADMIN_SERVICE_NAME}
+    container_name: {PMA_HOSTNAME}
     restart: always
     ports:
       - "{PHPMYADMIN_PORT}:80"
     environment:
       - PMA_ARBITRARY=1
-      - PMA_HOST={DB_HOST}
+      - PMA_HOST={DB_HOSTNAME}
       - PMA_USER={APP_USERNAME}
       - PMA_PASSWORD={APP_PASSWORD}
     links:
