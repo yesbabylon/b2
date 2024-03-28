@@ -40,7 +40,7 @@ chmod +x wp-cli.phar
 mkdir -p /usr/local/bin
 mv wp-cli.phar /usr/local/bin/wp
 wp core download --path='public/' --locale='en_US' --version=$WP_VERSION --allow-root
-wp config create --path='public/' --dbname=$DB_NAME --dbuser=$APP_USERNAME --dbpass=$APP_PASSWORD --dbhost=$DB_HOST --allow-root
+wp config create --path='public/' --dbname=$DB_NAME --dbuser=$APP_USERNAME --dbpass=$APP_PASSWORD --dbhost=$DB_HOSTNAME --allow-root
 mkdir -p public/wp-content/uploads
 wp core install --path='public/' --url=$USERNAME:$EQ_PORT --title=$WP_TITLE --admin_user=$APP_USERNAME --admin_password=$APP_PASSWORD --admin_email=$WP_EMAIL --skip-email --allow-root
 chown -R www-data:www-data .
