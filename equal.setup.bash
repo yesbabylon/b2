@@ -24,10 +24,6 @@ wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O /home/"$USERNAME"/www/config/config.json
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O /home/"$USERNAME"/www/public/assets/env/config.json
 
-# Replace the .htaccess file
-rm /home/"$USERNAME"/www/public/.htaccess
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/.htaccess -O /home/"$USERNAME"/www/public/.htaccess
-
 print_color "yellow" "Replacing placeholders in files..."
 
 replace_placeholders() {
@@ -41,6 +37,7 @@ replace_placeholders() {
     done
 
     # Read .env file and replace placeholders with values
+    # shellcheck disable=SC2154
     while IFS='=' read -r key value; do
         for file in docker-compose.yml config/config.json public/assets/env/config.json; do
             # Replace placeholder with value
@@ -59,14 +56,6 @@ docker-compose up -d
 
 print_color "yellow" "Waiting 10 seconds for the containers starting..."
 sleep 10
-
-print_color "yellow" "Clone an setup of Symbiose started..."
-docker exec -ti "$USERNAME" bash -c "
-mv packages packages-core
-yes | git clone -b $EQ_VERSION https://github.com/yesbabylon/symbiose.git packages
-mv packages-core/{core,demo} packages/
-rm -rf packages-core
-"
 
 # print_color "yellow" "Move config/config.json file"
 # print_color "yellow" "Move public/assets/env/config.json file"
