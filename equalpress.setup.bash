@@ -15,13 +15,22 @@ print_color() {
     esac
 }
 
+# shellcheck disable=SC2164
 cd /home/"$USERNAME"/www
+
+# Replace the .htaccess file
+print_color "yellow" "Downloading and replacing the .htaccess file..."
+docker exec -ti "$USERNAME" bash -c "
+rm public/.htaccess
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/.htaccess -O public/.htaccess
+"
 
 print_color "yellow" "Renaming public/index.php to public/equal.php to avoid conflicts with WordPress..."
 docker exec -ti "$USERNAME" bash -c "
 mv public/index.php public/equal.php
 "
 
+# shellcheck disable=SC2010
 EQ_PORT=$(( 80 - 1 + $(ls -l /home | grep -c ^d) ))
 
 print_color "green" "Downloading, installing and setting up WordPress"
