@@ -102,7 +102,7 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
 
 
 ### Fichier `.env` actuel:
-```js
+```env
 USERNAME=equal.local
 PASSWORD=arbitrary_password
 
