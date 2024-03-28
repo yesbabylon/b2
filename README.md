@@ -22,7 +22,6 @@ Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PAS
 Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du testing lancer ``test_eQulPress_multi_instance_setup.bash``
 
 ### init.bash
-
 #### Flags parameters
 
 | Short Flag | Long Flag           | Description      |
@@ -32,7 +31,6 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
 | `-s`       | `--with_sb`         | Install Symbiose |
 
 #### Déroulement du script
-
 
 1. **Chargement des Variables d'Environnement depuis un fichier .env**
    - Téléchargement du fichier `.env` depuis le repo GitHub `yesbabylon/b2` dans le répertoire courant, si le fichier n'existe pas.
@@ -61,7 +59,7 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
    - Renommage du service PHPMyAdmin avec le hash MD5 de l'utilisateur.
    - Calcul du nombre d'instances pour définir `DB_PORT`, `PHPMYADMIN_PORT` et `EQ_PORT`.
 
-### equal.setup.bash
+##### equal.setup.bash
 5. **Clonage de l'application eQual :**
    - **Clonage de `eQual Framework` :**
      - Téléchargement de l'application eQual depuis le référentiel GitHub `equalframework/equal`.
@@ -78,20 +76,21 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
    - **Construction et Lancement des Conteneurs Docker :**
      - Construction des conteneurs Docker à l'aide de `docker-compose`.
      - Démarrage des conteneurs Docker.
-
-   - **Clonage et Configuration de `Symbiose` :**    | si ``--with_sb`` ou ``-s``
-     - Clonage de l'application Symbiose depuis le référentiel GitHub `yesbabylon/symbiose`.
-     - Déplacement des répertoires `core` et `demo` dans le répertoire `packages`.
-     - Suppression du répertoire `packages-core`.
-
-   - **Initialisation de la Base de Données et du Package Core de eQual :**
+ 
+6. **Initialisation de la Base de Données et du Package Core de eQual :**
      - Initialisation de la base de données eQual.
      - Attente de 5 secondes pour permettre l'initialisation de la base de données.
      - Initialisation du package core.
      - Attente de 15 secondes pour permettre l'initialisation de la base de données.
 
-### equalpress.setup.bash  | si ``--with_wp`` ou ``-w``
-6. **Installation de Wordpress dans eQual :**
+##### symbiose.setup.bash | si ``--with_sb`` ou ``-s``
+7.  **Clonage et Configuration de `Symbiose` :**
+     - Clonage de l'application Symbiose depuis le référentiel GitHub `yesbabylon/symbiose`.
+     - Déplacement des répertoires `core` et `demo` dans le répertoire `packages`.
+     - Suppression du répertoire `packages-core`.
+
+##### equalpress.setup.bash | si ``--with_wp`` ou ``-w``
+7. **Installation de Wordpress dans eQual :**
    - **Renommage du Fichier PHP pour Éviter les Conflits :**
      - Le fichier `index.php` dans le répertoire public est renommé en `equal.php`. 
      - Cela est nécessaire pour éviter tout conflit lors de l'installation de WordPress.
