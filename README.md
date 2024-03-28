@@ -64,11 +64,10 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
    - **Clonage de `eQual Framework` :**
      - Téléchargement de l'application eQual depuis le référentiel GitHub `equalframework/equal`.
      - Téléchargement des fichiers de configuration depuis le référentiel GitHub `yesbabylon/b2`.
-     - Renommage du fichier `index.php` en `equal.php` pour éviter les conflits avec WordPress.
 
    - **Remplacement des Fichiers de Configuration :**
      - Téléchargement des fichiers de configuration (`docker-compose.yml`, `config/config.json`, `public/assets/env/config.json`) depuis le référentiel GitHub `yesbabylon/b2`.
-     - Remplacement du fichier `.htaccess` avec une version compatible.
+
 
    - **Remplacement des Placeholders dans les Fichiers de Configuration :**
      - Remplacement des placeholders dans les fichiers de configuration avec les valeurs appropriées extraites des variables d'environnement et du fichier `.env`.
@@ -90,10 +89,10 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
      - Suppression du répertoire `packages-core`.
 
 ##### equalpress.setup.bash | si ``--with_wp`` ou ``-w``
-7. **Installation de Wordpress dans eQual :**
+8. **Installation de Wordpress dans eQual :**
    - **Renommage du Fichier PHP pour Éviter les Conflits :**
-     - Le fichier `index.php` dans le répertoire public est renommé en `equal.php`. 
-     - Cela est nécessaire pour éviter tout conflit lors de l'installation de WordPress.
+     - Renommage du fichier `index.php` en `equal.php` pour éviter les conflits avec WordPress.
+     - Remplacement du fichier `.htaccess` pour rendre Wordpress compatible.
 
    - **Téléchargement, Installation et Configuration de WordPress :**
      - Téléchargement du WP-CLI pour l'automatisation des tâches d'installation de WordPress.
