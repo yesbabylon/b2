@@ -49,7 +49,7 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
    - Renommage du service PHPMyAdmin avec le hash MD5 de l'utilisateur.
    - Calcul du nombre d'instances pour définir `DB_PORT`, `PHPMYADMIN_PORT` et `EQ_PORT`.
 
-### equal.setup.bash   | si ``--with_wp`` ou ``-w``
+### equal.setup.bash
 5. **Clonage de l'application eQual :**
    - **Clonage de `eQual Framework` :**
      - Téléchargement de l'application eQual depuis le référentiel GitHub `equalframework/equal`.
@@ -78,7 +78,7 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
      - Initialisation du package core.
      - Attente de 15 secondes pour permettre l'initialisation de la base de données.
 
-### equalpress.setup.bash
+### equalpress.setup.bash  | si ``--with_wp`` ou ``-w``
 6. **Installation de Wordpress dans eQual :**
    - **Renommage du Fichier PHP pour Éviter les Conflits :**
      - Le fichier `index.php` dans le répertoire public est renommé en `equal.php`. 
