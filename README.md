@@ -19,6 +19,7 @@ Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PAS
 
 
 ## Processus d'Initialisation de eQualPress
+Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du testing lancer ``test_eQulPress_multi_instance_setup.bash``
 
 ### init.bash
 1. **Chargement des Variables d'Environnement depuis un fichier .env**
@@ -48,7 +49,7 @@ Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PAS
    - Renommage du service PHPMyAdmin avec le hash MD5 de l'utilisateur.
    - Calcul du nombre d'instances pour définir `DB_PORT`, `PHPMYADMIN_PORT` et `EQ_PORT`.
 
-### equal.setup.bash
+### equal.setup.bash   | si ``--with_wp`` ou ``-w``
 5. **Clonage de l'application eQual :**
    - **Clonage de `eQual Framework` :**
      - Téléchargement de l'application eQual depuis le référentiel GitHub `equalframework/equal`.
@@ -66,7 +67,7 @@ Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PAS
      - Construction des conteneurs Docker à l'aide de `docker-compose`.
      - Démarrage des conteneurs Docker.
 
-   - **Clonage et Configuration de `Symbiose` :**
+   - **Clonage et Configuration de `Symbiose` :**    | si ``--with_sb`` ou ``-s``
      - Clonage de l'application Symbiose depuis le référentiel GitHub `yesbabylon/symbiose`.
      - Déplacement des répertoires `core` et `demo` dans le répertoire `packages`.
      - Suppression du répertoire `packages-core`.
