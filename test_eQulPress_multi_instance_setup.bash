@@ -34,7 +34,6 @@ PASSWORD=arbitrary_password
 APP_USERNAME=root
 APP_PASSWORD=test
 
-DB_HOST=equal_db
 DB_NAME=equal
 
 EQ_VERSION=dev-2.0
@@ -44,14 +43,15 @@ WP_TITLE=eQualpress$instance_number
 WP_EMAIL=root@host.local" > .env
 
     # Launch script init.bash with the instance number as parameter by default: 'equalpress'
-    bash init.bash $instance_number
+    bash init.bash --instance_number "$instance_number"
 
+    # shellcheck disable=SC2010
     EQ_PORT=$(( 80 - 1 + $(ls -l /home | grep -c ^d) ))
-
 
     # Assert test with wget for having a code 200 else error code: instance $instance_number problem
     print_color "cyan" "Testing Wordpress instance http://equal.local$instance_number:$EQ_PORT"
-    wget -qO- http://equal.local$instance_number:"$EQ_PORT" | grep -q "eQualpress$instance_number"
+    wget -qO- http://equal.local"$instance_number":"$EQ_PORT" | grep -q "eQualpress$instance_number"
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
         print_color "bggreen" "Instance Wordpress OK"
     else
@@ -62,7 +62,8 @@ WP_EMAIL=root@host.local" > .env
     echo ""
 
     print_color "cyan" "Testing eQual instance http://equal.local$instance_number:$EQ_PORT/welcome"
-    wget -qO- http://equal.local$instance_number:"$EQ_PORT"/welcome | grep -q "Documentation"
+    wget -qO- http://equal.local"$instance_number":"$EQ_PORT"/welcome | grep -q "Documentation"
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
         print_color "bggreen" "Instance eQual OK"
     else
