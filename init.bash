@@ -1,17 +1,40 @@
 #!/bin/bash
 
+# shellcheck disable=SC2155
 export script_dir=$(pwd)
 
-# if flag container-name is not set, set it to equalpress
-if [ -z "$1" ]
-then
-    export INSTANCE_NUMBER=""
+# Default values
+INSTANCE_NUMBER=""
+WITH_WP=false
+WITH_SB=false
+export PMA_HOSTNAME="phpmyadmin"
+
+flags_help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  --instance_number, -n <number>  Instance number"
+    echo "  --with_wp, -w                   Install WordPress"
+    echo "  --with_sb, -s                   Install Symbiose"
+    exit 1
+}
+
+# Parse options
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --instance_number|-n ) INSTANCE_NUMBER="$2"; shift ;;
+        --with_wp|-w ) WITH_WP=true ;;
+        --with_sb|-s ) WITH_SB=true ;;
+        --help|-h ) flags_help ;;
+        * ) flags_help ; exit 1 ;;
+    esac
+    shift
+done
+
+# Set container name based on instance number
+if [ -z "$INSTANCE_NUMBER" ]; then
     export CONTAINER_NAME="equalpress"
-    export PMA_HOSTNAME="phpmyadmin"
 else
-    export INSTANCE_NUMBER="$1"
-    export CONTAINER_NAME="equalpress$1"
-    export PMA_HOSTNAME="phpmyadmin$1"
+    export CONTAINER_NAME="equalpress$INSTANCE_NUMBER"
 fi
 
 # Function to print colored text
@@ -59,42 +82,42 @@ then
 #        # create a new user
 #        adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
 #        echo "$USERNAME:$PASSWORD" | sudo chpasswd
-#
+##
 #        # directories for backup and replication
 #        mkdir /home/"$USERNAME"/import
 #        mkdir /home/"$USERNAME"/export
-#
+##
 #        # directories for dealing with status
 #        cp -r /home/docker/accounts/status /home/"$USERNAME"/status
-#
-#        # set the home directory of the new user (FTP access)
+##
+        # set the home directory of the new user (FTP access)
         mkdir -p /home/"$USERNAME"/www
 
 #        sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
-#
+##
 #        # create a directory for maintenance switch
 #        mkdir /srv/docker/nginx/html/"$USERNAME"
-#
+##
 #        # add write permission to group over the www directory of the user
 #        chmod g+w -R /home/"$USERNAME"/www
-#
+##
 #        # restart SFTP service (to enable ftp login at user home)
 #        sudo systemctl restart vsftpd
-#
+##
 #        # add account to docker group
 #        sudo usermod -a -G docker "$USERNAME"
-#
+##
 #        # define ssh-login as shell for user account
 #        sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
-#
-#         copy docker-compose files
-#        cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
-#
+##
+#        # copy docker-compose files
+##       cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
+##
 #        # shellcheck disable=SC2129
 #        echo "DOMAIN_NAME=$USERNAME" >> /home/"$USERNAME"/.env
 #        echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/"$USERNAME"/.env
 #        echo "TEMPLATE=$TEMPLATE" >> /home/"$USERNAME"/.env
-#
+##
 #        chmod +x /home/docker/accounts/"$TEMPLATE"/init.sh
 #        /home/docker/accounts/"$TEMPLATE"/init.sh
 
@@ -126,20 +149,31 @@ then
         export PMA_HOSTNAME="${PMA_HOSTNAME}_$HASH_VALUE"
 
         # Get the number of directories in /home
-        number_of_instances=$(ls -l /home | grep -c ^d)
+        # shellcheck disable=SC2010
+        number_of_directories=$(ls -l /home | grep -c ^d)
 
         # Define DB_PORT with the number of directories in /home
-        export DB_PORT=$(( 3306 - 1 + $number_of_instances ))
+        # shellcheck disable=SC2004
+        export DB_PORT=$(( 3306 - 1 + $number_of_directories ))
 
         # Define PHPMYADMIN_PORT with the number of directories in /home
-        export PHPMYADMIN_PORT=$(( 8080 - 1 + $number_of_instances ))
+        # shellcheck disable=SC2004
+        export PHPMYADMIN_PORT=$(( 8080 - 1 + $number_of_directories ))
 
         # Define EQ_PORT with the number of directories in /home
-        export EQ_PORT=$(( 80 - 1 + $number_of_instances ))
+        # shellcheck disable=SC2004
+        export EQ_PORT=$(( 80 - 1 + $number_of_directories ))
 
 
-        bash $script_dir/equal.setup.bash
-        bash $script_dir/equalpress.setup.bash
+        bash "$script_dir"/equal.setup.bash
+
+        if [ "$WITH_SB" = true ]; then
+            bash "$script_dir"/symbiose.setup.bash
+        fi
+
+        if [ "$WITH_WP" = true ]; then
+            bash "$script_dir"/equalpress.setup.bash
+        fi
 
         print_color "magenta" "Script setup completed successfully!"
     fi
