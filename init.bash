@@ -7,11 +7,11 @@ if [ -z "$1" ]
 then
     export INSTANCE_NUMBER=""
     export CONTAINER_NAME="equalpress"
-    export PHPMYADMIN_SERVICE_NAME="phpmyadmin"
+    export PMA_HOSTNAME="phpmyadmin"
 else
     export INSTANCE_NUMBER="$1"
     export CONTAINER_NAME="equalpress$1"
-    export PHPMYADMIN_SERVICE_NAME="phpmyadmin$1"
+    export PMA_HOSTNAME="phpmyadmin$1"
 fi
 
 # Function to print colored text
@@ -120,10 +120,10 @@ then
         HASH_VALUE=$(printf "%.5s" "$(echo "$USERNAME" | md5sum | cut -d ' ' -f 1)")
 
         # Define DB_HOST with the hash value
-        export DB_HOST="db_$HASH_VALUE"
+        export DB_HOSTNAME="db_$HASH_VALUE"
 
         # Rename PHPMYADMIN_SERVICE_NAME with the hash value
-        export PHPMYADMIN_SERVICE_NAME="${PHPMYADMIN_SERVICE_NAME}_$HASH_VALUE"
+        export PMA_HOSTNAME="${PMA_HOSTNAME}_$HASH_VALUE"
 
         # Get the number of directories in /home
         number_of_instances=$(ls -l /home | grep -c ^d)
