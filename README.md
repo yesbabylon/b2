@@ -22,6 +22,18 @@ Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PAS
 Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du testing lancer ``test_eQulPress_multi_instance_setup.bash``
 
 ### init.bash
+
+#### Flags parameters
+
+| Short Flag | Long Flag           | Description      |
+|:----------:|---------------------|------------------|
+| `-n`       | `--instance_number` | Instance number  |
+| `-w`       | `--with_wp`         | Install WordPress|
+| `-s`       | `--with_sb`         | Install Symbiose |
+
+#### Déroulement du script
+
+
 1. **Chargement des Variables d'Environnement depuis un fichier .env**
    - Téléchargement du fichier `.env` depuis le repo GitHub `yesbabylon/b2` dans le répertoire courant, si le fichier n'existe pas.
    - Initialisation des variables d'environnement à partir du fichier `.env`.
