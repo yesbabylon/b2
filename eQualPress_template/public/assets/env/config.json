@@ -1,7 +1,7 @@
 {
 "production": true,
 "parent_domain": {USERNAME},
-"backend_url": "http://{USERNAME}:{EQ_PORT}",
+"backend_url": "http://{USERNAME}:{EQ_PORT}/equal.php",
 "rest_api_url": "http://{USERNAME}:{EQ_PORT}/",
 "lang": "en",
 "locale": "en",
