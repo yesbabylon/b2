@@ -72,41 +72,41 @@ then
     else
         if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit 1; fi
 
-#        # create a new user
-#        adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
-#        echo "$USERNAME:$PASSWORD" | sudo chpasswd
-##
-#        # directories for backup and replication
-#        mkdir /home/"$USERNAME"/import
-#        mkdir /home/"$USERNAME"/export
-##
-#        # directories for dealing with status
-#        cp -r /home/docker/accounts/status /home/"$USERNAME"/status
-##
+        # create a new user
+        adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
+        echo "$USERNAME:$PASSWORD" | sudo chpasswd
+
+        # directories for backup and replication
+        mkdir /home/"$USERNAME"/import
+        mkdir /home/"$USERNAME"/export
+
+        # directories for dealing with status
+        cp -r /home/docker/accounts/status /home/"$USERNAME"/status
+
         # set the home directory of the new user (FTP access)
         mkdir -p /home/"$USERNAME"/www
 
-#        sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
-##
-#        # create a directory for maintenance switch
-#        mkdir /srv/docker/nginx/html/"$USERNAME"
-##
-#        # add write permission to group over the www directory of the user
-#        chmod g+w -R /home/"$USERNAME"/www
-##
-#        # restart SFTP service (to enable ftp login at user home)
-#        sudo systemctl restart vsftpd
-##
-#        # add account to docker group
-#        sudo usermod -a -G docker "$USERNAME"
-##
-#        # define ssh-login as shell for user account
-#        sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
-##
-#        # copy docker-compose files
-##       cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
-##
-#        # shellcheck disable=SC2129
+        sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
+
+        # create a directory for maintenance switch
+        mkdir /srv/docker/nginx/html/"$USERNAME"
+
+        # add write permission to group over the www directory of the user
+        chmod g+w -R /home/"$USERNAME"/www
+
+        # restart SFTP service (to enable ftp login at user home)
+        sudo systemctl restart vsftpd
+
+        # add account to docker group
+        sudo usermod -a -G docker "$USERNAME"
+
+        # define ssh-login as shell for user account
+        sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
+
+        # copy docker-compose files
+       cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
+
+        # shellcheck disable=SC2129
 #        echo "DOMAIN_NAME=$USERNAME" >> /home/"$USERNAME"/.env
 #        echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/"$USERNAME"/.env
 #        echo "TEMPLATE=$TEMPLATE" >> /home/"$USERNAME"/.env
@@ -157,16 +157,15 @@ then
         # shellcheck disable=SC2004
         export EQ_PORT=$(( 80 - 1 + $number_of_directories ))
 
-
         bash "$script_dir"/equal.setup.bash
 
-        if [ "$WITH_SB" = true ]; then
-            bash "$script_dir"/symbiose.setup.bash
-        fi
-
-        if [ "$WITH_WP" = true ]; then
-            bash "$script_dir"/equalpress.setup.bash
-        fi
+#        if [ "$WITH_SB" = true ]; then
+#            bash "$script_dir"/symbiose.setup.bash
+#        fi
+#
+#        if [ "$WITH_WP" = true ]; then
+#            bash "$script_dir"/equalpress.setup.bash
+#        fi
 
         print_color "magenta" "Script setup completed successfully!"
     fi
