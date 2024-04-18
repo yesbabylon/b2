@@ -30,7 +30,7 @@ replace_placeholders() {
     # Replace placeholders with computed values
     for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_HOSTNAME CONTAINER_NAME PMA_HOSTNAME; do
         value=$(eval echo \$$key)
-        for file in docker-compose.yml config/config.json public/assets/env/config.json; do
+        for file in docker-compose.yml; do
             # Replace placeholder with value
             sed -i "s/{$key}/$value/g" "/home/$USERNAME/www/$file"
         done
@@ -39,7 +39,7 @@ replace_placeholders() {
     # Read .env file and replace placeholders with values
     # shellcheck disable=SC2154
     while IFS='=' read -r key value; do
-        for file in docker-compose.yml config/config.json public/assets/env/config.json; do
+        for file in docker-compose.yml; do
             # Replace placeholder with value
             sed -i "s/{$key}/$value/g" "/home/$USERNAME/www/$file"
         done
