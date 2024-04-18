@@ -22,6 +22,28 @@ print_color() {
 print_color "yellow" "Get config files from the repository..."
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
 
+replace_placeholders() {
+    # Replace placeholders with computed values
+    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME; do
+        value=$(eval echo \$$key)
+        for file in docker-compose.yml; do
+            # Replace placeholder with value
+            sed -i "s/{$key}/$value/g" "$file"
+        done
+    done
+
+    # Read .env file and replace placeholders with values
+    # shellcheck disable=SC2154
+    while IFS='=' read -r key value; do
+        for file in docker-compose.yml; do
+            # Replace placeholder with value
+            sed -i "s/{$key}/$value/g" "$file"
+        done
+    done < "$script_dir"/.env
+}
+
+replace_placeholders
+
 
 print_color "yellow" "Building and starting the containers..."
 cd /home/"$USERNAME"/www || exit
