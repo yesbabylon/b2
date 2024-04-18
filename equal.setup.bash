@@ -26,7 +26,7 @@ print_color "yellow" "Replacing placeholders in files..."
 
 replace_placeholders() {
     # Replace placeholders with computed values
-    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_HOSTNAME PMA_HOSTNAME; do
+    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME; do
         value=$(eval echo \$$key)
         for file in docker-compose.yml; do
             # Replace placeholder with value
