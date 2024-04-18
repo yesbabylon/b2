@@ -64,6 +64,7 @@ sleep 10
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
 docker exec -ti "$USERNAME" bash -c "
+apt install wget
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
 sh equal.run --do=init_db
