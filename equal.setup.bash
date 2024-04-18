@@ -50,6 +50,8 @@ cd /home/"$USERNAME"/www || exit
 docker-compose build
 docker-compose up -d
 
+print_color "yellow" "Copy environnement file inside www folder for repace config placeholders"
+cp ../.env .
 
 print_color "yellow" "Replacing placeholders in files..."
 docker exec -ti "$USERNAME" bash -c "
@@ -79,6 +81,9 @@ replace_placeholders() {
 
 replace_placeholders
 "
+
+print_color "yellow" "Removing .env file"
+rm .env
 
 print_color "yellow" "Waiting 10 seconds for the containers starting..."
 sleep 10
