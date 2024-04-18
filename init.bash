@@ -30,13 +30,6 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-# Set container name based on instance number
-if [ -z "$INSTANCE_NUMBER" ]; then
-    export CONTAINER_NAME="equalpress"
-else
-    export CONTAINER_NAME="equalpress$INSTANCE_NUMBER"
-fi
-
 # Function to print colored text
 print_color() {
     local color="$1"
