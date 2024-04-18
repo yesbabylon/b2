@@ -104,7 +104,7 @@ then
         sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
 
         # copy docker-compose files
-       cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
+        # cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
 
         # shellcheck disable=SC2129
 #        echo "DOMAIN_NAME=$USERNAME" >> /home/"$USERNAME"/.env
