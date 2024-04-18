@@ -76,7 +76,7 @@ replace_placeholders() {
             # Replace placeholder with value
             sed -i "s/{$key}/$value/g" "$file"
         done
-    done < "$script_dir"/.env
+    done < .env
 }
 
 replace_placeholders
