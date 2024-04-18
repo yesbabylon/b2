@@ -15,18 +15,23 @@ print_color() {
     esac
 }
 
+cd /home/"$USERNAME"/www || exit
+
 print_color "yellow" "Clone of Equal started..."
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git /home/"$USERNAME"/www
 print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Get config files from the repository..."
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O /home/"$USERNAME"/www/config/config.json
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O /home/"$USERNAME"/www/public/assets/env/config.json
 
+print_color "yellow" "Replacing placeholders in files..."
 replace_placeholders() {
     # Replace placeholders with computed values
     for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME; do
         value=$(eval echo \$$key)
-        for file in docker-compose.yml; do
+        for file in docker-compose.yml config/config.json public/assets/env/config.json; do
             # Replace placeholder with value
             sed -i "s/{$key}/$value/g" "$file"
         done
@@ -35,7 +40,7 @@ replace_placeholders() {
     # Read .env file and replace placeholders with values
     # shellcheck disable=SC2154
     while IFS='=' read -r key value; do
-        for file in docker-compose.yml; do
+        for file in docker-compose.yml config/config.json public/assets/env/config.json; do
             # Replace placeholder with value
             sed -i "s/{$key}/$value/g" "$file"
         done
@@ -50,44 +55,6 @@ cd /home/"$USERNAME"/www || exit
 
 docker-compose build
 docker-compose up -d
-
-print_color "yellow" "Copy environnement file inside www folder for repace config placeholders"
-cp ../.env .env
-
-print_color "yellow" "Replacing placeholders in files..."
-docker exec -ti "$USERNAME" bash -c "
-set -o allexport
-source .env
-set +o allexport
-apt update
-apt install wget
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
-replace_placeholders() {
-    # Replace placeholders with computed values
-    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME; do
-        value=$(eval echo \$$key)
-        for file in config/config.json public/assets/env/config.json; do
-            # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "$file"
-        done
-    done
-
-    # Read .env file and replace placeholders with values
-    # shellcheck disable=SC2154
-    while IFS='=' read -r key value; do
-        for file in config/config.json public/assets/env/config.json; do
-            # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "$file"
-        done
-    done < .env
-}
-
-replace_placeholders
-"
-
-print_color "yellow" "Removing .env file"
-rm .env
 
 print_color "yellow" "Waiting 10 seconds for the containers starting..."
 sleep 10
