@@ -47,6 +47,10 @@ replace_placeholders
 
 print_color "yellow" "Building and starting the containers..."
 cd /home/"$USERNAME"/www || exit
+
+# clone eQualFramework - remove in the futur
+git clone -b dev-2.0 https://github.com/equalframework/equal.git
+
 docker-compose build
 docker-compose up -d
 
