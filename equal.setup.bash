@@ -52,10 +52,13 @@ docker-compose build
 docker-compose up -d
 
 print_color "yellow" "Copy environnement file inside www folder for repace config placeholders"
-cp ../.env .
+cp ../.env .env
 
 print_color "yellow" "Replacing placeholders in files..."
 docker exec -ti "$USERNAME" bash -c "
+set -o allexport
+source .env
+set +o allexport
 apt update
 apt install wget
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
