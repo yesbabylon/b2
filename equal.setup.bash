@@ -15,9 +15,9 @@ print_color() {
     esac
 }
 
-# print_color "yellow" "Clone of Equal started..."
-# yes | git clone -b "$EQ_VERSION" https://github.com/equalframework/equal.git /home/"$USERNAME"/www
-# print_color "cyan" "Clone of eQual framework done."
+print_color "yellow" "Clone of Equal started..."
+yes | git clone -b "$EQ_VERSION" https://github.com/equalframework/equal.git /home/"$USERNAME"/www
+print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Get config files from the repository..."
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
@@ -47,9 +47,6 @@ replace_placeholders
 
 print_color "yellow" "Building and starting the containers..."
 cd /home/"$USERNAME"/www || exit
-
-# clone eQualFramework - remove in the futur
-git clone -b dev-2.0 https://github.com/equalframework/equal.git
 
 docker-compose build
 docker-compose up -d
