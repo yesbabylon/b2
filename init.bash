@@ -132,6 +132,8 @@ then
             print_color "cyan" "Docker OK"
         fi
 
+        export DB_NAME="equal"
+
         # Define a hash value with the first 5 characters of the md5sum of the username
         HASH_VALUE=$(printf "%.5s" "$(echo "$USERNAME" | md5sum | cut -d ' ' -f 1)")
 
