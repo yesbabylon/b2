@@ -56,8 +56,8 @@ cd /home/"$USERNAME"/www || exit
 docker-compose build
 docker-compose up -d
 
-print_color "yellow" "Waiting 10 seconds for the containers starting..."
-sleep 10
+print_color "yellow" "Waiting 15 seconds for the containers starting..."
+sleep 15
 
 # print_color "yellow" "Move config/config.json file"
 # print_color "yellow" "Move public/assets/env/config.json file"
