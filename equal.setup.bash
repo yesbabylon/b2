@@ -21,8 +21,6 @@ print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Get config files from the repository..."
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O /home/"$USERNAME"/www/config/config.json
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O /home/"$USERNAME"/www/public/assets/env/config.json
 
 print_color "yellow" "Replacing placeholders in files..."
 
@@ -66,6 +64,8 @@ sleep 10
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
 docker exec -ti "$USERNAME" bash -c "
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
 sh equal.run --do=init_db
 sh equal.run --do=init_package --package=core --import=true
 "
