@@ -41,7 +41,7 @@ replace_placeholders() {
         value=$(eval echo \$$key)
         for file in docker-compose.yml config/config.json public/assets/env/config.json; do
             # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "/home/$USERNAME/www/$file"
+            sed -i "s/{$key}/$value/g" "$file"
         done
     done
 
@@ -50,7 +50,7 @@ replace_placeholders() {
     while IFS='=' read -r key value; do
         for file in docker-compose.yml config/config.json public/assets/env/config.json; do
             # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "/home/$USERNAME/www/$file"
+            sed -i "s/{$key}/$value/g" "$file"
         done
     done < "$script_dir"/.env
 }
