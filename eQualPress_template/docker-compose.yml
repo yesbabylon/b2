@@ -1,5 +1,4 @@
-version: '3'
-name: equal-{USERNAME}
+version: '3.8'
 services:
   equal_srv:
     image: equalframework/equal
