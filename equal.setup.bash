@@ -68,7 +68,7 @@ apt update
 apt install wget
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
-sh equal.run --do=init_db
-sh equal.run --do=init_package --package=core --import=true
+sh ./equal.run --do=init_db
+sh ./equal.run --do=init_package --package=core --import=true
 "
 sleep 15
