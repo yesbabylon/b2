@@ -18,7 +18,7 @@ print_color() {
 cd /home/"$USERNAME"/www || exit
 
 print_color "yellow" "Clone of Equal started..."
-yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git /home/"$USERNAME"/www
+yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git /home/"$USERNAME"/www/.
 print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Get config files from the repository..."
