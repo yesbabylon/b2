@@ -15,6 +15,11 @@ print_color() {
     esac
 }
 
+# load .env variables
+set -o allexport
+source .env
+set +o allexport
+
 # Replace the .htaccess file
 print_color "yellow" "Downloading and replacing the .htaccess file..."
 docker exec -ti "$USERNAME" bash -c "
