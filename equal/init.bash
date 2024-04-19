@@ -156,12 +156,16 @@ then
         bash "$script_dir"/equal.setup.bash
 
         if [ "$WITH_SB" = true ]; then
+            print_color "yellow" "Installation of Symbiose."
             bash "$script_dir"/symbiose.setup.bash
+            print_color "yellow" "End of Symbiose installation."
         fi
 
         if [ "$WITH_WP" = true ]; then
+            print_color "yellow" "Installation of eQualPress."
             wget https://raw.githubusercontent.com/eQualPress/equalpress/main/install.sh -O /home/"$USERNAME"/install.sh
             sh /home/"$USERNAME"/install.sh
+            print_color "yellow" "End of eQualPress installation"
         fi
 
         print_color "magenta" "Script setup completed successfully!"
