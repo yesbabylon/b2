@@ -38,6 +38,8 @@ services:
       - MYSQL_ROOT_PASSWORD={APP_PASSWORD}
     networks:
       - proxynet
+    volumes:
+      - db_data:/var/lib/mysql
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: {PMA_HOSTNAME}
