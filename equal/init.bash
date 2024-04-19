@@ -62,17 +62,6 @@ fi
 if [ -f .env ]
 then
     print_color "yellow" "Load .env file..."
-
-    # load .env variables
-    set -o allexport
-    source .env
-    set +o allexport
-
-    print_color "yellow" "Add variables to .env file"
-    echo "DOMAIN_NAME=$USERNAME" >> /home/$USERNAME/.env
-    echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
-    
-    print_color "yellow" "Reload .env file..."
     set -o allexport
     source .env
     set +o allexport
