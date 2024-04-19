@@ -40,6 +40,8 @@ replace_placeholders_for_docker_compose() {
 
 replace_placeholders_for_docker_compose
 
+docker-compose build
+docker-compose up -d
 
 
 cd /home/"$USERNAME"/www || exit
@@ -79,8 +81,6 @@ replace_placeholders
 print_color "yellow" "Building and starting the containers..."
 cd /home/"$USERNAME"/www || exit
 
-docker-compose build
-docker-compose up -d
 
 print_color "yellow" "Waiting 15 seconds for the containers starting..."
 sleep 15
