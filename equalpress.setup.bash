@@ -15,9 +15,6 @@ print_color() {
     esac
 }
 
-# shellcheck disable=SC2164
-cd /home/"$USERNAME"/www
-
 # Replace the .htaccess file
 print_color "yellow" "Downloading and replacing the .htaccess file..."
 docker exec -ti "$USERNAME" bash -c "
