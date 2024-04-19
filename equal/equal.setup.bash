@@ -16,7 +16,7 @@ print_color() {
 }
 
 print_color "yellow" "Get docker-compose.yml file"
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/equal/docker-compose.yml -O /home/"$USERNAME"/docker-compose.yml
+cp /home/b2/equal/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
 replace_placeholders_for_docker_compose() {
     # Replace placeholders with computed values
@@ -66,44 +66,6 @@ docker exec -ti "$USERNAME" bash -c "
 
 print_color "yellow" "save public/assets/env/config.json file."
 docker exec -ti "$USERNAME" bash -c 'echo "$(./equal.run --get=envinfo-temp)" > public/assets/env/config.json'
-# wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
-# docker exec -ti $USERNAME bash -c "
-# wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
-# "
-
-# cd /home/"$USERNAME"/www || exit
-# 
-# print_color "yellow" "Waiting 10 seconds for being sure than the volume is synced with the filesystem"
-# sleep 10
-
-# print_color "yellow" "Replacing placeholders in files..."
-# replace_config_placeholders() {
-#     # Replace placeholders with computed values
-#     for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME; do
-#         value=$(eval echo \$$key)
-#         for file in public/assets/env/config.json; do
-#             # Replace placeholder with value
-#             sed -i "s/{$key}/$value/g" "$file"
-#         done
-#     done
-#
-#    # Read .env file and replace placeholders with values
-#    # shellcheck disable=SC2154
-#    while IFS='=' read -r key value; do
-#        for file in public/assets/env/config.json; do
-#            # Replace placeholder with value
-#            sed -i "s/{$key}/$value/g" "$file"
-#        done
-#    done < "$script_dir"/.env
-# }
-#
-# replace_config_placeholders
-
-# print_color "yellow" "Move config/config.json file"
-# print_color "yellow" "Move public/assets/env/config.json file"
-# docker exec -ti "$USERNAME" bash -c "
-# sh ./equal.run --get=envinfo-temp 
-# "
 
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
