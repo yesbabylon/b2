@@ -16,7 +16,7 @@ print_color() {
 }
 
 print_color "yellow" "Get docker-compose.yml file"
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/docker-compose.yml
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/equal/docker-compose.yml -O /home/"$USERNAME"/docker-compose.yml
 
 replace_placeholders_for_docker_compose() {
     # Replace placeholders with computed values
