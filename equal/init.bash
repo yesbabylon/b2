@@ -159,7 +159,8 @@ then
 #        fi
 #
 #        if [ "$WITH_WP" = true ]; then
-#            bash "$script_dir"/equalpress.setup.bash
+#            wget https://raw.githubusercontent.com/eQualPress/equalpress/main/install.sh -O "$script_dir"/install.sh
+#            sh "$script_dir"/install.sh
 #        fi
 
         print_color "magenta" "Script setup completed successfully!"
