@@ -58,7 +58,7 @@ then
     print_color "magenta" "Welcome to eQualpress setup script!"
     print_color "yellow" "Load .env file..."
 
-    # Add viriables to .env file
+    print_color "yellow" "Add viriables to .env file"
     echo "DOMAIN_NAME=$USERNAME" >> /home/$USERNAME/.env
     echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
     echo "TEMPLATE=$TEMPLATE" >> /home/$USERNAME/.env
