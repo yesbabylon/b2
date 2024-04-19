@@ -63,6 +63,10 @@ then
     source .env
     set +o allexport
 
+    echo "DOMAIN_NAME=$USERNAME" >> /home/$USERNAME/.env
+    echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
+    echo "TEMPLATE=$TEMPLATE" >> /home/$USERNAME/.env
+
     if [ -z "$USERNAME" ]
     then
         echo "A file named .env is expected and should contain following vars definition:"
