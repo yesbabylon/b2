@@ -62,8 +62,8 @@ sleep 15
 # print_color "yellow" "Move config/config.json file"
 # print_color "yellow" "Move public/assets/env/config.json file"
 # docker exec -ti "$USERNAME" bash -c "
-# sh ./equal.run --get=envinfo-temp 
 # sh ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=$DB_PORT --db_name=$DB_NAME --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME --store=true
+# sh ./equal.run --get=envinfo-temp 
 # "
 
 print_color "yellow" "Init eQual Framework database and core package"
