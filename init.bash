@@ -118,8 +118,6 @@ then
 #        chmod +x /home/docker/accounts/"$TEMPLATE"/init.sh
 #        /home/docker/accounts/"$TEMPLATE"/init.sh
 
-        cd /home/"$USERNAME"/www || exit
-
         print_color "yellow" "Check if Git is installed..."
         if ! command -v git &> /dev/null; then
             print_color "red" "Git is not installed. Please install Git before running this script."
