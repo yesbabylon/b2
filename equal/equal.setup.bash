@@ -64,11 +64,12 @@ docker exec -ti "$USERNAME" bash -c "
  sh ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=$DB_NAME --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME --store=true
 "
 
-print_color "yellow" "Get cpublic/assets/env/config.json file from the repository..."
+print_color "yellow" "save public/assets/env/config.json file."
+docker exec -ti "$USERNAME" bash -c 'echo "$(./equal.run --get=envinfo-temp)" > public/assets/env/config.json'
 # wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O config/config.json
-docker exec -ti $USERNAME bash -c "
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
-"
+# docker exec -ti $USERNAME bash -c "
+# wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
+# "
 
 cd /home/"$USERNAME"/www || exit
 
