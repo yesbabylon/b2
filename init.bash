@@ -46,7 +46,11 @@ print_color() {
         *) echo "Invalid color" >&2 ;;
     esac
 }
-# if .env file is missing, download it
+
+print_color "magenta" "Welcome to eQualpress setup script!"
+
+print_color "yello" "Check if .env file exists"
+
 if [ ! -f .env ]
 then
     print_color "yellow" "Downloading .env file..."
@@ -55,7 +59,6 @@ fi
 
 if [ -f .env ]
 then
-    print_color "magenta" "Welcome to eQualpress setup script!"
     print_color "yellow" "Load .env file..."
 
     # load .env variables
@@ -67,11 +70,10 @@ then
     echo "DOMAIN_NAME=$USERNAME" >> /home/$USERNAME/.env
     echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
     
-    # load .env variables
+    print_color "yellow" "Reload .env file..."
     set -o allexport
     source .env
     set +o allexport
-
 
     if [ -z "$USERNAME" ]
     then
@@ -81,35 +83,35 @@ then
     else
         if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit 1; fi
 
-        # create a new user
+        print_color "yellow" "Create a new user"
         adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
         echo "$USERNAME:$PASSWORD" | sudo chpasswd
 
-        # directories for backup and replication
+        print_color "yellow" "Create directories for backup and replication"
         mkdir /home/"$USERNAME"/import
         mkdir /home/"$USERNAME"/export
 
-        # directories for dealing with status
+        print_color "yellow" "directories for dealing with status"
         cp -r /home/docker/accounts/status /home/"$USERNAME"/status
 
-        # set the home directory of the new user (FTP access)
+        print_color "yellow" "Set the home directory of the new user (FTP access)"
         mkdir -p /home/"$USERNAME"/www
 
         sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
 
-        # create a directory for maintenance switch
+        print_color "yellow" "Create a directory for maintenance switch"
         mkdir /srv/docker/nginx/html/"$USERNAME"
 
-        # add write permission to group over the www directory of the user
+        print_color "yellow" "Add write permission to group over the www directory of the user"
         chmod g+w -R /home/"$USERNAME"/www
 
-        # restart SFTP service (to enable ftp login at user home)
+        print_color "yellow" "Restart SFTP service (to enable ftp login at user home)"
         sudo systemctl restart vsftpd
 
-        # add account to docker group
+        print_color "yellow" "Add account to docker group"
         sudo usermod -a -G docker "$USERNAME"
 
-        # define ssh-login as shell for user account
+        print_color "yellow" "Define ssh-login as shell for user account"
         sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
 
         print_color "yellow" "Check if Git is installed..."
@@ -130,28 +132,28 @@ then
 
         export DB_NAME="equal"
 
-        # Define a hash value with the first 5 characters of the md5sum of the username
+        print_color "yellow" "Define a hash value with the first 5 characters of the md5sum of the username"
         HASH_VALUE=$(printf "%.5s" "$(echo "$USERNAME" | md5sum | cut -d ' ' -f 1)")
 
-        # Define DB_HOST with the hash value
+        print_color "yellow" "Define DB_HOST with the hash value"
         export DB_HOSTNAME="db_$HASH_VALUE"
 
-        # Rename PHPMYADMIN_SERVICE_NAME with the hash value
+        print_color "yellow" "Rename PHPMYADMIN_SERVICE_NAME with the hash value"
         export PMA_HOSTNAME="${PMA_HOSTNAME}_$HASH_VALUE"
 
-        # Get the number of directories in /home
+        print_color "yellow" "Get the number of directories in /home"
         # shellcheck disable=SC2010
         number_of_directories=$(ls -l /home | grep -c ^d)
 
-        # Define DB_PORT with the number of directories in /home
+        print_color "yellow" "Define DB_PORT with the number of directories in /home"
         # shellcheck disable=SC2004
         export DB_PORT=$(( 3306 - 1 + $number_of_directories ))
 
-        # Define PHPMYADMIN_PORT with the number of directories in /home
+        print_color "yellow" "Define PHPMYADMIN_PORT with the number of directories in /home"
         # shellcheck disable=SC2004
         export PHPMYADMIN_PORT=$(( 8080 - 1 + $number_of_directories ))
 
-        # Define EQ_PORT with the number of directories in /home
+        print_color "yellow" "Define EQ_PORT with the number of directories in /home"
         # shellcheck disable=SC2004
         export EQ_PORT=$(( 80 - 1 + $number_of_directories ))
 
