@@ -83,6 +83,7 @@ then
         echo "$USERNAME:$PASSWORD" | sudo chpasswd
 
         print_color "yellow" "Create directories for backup and replication"
+        mkdir /home/"$USERNAME"
         mkdir /home/"$USERNAME"/import
         mkdir /home/"$USERNAME"/export
 
