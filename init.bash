@@ -75,10 +75,9 @@ then
 
     if [ -z "$USERNAME" ]
     then
-        echo "A file named .env is expected and should contain following vars definition:"
-        echo "USERNAME={domain-name-as-user-name}"
-        echo "PASSWORD={user-password}"
-        echo "TEMPLATE={account-template}"
+        print_color "red" "A file named .env is expected and should contain following vars definition:"
+        print_color "red" "USERNAME={domain-name-as-user-name}"
+        print_color "red" "PASSWORD={user-password}"
     else
         if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit 1; fi
 
