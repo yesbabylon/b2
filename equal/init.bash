@@ -5,8 +5,8 @@ export script_dir=$(pwd)
 
 # Default values
 INSTANCE_NUMBER=""
-WITH_WP=false
-WITH_SB=false
+export WITH_WP=false
+export WITH_SB=false
 export PMA_HOSTNAME="phpmyadmin"
 
 flags_help() {
@@ -22,8 +22,8 @@ flags_help() {
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --instance_number|-n ) INSTANCE_NUMBER="$2"; shift ;;
-        --with_wp|-w ) WITH_WP=true ;;
-        --with_sb|-s ) WITH_SB=true ;;
+        --with_wp|-w ) export WITH_WP=true ;;
+        --with_sb|-s ) export WITH_SB=true ;;
         --help|-h ) flags_help ;;
         * ) flags_help ; exit 1 ;;
     esac
