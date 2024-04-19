@@ -72,7 +72,11 @@ then
         print_color "bgred" "USERNAME={domain-name-as-user-name}"
         print_color "bgred" "PASSWORD={user-password}"
     else
-        if [ ${#USERNAME} -gt 32 ]; then print_color "bgred" "Error: username must be max 32 chars long" ; exit 1; fi
+        if [ ${#USERNAME} -gt 32 ]
+        then 
+            print_color "bgred" "Error: username must be max 32 chars long"
+            exit 1
+        fi
 
         print_color "yellow" "Create a new user"
         adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
