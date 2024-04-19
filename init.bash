@@ -83,7 +83,7 @@ then
         print_color "bgred" "USERNAME={domain-name-as-user-name}"
         print_color "bgred" "PASSWORD={user-password}"
     else
-        if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit 1; fi
+        if [ ${#USERNAME} -gt 32 ]; then print_color "bgred" "Error: username must be max 32 chars long" ; exit 1; fi
 
         print_color "yellow" "Create a new user"
         adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
@@ -118,18 +118,18 @@ then
 
         print_color "yellow" "Check if Git is installed..."
         if ! command -v git &> /dev/null; then
-            print_color "red" "Git is not installed. Please install Git before running this script."
+            print_color "bgred" "Git is not installed. Please install Git before running this script."
             exit 1
         else
-            print_color "cyan" "Git OK"
+            print_color "bggreen" "Git OK"
         fi
 
         print_color "yellow" "Check if Docker is installed..."
         if ! command -v docker &> /dev/null; then
-            print_color "red" "Docker is not installed. Please install Docker before running this script."
+            print_color "bgred" "Docker is not installed. Please install Docker before running this script."
             exit 1
         else
-            print_color "cyan" "Docker OK"
+            print_color "bggreen" "Docker OK"
         fi
 
         export DB_NAME="equal"
