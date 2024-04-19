@@ -35,6 +35,8 @@ mv public/index.php public/equal.php
 # shellcheck disable=SC2010
 EQ_PORT=$(( 80 - 1 + $(ls -l /home | grep -c ^d) ))
 
+DB_NAME="equal"
+
 print_color "green" "Downloading, installing and setting up WordPress"
 # 1. Download WP-CLI
 # 2. Make the downloaded WP-CLI executable
