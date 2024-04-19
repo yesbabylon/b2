@@ -109,17 +109,6 @@ then
         # define ssh-login as shell for user account
         sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
 
-        # copy docker-compose files
-        # cp -r /home/docker/templates/"$TEMPLATE"/. /home/"$USERNAME"/
-
-        # shellcheck disable=SC2129
-#        echo "DOMAIN_NAME=$USERNAME" >> /home/"$USERNAME"/.env
-#        echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/"$USERNAME"/.env
-#        echo "TEMPLATE=$TEMPLATE" >> /home/"$USERNAME"/.env
-##
-#        chmod +x /home/docker/accounts/"$TEMPLATE"/init.sh
-#        /home/docker/accounts/"$TEMPLATE"/init.sh
-
         print_color "yellow" "Check if Git is installed..."
         if ! command -v git &> /dev/null; then
             print_color "red" "Git is not installed. Please install Git before running this script."
