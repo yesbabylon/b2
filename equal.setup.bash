@@ -15,6 +15,33 @@ print_color() {
     esac
 }
 
+print_color "yellow" "Get docker-compose.yml file"
+wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
+
+replace_placeholders_for_docker_compose() {
+    # Replace placeholders with computed values
+    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME DOMAIN_NAME DOMAIN_CONTACT; do
+        value=$(eval echo \$$key)
+        for file in docker-compose.yml; do
+            # Replace placeholder with value
+            sed -i "s/{$key}/$value/g" "$file"
+        done
+    done
+
+    # Read .env file and replace placeholders with values
+    # shellcheck disable=SC2154
+    while IFS='=' read -r key value; do
+        for file in docker-compose.yml; do
+            # Replace placeholder with value
+            sed -i "s/{$key}/$value/g" "$file"
+        done
+    done < "$script_dir"/.env
+}
+
+replace_placeholders_for_docker_compose
+
+
+
 cd /home/"$USERNAME"/www || exit
 
 print_color "yellow" "Clone of Equal started..."
@@ -22,7 +49,6 @@ yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Get config files from the repository..."
-wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/docker-compose.yml -O /home/"$USERNAME"/www/docker-compose.yml
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/config/config.json -O /home/"$USERNAME"/www/config/config.json
 wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O /home/"$USERNAME"/www/public/assets/env/config.json
 
