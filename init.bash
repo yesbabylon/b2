@@ -43,6 +43,8 @@ print_color() {
         "magenta") echo -e "\033[1;35m$text\033[0m" ;;
         "cyan") echo -e "\033[1;36m$text\033[0m" ;;
         "white") echo -e "\033[1;37m$text\033[0m" ;;
+        "bgred") echo -e "\033[1;37;41m$text\033[0m" ;;
+        "bggreen") echo -e "\033[1;37;42m$text\033[0m" ;;
         *) echo "Invalid color" >&2 ;;
     esac
 }
@@ -77,9 +79,9 @@ then
 
     if [ -z "$USERNAME" ]
     then
-        print_color "red" "A file named .env is expected and should contain following vars definition:"
-        print_color "red" "USERNAME={domain-name-as-user-name}"
-        print_color "red" "PASSWORD={user-password}"
+        print_color "bgred" "A file named .env is expected and should contain following vars definition:"
+        print_color "bgred" "USERNAME={domain-name-as-user-name}"
+        print_color "bgred" "PASSWORD={user-password}"
     else
         if [ ${#USERNAME} -gt 32 ]; then echo "Error: username must be max 32 chars long" ; exit 1; fi
 
@@ -170,5 +172,5 @@ then
         print_color "magenta" "Script setup completed successfully!"
     fi
 else
-    print_color "red" ".env file is missing"
+    print_color "bgred" ".env file is missing"
 fi
