@@ -7,7 +7,7 @@ services:
     ports:
       - "{EQ_PORT}:80"
     volumes:
-      - www/:/var/www/html
+      - www/.:/var/www/html
     extra_hosts:
       - "{USERNAME}:127.0.0.1"
     hostname: {USERNAME}
