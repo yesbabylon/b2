@@ -71,10 +71,10 @@ docker exec -ti "$USERNAME" bash -c 'echo "$(./equal.run --get=envinfo-temp)" > 
 # wget https://raw.githubusercontent.com/yesbabylon/b2/master/eQualPress_template/public/assets/env/config.json -O public/assets/env/config.json
 # "
 
-cd /home/"$USERNAME"/www || exit
-
-print_color "yellow" "Waiting 10 seconds for being sure than the volume is synced with the filesystem"
-sleep 10
+# cd /home/"$USERNAME"/www || exit
+# 
+# print_color "yellow" "Waiting 10 seconds for being sure than the volume is synced with the filesystem"
+# sleep 10
 
 # print_color "yellow" "Replacing placeholders in files..."
 # replace_config_placeholders() {
