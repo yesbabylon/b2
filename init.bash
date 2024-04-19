@@ -66,7 +66,6 @@ then
     print_color "yellow" "Add variables to .env file"
     echo "DOMAIN_NAME=$USERNAME" >> /home/$USERNAME/.env
     echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
-    echo "TEMPLATE=$TEMPLATE" >> /home/$USERNAME/.env
     
     # load .env variables
     set -o allexport
