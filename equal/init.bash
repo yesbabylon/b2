@@ -64,7 +64,7 @@ else
 fi
 
 print_color "yellow" "Check if head is installed..."
-if ! command --version head &> /dev/null; then
+if ! type head &> /dev/null; then
     print_color "bgred" "head package is not installed. Please install head before running this script."
     exit 1
 else
