@@ -24,7 +24,7 @@ services:
       - LETSENCRYPT_HOST=${USERNAME}
       - LETSENCRYPT_EMAIL=contact@${USERNAME}
     links:
-      - "mysql"
+      - mysql:db
     networks:
       - proxynet
     depends_on:
@@ -60,7 +60,7 @@ services:
       - MAX_EXECUTION_TIME=3600
       - MEMORY_LIMIT=128M
     links:
-      - "mysql"
+      - mysql:db
     networks:
       - proxynet
     depends_on:
