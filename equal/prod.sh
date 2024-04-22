@@ -45,10 +45,12 @@ while [ "$#" -gt 0 ]; do
 done
 
 # Define the key-value pairs
+# Like this: 
+#    ["KEY1"]="VALUE1"
+#    ["KEY2"]="VALUE2"
+#    ["KEY3"]="VALUE3"
 declare -A env_values=(
-    ["KEY1"]="VALUE1"
-    ["KEY2"]="VALUE2"
-    ["KEY3"]="VALUE3"
+    ["HTTPS_REDIRECT"]="redirect"
 )
 
 # Check if the .env file exists
