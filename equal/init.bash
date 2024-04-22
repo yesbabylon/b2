@@ -117,7 +117,7 @@ print_color "yellow" "Set the home directory of the new user (FTP access)"
 mkdir -p /home/"$USERNAME"/www
 
 print_color "yellow" "Copy the .env file to user directory."
-cp .env /home/"$USERNAME"/www/.env
+cp .env /home/"$USERNAME"/.env
 
 sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
 
