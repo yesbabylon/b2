@@ -53,6 +53,11 @@ print_color "yellow" "Stopping Services and waiting 10 seconds"
 docker-compose stop -d
 sleep 10
 
+print_color "yellow" "Restarting services..."
+docker-compose build
+docker-compose up -d
+sleep 15
+
 print_color "yellow" "Changing .env variable: HTTPS_REDIRECT"
 /root/b2/equal/prod.sh --env-path /home/$USERNAME/.env
 
