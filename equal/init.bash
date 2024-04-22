@@ -166,6 +166,7 @@ then
             chmod +x /home/"$USERNAME"/install.sh
             /home/"$USERNAME"/install.sh
             print_color "yellow" "End of eQualPress installation"
+            rm /home/"$USERNAME"/install.sh
         fi
 
         print_color "magenta" "Script setup completed successfully!"
