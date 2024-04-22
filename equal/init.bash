@@ -4,15 +4,12 @@
 export script_dir=$(pwd)
 
 # Default values
-INSTANCE_NUMBER=""
 export WITH_WP=false
 export WITH_SB=false
-export PMA_HOSTNAME="phpmyadmin"
 
 flags_help() {
     echo "Usage: $0 [options]"
     echo "Options:"
-    echo "  --instance_number, -n <number>  Instance number"
     echo "  --with_wp, -w                   Install WordPress"
     echo "  --with_sb, -s                   Install Symbiose"
     exit 1
@@ -21,7 +18,6 @@ flags_help() {
 # Parse options
 while [[ "$#" -gt 0 ]]; do
     case $1 in
-        --instance_number|-n ) INSTANCE_NUMBER="$2"; shift ;;
         --with_wp|-w ) export WITH_WP=true ;;
         --with_sb|-s ) export WITH_SB=true ;;
         --help|-h ) flags_help ;;
@@ -51,12 +47,33 @@ print_color() {
 
 print_color "magenta" "Welcome to eQualpress setup script!"
 
+print_color "yellow" "Check if Git is installed..."
+if ! command -v git &> /dev/null; then
+    print_color "bgred" "Git is not installed. Please install Git before running this script."
+    exit 1
+else
+    print_color "bggreen" "Git OK"
+fi
+
+print_color "yellow" "Check if Docker is installed..."
+if ! command -v docker &> /dev/null; then
+    print_color "bgred" "Docker is not installed. Please install Docker before running this script."
+    exit 1
+else
+    print_color "bggreen" "Docker OK"
+fi
+
 print_color "yello" "Check if .env file exists"
 
 if [ ! -f .env ]
 then
-    print_color "yellow" "Downloading .env file..."
-    wget https://raw.githubusercontent.com/yesbabylon/b2/master/.env -O .env
+    print_color "bgred" "A file named .env is expected and should contain following vars definition:"
+    print_color "bgred" "USERNAME={domain-name-as-user-name}"
+    print_color "bgred" "APP_USERNAME={user-login}"
+    print_color "bgred" "APP_PASSWORD={user-password}"
+    print_color "bgred" "DB_HOSTNAME={Database hostname}"
+    print_color "bgred" "EQ_PORT={Equal Port}"
+    exit 1
 fi
 
 if [ -f .env ]
@@ -110,24 +127,6 @@ then
         print_color "yellow" "Define ssh-login as shell for user account"
         sudo chsh -s /usr/local/bin/ssh-login "$USERNAME"
 
-        print_color "yellow" "Check if Git is installed..."
-        if ! command -v git &> /dev/null; then
-            print_color "bgred" "Git is not installed. Please install Git before running this script."
-            exit 1
-        else
-            print_color "bggreen" "Git OK"
-        fi
-
-        print_color "yellow" "Check if Docker is installed..."
-        if ! command -v docker &> /dev/null; then
-            print_color "bgred" "Docker is not installed. Please install Docker before running this script."
-            exit 1
-        else
-            print_color "bggreen" "Docker OK"
-        fi
-
-        export DB_NAME="equal"
-
         print_color "yellow" "Define a hash value with the first 5 characters of the md5sum of the username"
         HASH_VALUE=$(printf "%.5s" "$(echo "$USERNAME" | md5sum | cut -d ' ' -f 1)")
 
@@ -135,7 +134,7 @@ then
         export DB_HOSTNAME="db_$HASH_VALUE"
 
         print_color "yellow" "Rename PHPMYADMIN_SERVICE_NAME with the hash value"
-        export PMA_HOSTNAME="${PMA_HOSTNAME}_$HASH_VALUE"
+        export PMA_HOSTNAME="phpmyadmin_$HASH_VALUE"
 
         print_color "yellow" "Get the number of directories in /home"
         # shellcheck disable=SC2010
@@ -147,7 +146,7 @@ then
 
         print_color "yellow" "Define PHPMYADMIN_PORT with the number of directories in /home"
         # shellcheck disable=SC2004
-        export PHPMYADMIN_PORT=$(( 8080 - 1 + $number_of_directories ))
+        export PMA_PORT=$(( 8080 - 1 + $number_of_directories ))
 
         print_color "yellow" "Define EQ_PORT with the number of directories in /home"
         # shellcheck disable=SC2004
@@ -164,7 +163,8 @@ then
         if [ "$WITH_WP" = true ]; then
             print_color "yellow" "Installation of eQualPress."
             wget https://raw.githubusercontent.com/eQualPress/equalpress/main/install.sh -O /home/"$USERNAME"/install.sh
-            sh /home/"$USERNAME"/install.sh
+            chmod +x /home/"$USERNAME"/install.sh
+            /home/"$USERNAME"/install.sh
             print_color "yellow" "End of eQualPress installation"
         fi
 
