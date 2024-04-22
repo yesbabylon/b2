@@ -47,6 +47,13 @@ docker-compose up -d
 print_color "yellow" "Waiting 15 seconds for being sure than containers are correctly initialised."
 sleep 15
 
+print_color "yellow" "Stopping Services and waiting 10 seconds"
+docker-compose stop -d
+sleep 10
+
+print_color "yellow" "Changing .env variable: HTTPS_REDIRECT"
+./root/b2/equal/prod.sh --env-path /home/$USERNAME/.env
+
 # These lines going to be deleted because wget package going to be added inside eQual Dockerfile.
 print_color "yellow" "Installation of wget package"
 docker exec -ti $USERNAME bash -c "
