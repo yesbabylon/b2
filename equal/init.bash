@@ -71,7 +71,7 @@ else
     print_color "bggreen" "head OK"
 fi
 
-print_color "yello" "Check if .env file exists"
+print_color "yellow" "Check if .env file exists"
 
 if [ ! -f .env ]
 then
