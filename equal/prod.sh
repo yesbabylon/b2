@@ -21,7 +21,7 @@ print_color() {
 
 # Function to display usage message
 usage() {
-    print_color "red" "Usage: $0 --env-path <path_to_env_file>"
+    print_color "bgred" "Usage: $0 --env-path <path_to_env_file>"
     exit 1
 }
 
