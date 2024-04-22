@@ -1,4 +1,3 @@
-if [ "$WITH_SB" = true ]; then
   print_color "yellow" "Clone an setup of Symbiose started..."
   docker exec -ti "$USERNAME" bash -c "
   mv packages packages-core
@@ -6,4 +5,3 @@ if [ "$WITH_SB" = true ]; then
   mv packages-core/{core,demo} packages/
   rm -rf packages-core
   "
-fi
