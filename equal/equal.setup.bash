@@ -28,14 +28,14 @@ replace_placeholders_for_docker_compose() {
         done
     done
 
-    # Read .env file and replace placeholders with values
-    # shellcheck disable=SC2154
-    while IFS='=' read -r key value; do
-        for file in docker-compose.yml; do
-            # Replace placeholder with value
-            sed -i "s/{{$key}}/$value/g" "$file"
-        done
-    done < "$script_dir"/.env
+    # # Read .env file and replace placeholders with values
+    # # shellcheck disable=SC2154
+    # while IFS='=' read -r key value; do
+    #    for file in docker-compose.yml; do
+    #        # Replace placeholder with value
+    #        sed -i "s/{$key}/$value/g" "$file"
+    #    done
+    # done < "$script_dir"/.env
 }
 
 replace_placeholders_for_docker_compose
