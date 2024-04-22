@@ -170,6 +170,4 @@ then
 
         print_color "magenta" "Script setup completed successfully!"
     fi
-else
-    print_color "bgred" ".env file is missing"
 fi
