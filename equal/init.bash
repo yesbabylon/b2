@@ -88,7 +88,7 @@ print_color "yellow" "Generate MD5 hash."
 md5_hash=$(echo -n "$(head -c 32 /dev/urandom | xxd -p)" | md5sum | cut -d ' ' -f1)
 
 print_color "yellow" "Replace the CIPHER_KEY value in the .env file."
-sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/"
+sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/" .env
 
 print_color "yellow" "Load .env file..."
 set -o allexport
@@ -115,6 +115,9 @@ cp -r /home/docker/accounts/status /home/"$USERNAME"/status
 
 print_color "yellow" "Set the home directory of the new user (FTP access)"
 mkdir -p /home/"$USERNAME"/www
+
+print_color "yellow" "Copy the .env file to user directory."
+cp .env /home/"$USERNAME"/www/.env
 
 sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
 
