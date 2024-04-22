@@ -16,15 +16,15 @@ print_color() {
 }
 
 print_color "yellow" "Get docker-compose.yml file"
-cp /home/b2/equal/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
+cp /root/b2/equal/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
 replace_placeholders_for_docker_compose() {
     # Replace placeholders with computed values
-    for key in DB_PORT PHPMYADMIN_PORT EQ_PORT DB_NAME DB_HOSTNAME PMA_HOSTNAME DOMAIN_NAME DOMAIN_CONTACT; do
+    for key in EQ_PORT DB_HOSTNAME DB_PORT PMA_HOSTNAME PMA_PORT; do
         value=$(eval echo \$$key)
         for file in docker-compose.yml; do
             # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "$file"
+            sed -i "s/{{$key}}/$value/g" "$file"
         done
     done
 
@@ -33,7 +33,7 @@ replace_placeholders_for_docker_compose() {
     while IFS='=' read -r key value; do
         for file in docker-compose.yml; do
             # Replace placeholder with value
-            sed -i "s/{$key}/$value/g" "$file"
+            sed -i "s/{{$key}}/$value/g" "$file"
         done
     done < "$script_dir"/.env
 }
@@ -47,6 +47,7 @@ docker-compose up -d
 print_color "yellow" "Waiting 15 seconds for being sure than containers are correctly initialised."
 sleep 15
 
+# These lines going to be deleted because wget package going to be added inside eQual Dockerfile.
 print_color "yellow" "Installation of wget package"
 docker exec -ti $USERNAME bash -c "
 apt update
@@ -61,16 +62,17 @@ print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Generation of config/config.json"
 docker exec -ti "$USERNAME" bash -c "
- sh ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=$DB_NAME --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME --store=true
+./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME --store=true
 "
 
+# These lines going to be deleted when equal.bundle.js going to be update.
 print_color "yellow" "save public/assets/env/config.json file."
 docker exec -ti "$USERNAME" bash -c 'echo "$(./equal.run --get=envinfo-temp)" > public/assets/env/config.json'
 
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
 docker exec -ti "$USERNAME" bash -c "
-sh ./equal.run --do=init_db
-sh ./equal.run --do=init_package --package=core --import=true
+./equal.run --do=init_db
+./equal.run --do=init_package --package=core --import=true
 "
 sleep 15
