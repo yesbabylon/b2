@@ -63,6 +63,14 @@ else
     print_color "bggreen" "Docker OK"
 fi
 
+print_color "yellow" "Check if head is installed..."
+if ! command --version head &> /dev/null; then
+    print_color "bgred" "head package is not installed. Please install head before running this script."
+    exit 1
+else
+    print_color "bggreen" "head OK"
+fi
+
 print_color "yello" "Check if .env file exists"
 
 if [ ! -f .env ]
