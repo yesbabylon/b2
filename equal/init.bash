@@ -74,10 +74,7 @@ then
     print_color "bgred" "DB_HOSTNAME={Database hostname}"
     print_color "bgred" "EQ_PORT={Equal Port}"
     exit 1
-fi
-
-if [ -f .env ]
-then
+else
     print_color "yellow" "Load .env file..."
     set -o allexport
     source .env
