@@ -52,7 +52,7 @@ docker-compose stop -d
 sleep 10
 
 print_color "yellow" "Changing .env variable: HTTPS_REDIRECT"
-./root/b2/equal/prod.sh --env-path /home/$USERNAME/.env
+/root/b2/equal/prod.sh --env-path /home/$USERNAME/.env
 
 # These lines going to be deleted because wget package going to be added inside eQual Dockerfile.
 print_color "yellow" "Installation of wget package"
