@@ -42,6 +42,8 @@ replace_placeholders_for_docker_compose() {
 
 replace_placeholders_for_docker_compose
 
+cd /home/"$USERNAME"
+
 print_color "yellow" "Building and starting the containers..."
 docker-compose build
 docker-compose up -d
