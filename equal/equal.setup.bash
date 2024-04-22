@@ -24,7 +24,7 @@ replace_placeholders_for_docker_compose() {
     # Replace placeholders with computed values
     for key in EQ_PORT DB_HOSTNAME DB_PORT PMA_HOSTNAME PMA_PORT; do
         value=$(eval echo \$$key)
-        for file in docker-compose.yml; do
+        for file in /home/"$USERNAME"/docker-compose.yml; do
             # Replace placeholder with value
             sed -i "s/{{$key}}/$value/g" "$file"
         done
