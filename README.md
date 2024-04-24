@@ -108,6 +108,7 @@ Execute the script with root privileges.
 ```
 
 ### ``equal/init.bash``
+- Link: [init.bash](https://github.com/yesbabylon/b2/blob/master/equal/init.bash)
 
 #### Requirements
 - Ensure that the ``.env`` file is properly configured before executing the script.
@@ -144,7 +145,10 @@ The `init.bash` script progresses through the following steps:
    - **symbiose.setup.bash:** Installs the Symbiose component if `--with_sb` or `-s` flag is provided.
    - **eQualPress/equalpress/install.sh:** Installs eQualPress WordPress if `--with_wp` or `-w` flag is provided.
   
-For further information about these 3 scripts, please refer to the repository or respective folder.
+For further information about these 3 scripts, please refer to the repository or respective folder, A ``README.md`` file is present for moreinformations about what it does.
+- [equal.setup.bash](https://github.com/yesbabylon/b2/blob/master/equal/equal.setup.bash)
+- [symbiose.setup.bash](https://github.com/yesbabylon/b2/blob/master/equal/symbiose.setup.bash)
+- [equalpress setup script ( ``install.sh`` )](https://github.com/eQualPress/equalpress/blob/main/install.sh)
 
 ### `.env` file:
 ```env
