@@ -51,3 +51,13 @@ Currently it changes this key value pair:
 | Key            | Value    |
 |----------------|----------|
 | HTTPS_REDIRECT | redirect |
+
+### Usage
+
+| Argument            | Description               |
+|---------------------|---------------------------|
+| ``--env-path``      | Path of the ``.env`` file |
+
+```bash
+sh ./prod.sh --env-path 
+```
