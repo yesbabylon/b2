@@ -178,4 +178,7 @@ if [ "$WITH_WP" = true ]; then
     rm /home/"$USERNAME"/install.sh
 fi
 
+print_color "yellow" "Deleting .env file in /root/b2/equal"
+rm /root/b2/equal/.env
+
 print_color "magenta" "Script setup completed successfully!"
