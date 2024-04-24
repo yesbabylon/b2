@@ -29,15 +29,6 @@ replace_placeholders_for_docker_compose() {
             sed -i "s/{{$key}}/$value/g" "$file"
         done
     done
-
-    # # Read .env file and replace placeholders with values
-    # # shellcheck disable=SC2154
-    # while IFS='=' read -r key value; do
-    #    for file in docker-compose.yml; do
-    #        # Replace placeholder with value
-    #        sed -i "s/{$key}/$value/g" "$file"
-    #    done
-    # done < "$script_dir"/.env
 }
 
 replace_placeholders_for_docker_compose
@@ -60,7 +51,7 @@ apt install wget
 
 print_color "yellow" "Clone of Equal started..."
 docker exec -ti $USERNAME bash -c "
-yes | git clone -b dev-2.0 https://github.com/AlexisVS/equal.git .
+yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 print_color "cyan" "Clone of eQual framework done."
 
