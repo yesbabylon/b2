@@ -1,0 +1,11 @@
+[Unit]
+Description=Create User Instance PHP Script
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/php /root/b2/create_user_instance.php
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
