@@ -1,105 +1,152 @@
-# Instance init logic
+# B2 repository purpose
+Welcome to our repository for initializing instances using the eQual framework! This repository provides scripts and configurations designed to automate the setup process of essential services on Linux servers. 
 
+Whether you're a developer exploring the capabilities of eQual or a business owner seeking efficient server deployment solutions, our scripts simplify the installation and configuration of various tools and services. 
 
+While eQual is the heart of our framework, powering open-source solutions for all, we also offer tailored instance setup services for customers who prefer a more hands-off approach. 
 
-## .env file
+Our experienced team ensures that your servers are configured optimally, allowing you to focus on your core business activities. 
 
-USERNAME=www.example.com
-PASSWORD=arbitrary_password
-APP_USERNAME=root
-APP_PASSWORD=other_password
+Explore the contents of the repository, contribute to the eQual framework, or reach out to us to learn more about our tailored instance setup services.
 
+Thank you for considering our solutions!
 
+## Important Note
+The B2 repository should be placed in the ``/root`` folder of your server.
 
-[TEMPLATE]
+## Scripts explanation
 
+1. ``install.sh:`` Designed as the foundational script, install.sh automates the setup process for essential Linux server services. From configuring Apache utilities to managing PHP CLI and FTP services, this script ensures a smooth and efficient initial deployment.
 
+   Whether you're a developer experimenting with the eQual framework or a business owner preparing for production, ``install.sh`` streamlines the setup phase, saving time and effort.
 
-Note : il faudra générer le `.env` en fournissant 3 params USERNAME(FQDN), PASSWORD, APP_PASSWORD
+2. ``equal/init.bash:`` Building upon the base established by install.sh, eQual/init.bash enriches the server environment with advanced functionalities.
+  
+   By invoking this script, users can seamlessly initialize the eQualFramework while integrating additional components such as YesBabylon's Symbiose and eQualPress WordPress solutions.
 
+   This comprehensive approach transforms servers into robust hosting and development platforms, offering versatility for various requirements. From web hosting to content management, equal/init.bash empowers users to leverage the full potential of the eQual framework, ensuring a cohesive and efficient setup process.
 
-## Processus d'Initialisation de eQualPress
-Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du testing lancer ``test_eQulPress_multi_instance_setup.bash``
+### ``install.sh``
 
-### init.bash
-#### Flags parameters
+This script automates the setup process for various services on a Linux server. Below is a breakdown of the tasks it performs:
+
+#### Prerequisite
+
+- This script must be executed with root privileges.
+
+#### Progress tasks
+
+1. **Stop and uninstall Postfix:**
+   - Stops the Postfix service if it's running.
+   - Uninstalls Postfix.
+
+2. **Update aptitude cache:**
+   - Ensures that the aptitude package manager cache is up-to-date.
+
+3. **Set timezone to UTC:**
+   - Configures the server timezone to UTC.
+
+4. **Allow using domains as usernames:**
+   - Modifies the adduser configuration to allow using domains as usernames.
+
+5. **Install Apache utilities, vnstat, PHP CLI, and FTP service:**
+   - Installs Apache utilities (htpasswd), vnstat (bandwidth monitoring tool), PHP CLI, and vsftpd (FTP service).
+
+6. **Configure FTP service:**
+   - Customizes the vsftpd configuration.
+
+7. **Restart FTP service:**
+   - Restarts the vsftpd service to apply the configuration changes.
+
+8. **Install Fail2Ban:**
+   - Installs and configures Fail2Ban for intrusion prevention.
+
+9. **Configure logrotate for Nginx:**
+   - Adds logrotate directives for Nginx log rotation.
+
+10. **Install Docker:**
+    - Installs Docker CE and Docker CLI.
+
+11. **Install Docker-Compose:**
+    - Installs Docker-Compose for managing multi-container Docker applications.
+
+12. **Prepare directory structure:**
+    - Copies necessary directories and scripts to their respective locations.
+
+13. **Create 'odoo' user:**
+    - Creates a user named 'odoo' without a home directory, login, or prompt.
+
+14. **Set scripts as executable:**
+    - Makes various scripts executable.
+
+15. **Create proxy network and volume for Portainer:**
+    - Creates a Docker network named 'proxynet' and a Docker volume named 'portainer_data'.
+
+16. **Build docked-nginx image:**
+    - Builds the 'docked-nginx' Docker image.
+
+17. **Start reverse proxy and Let's Encrypt companion:**
+    - Starts the reverse proxy and Let's Encrypt companion services using Docker Compose.
+
+18. **Add maintenance page and custom Nginx configuration:**
+    - Copies a maintenance page and custom Nginx configuration.
+
+19. **Force Nginx to reload configuration:**
+    - Reloads Nginx to apply the new configuration.
+
+20. **Edit account parameters and run account creation script:**
+    - Edits account parameters and runs the account creation script.
+
+21. **Start Portainer:**
+    - Starts the Portainer service.
+
+#### Usage
+
+Execute the script with root privileges.
+```bash
+./install.sh
+```
+
+### ``equal/init.bash``
+
+#### Requirements
+- Ensure that the ``.env`` file is properly configured before executing the script.
+
+#### Usage
+
+To use the `init.bash` script, follow these steps:
+
+1. Ensure that Git, Docker, and `head` are installed on your system.
+2. Create a `.env` file with the necessary environment variables. Refer to the [.env](#env-file) section for details.
+3. Execute the `init.bash` script with optional arguments.
+
+#### Optional arguments
 
 | Short Flag | Long Flag           | Description      |
 |:----------:|---------------------|------------------|
-| `-n`       | `--instance_number` | Instance number  |
 | `-w`       | `--with_wp`         | Install WordPress|
 | `-s`       | `--with_sb`         | Install Symbiose |
 
-#### Déroulement du script
+#### Script Progress
 
-1. **Chargement des Variables d'Environnement depuis un fichier .env**
-   - Téléchargement du fichier `.env` depuis le repo GitHub `yesbabylon/b2` dans le répertoire courant, si le fichier n'existe pas.
-   - Initialisation des variables d'environnement à partir du fichier `.env`.
+The `init.bash` script progresses through the following steps:
 
-2. **Création de l'Utilisateur:**
-   - Création d'un nouvel utilisateur avec le nom de domaine spécifié dans le fichier `.env`.
-   - Attribution d'un mot de passe à l'utilisateur.
-   - Création de répertoires pour sauvegarde et réplication.
-   - Copie du répertoire de status pour le nouvel utilisateur.
-   - Configuration du répertoire de l'utilisateur pour l'accès FTP.
-   - Création d'un répertoire pour le commutateur de maintenance.
-   - Attribution des permissions en écriture au groupe sur le répertoire de l'utilisateur.
-   - Redémarrage du service SFTP pour permettre la connexion FTP.
-   - Ajout de l'utilisateur au groupe Docker.
-   - Définition de `ssh-login` comme shell pour le compte utilisateur.
-   - Ajout des configurations de domaine et de contact à `.env`.
-   - Attribution des permissions d'exécution à un script d'initialisation spécifique.
+1. **Checking Dependencies:** Verifies essential dependencies like Git, Docker, and `head`. Exits with an error message if any dependency is missing.
+2. **Checking for .env File:** Verifies the existence of the `.env` file. Exits with instructions to create it if missing.
+3. **Generating MD5 Hash:** Generates an MD5 hash using a random string for the `CIPHER_KEY` in the `.env` file.
+4. **Updating .env File:** Updates the `CIPHER_KEY` value in the `.env` file with the generated MD5 hash.
+5. **Loading Environment Variables:** Loads environment variables from the `.env` file.
+6. **Creating User:** Creates a new user based on provided `USERNAME` and `PASSWORD` from the `.env` file.
+7. **Creating Directories:** Creates directories for backup, replication, and user account purposes.
+8. **Setting Permissions:** Applies various permissions and settings to directories and user account.
+9. **Calling Additional Scripts:**
+   - **equal.setup.bash:** Sets up eQualFramework components and configurations.
+   - **symbiose.setup.bash:** Installs the Symbiose component if `--with_sb` or `-s` flag is provided.
+   - **eQualPress/equalpress/install.sh:** Installs eQualPress WordPress if `--with_wp` or `-w` flag is provided.
+  
+For further information about these 3 scripts, please refer to the repository or respective folder.
 
-3. **Vérification des Prérequis:**
-   - Vérification de l'installation de Git.
-   - Vérification de l'installation de Docker.
-
-4. **Configuration des Variables pour Docker:**
-   - Calcul du hash MD5 du nom d'utilisateur pour définir `DB_HOST`.
-   - Renommage du service PHPMyAdmin avec le hash MD5 de l'utilisateur.
-   - Calcul du nombre d'instances pour définir `DB_PORT`, `PHPMYADMIN_PORT` et `EQ_PORT`.
-
-##### equal.setup.bash
-5. **Clonage de l'application eQual :**
-   - **Clonage de `eQual Framework` :**
-     - Téléchargement de l'application eQual depuis le référentiel GitHub `equalframework/equal`.
-     - Téléchargement des fichiers de configuration depuis le référentiel GitHub `yesbabylon/b2`.
-
-   - **Remplacement des Fichiers de Configuration :**
-     - Téléchargement des fichiers de configuration (`docker-compose.yml`, `config/config.json`, `public/assets/env/config.json`) depuis le référentiel GitHub `yesbabylon/b2`.
-
-
-   - **Remplacement des Placeholders dans les Fichiers de Configuration :**
-     - Remplacement des placeholders dans les fichiers de configuration avec les valeurs appropriées extraites des variables d'environnement et du fichier `.env`.
-
-   - **Construction et Lancement des Conteneurs Docker :**
-     - Construction des conteneurs Docker à l'aide de `docker-compose`.
-     - Démarrage des conteneurs Docker.
- 
-6. **Initialisation de la Base de Données et du Package Core de eQual :**
-     - Initialisation de la base de données eQual.
-     - Attente de 5 secondes pour permettre l'initialisation de la base de données.
-     - Initialisation du package core.
-     - Attente de 15 secondes pour permettre l'initialisation de la base de données.
-
-##### symbiose.setup.bash | si ``--with_sb`` ou ``-s``
-7.  **Clonage et Configuration de `Symbiose` :**
-     - Clonage de l'application Symbiose depuis le référentiel GitHub `yesbabylon/symbiose`.
-     - Déplacement des répertoires `core` et `demo` dans le répertoire `packages`.
-     - Suppression du répertoire `packages-core`.
-
-##### equalpress.setup.bash | si ``--with_wp`` ou ``-w``
-8. **Installation de Wordpress dans eQual :**
-  - Remplacement du fichier `.htaccess` pour rendre Wordpress compatible.
-  - Renommage du fichier `index.php` en `equal.php` pour éviter les conflits avec WordPress.
-
-   - **Téléchargement, Installation et Configuration de WordPress :**
-     - Téléchargement du WP-CLI pour l'automatisation des tâches d'installation de WordPress.
-     - Installation et configuration de WordPress avec les informations fournies.
-     - Ajustement des permissions des fichiers pour correspondre aux normes de sécurité.
-
-
-### Fichier `.env` actuel:
+### `.env` file:
 ```env
 # Customer directoy
 USERNAME=test.yb.run
@@ -114,7 +161,7 @@ CIPHER_KEY=xxxxxxxxxxxxxx
 #Nginx configuration
 HTTPS_REDIRECT=noredirect
 
-# VARIABLES BELOW ARE REQUIRED ONLY FOR AN EQUALPRESS SETUP
+# VARIABLES BELOW ARE REQUIRED ONLY FOR EQUALPRESS SETUP
 # Wordpress version
 WP_VERSION=6.4
 
