@@ -66,7 +66,7 @@ print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Generation of config/config.json"
 docker exec -ti "$USERNAME" bash -c "
-./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME --store=true
+./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME
 "
 
 # These lines going to be deleted when equal.bundle.js going to be update.
