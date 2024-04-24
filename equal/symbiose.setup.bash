@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Function to print colored text
 print_color() {
     local color="$1"
