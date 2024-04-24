@@ -101,17 +101,26 @@ Le script bash à lancé est ``init.bash``. Si c'est pour du developpement ou du
 
 ### Fichier `.env` actuel:
 ```env
-USERNAME=equal.local
-PASSWORD=arbitrary_password
+# Customer directoy
+USERNAME=test.yb.run
 
+# Applications credentials
 APP_USERNAME=root
 APP_PASSWORD=test
 
-DB_NAME=equal
+# CIPHER KEY for eQual config encryption safety
+CIPHER_KEY=xxxxxxxxxxxxxx
 
-EQ_VERSION=dev-2.0
+#Nginx configuration
+HTTPS_REDIRECT=noredirect
 
-WP_VERSION=latest
+# VARIABLES BELOW ARE REQUIRED ONLY FOR AN EQUALPRESS SETUP
+# Wordpress version
+WP_VERSION=6.4
+
+#Wordpress admin email
+WP_EMAIL=root@equal.local
+
+# WordPress site title
 WP_TITLE=eQualpress
-WP_EMAIL=root@host.local
 ```
