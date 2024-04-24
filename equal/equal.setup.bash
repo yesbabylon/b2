@@ -69,10 +69,6 @@ docker exec -ti "$USERNAME" bash -c "
 ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD --app_url=$USERNAME
 "
 
-# These lines going to be deleted when equal.bundle.js going to be update.
-print_color "yellow" "save public/assets/env/config.json file."
-docker exec -ti "$USERNAME" bash -c 'echo "$(./equal.run --get=envinfo-temp)" > public/assets/env/config.json'
-
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
 docker exec -ti "$USERNAME" bash -c "
