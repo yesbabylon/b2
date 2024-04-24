@@ -1,5 +1,7 @@
 # B2 repository purpose
-Welcome to our repository for initializing instances using the eQual framework! This repository provides scripts and configurations designed to automate the setup process of essential services on Linux servers. 
+Welcome to our repository for initializing instances using the eQual framework!
+
+This repository provides scripts and configurations designed to automate the setup process of essential services on Linux servers. 
 
 Whether you're a developer exploring the capabilities of eQual or a business owner seeking efficient server deployment solutions, our scripts simplify the installation and configuration of various tools and services. 
 
