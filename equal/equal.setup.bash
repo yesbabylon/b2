@@ -42,13 +42,6 @@ docker-compose up -d
 print_color "yellow" "Waiting 15 seconds for being sure than containers are correctly initialised."
 sleep 15
 
-# These lines going to be deleted because wget package going to be added inside eQual Dockerfile.
-print_color "yellow" "Installation of wget package"
-docker exec -ti $USERNAME bash -c "
-apt update
-apt install wget
-"
-
 print_color "yellow" "Clone of Equal started..."
 docker exec -ti $USERNAME bash -c "
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
