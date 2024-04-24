@@ -34,7 +34,7 @@ This script automates the setup process for various services on a Linux server. 
 
 - This script must be executed with root privileges.
 
-#### Progress tasks
+#### Script Progress
 
 1. **Stop and uninstall Postfix:**
    - Stops the Postfix service if it's running.
