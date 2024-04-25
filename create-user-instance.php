@@ -18,6 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
                 // Obtenir l'URI de la requête
                 $request_uri = $_SERVER['REQUEST_URI'];
+
+                   // Vérifier le type de log_message
+            if (!is_string($log_message)) {
+                // Si ce n'est pas une chaîne de caractères, tenter de convertir en JSON
+                $log_message = json_encode($log_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+            }
         
                 // Construire le message à enregistrer dans le fichier journal
                 $log_entry = "[$current_datetime] [$request_uri] $log_message\n";
@@ -32,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Get the request body
         $json_data = file_get_contents("php://input");
-        log_request(json_encode($json_data));
+        log_request($json_data);
         
         // Decode JSON data
         $data = json_decode($json_data, true);
