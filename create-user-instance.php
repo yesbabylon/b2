@@ -81,6 +81,7 @@ function log_request($log_message): void
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the URL is correct
     if ($_SERVER['REQUEST_URI'] === '/create-user-instance') {
+        chdir('/root/b2/equal');
 
         // Get the request body
         $json_data = file_get_contents("php://input");
