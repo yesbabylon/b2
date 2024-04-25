@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Execute the init.bash script with the flags
             exec("bash $init_bash_script $flags", $output, $exit_code);
             log_request('----------- init.bash script output -----------');
-            log_request(json_encode(str_replace(",", "\\n", $output)) . "\n Exit code: " . $exit_code);
+            log_request(json_encode(str_replace(",", "\n", $output)) . "\n Exit code: " . $exit_code);
             log_request('-----------------------------------------------');
 
             // Respond with HTTP status code 200 (OK)
