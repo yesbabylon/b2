@@ -3,8 +3,36 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the URL is correct
     if ($_SERVER['REQUEST_URI'] === '/create-user-instance') {
+        function log_request($log_message)
+        {
+            // Chemin du fichier de journal
+            $log_file_path = __DIR__ . "/instance-creation.log";
+        
+            // Ouvrir un fichier de journal en mode écriture (ajout)
+            $log_file = fopen($log_file_path, "a");
+        
+            // Vérifier si l'ouverture du fichier de journal a réussi
+            if ($log_file !== false) {
+                // Obtenir la date et l'heure actuelles
+                $current_datetime = date("Y-m-d H:i:s");
+        
+                // Obtenir l'URI de la requête
+                $request_uri = $_SERVER['REQUEST_URI'];
+        
+                // Construire le message à enregistrer dans le fichier journal
+                $log_entry = "[$current_datetime] [$request_uri] $log_message\n";
+        
+                // Écrire le message dans le fichier journal
+                fwrite($log_file, $log_entry);
+        
+                // Fermer le fichier de journal
+                fclose($log_file);
+            }
+        }
+        
         // Get the request body
         $json_data = file_get_contents("php://input");
+        log_request($json_data);
         
         // Decode JSON data
         $data = json_decode($json_data, true);
