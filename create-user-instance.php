@@ -126,12 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 file_put_contents($env_file_path, "$key=$value\n", FILE_APPEND);
             }
             
-            // change directory
-            chdir('/root/b2/equal');
-
-            // change owner of user directory
-            exec('chown -r www-data:www-data /home/' . $data['USERNAME'] . '/www'):
-            
             // Execute the init.bash script with appropriate flags
             $init_bash_script = '/root/b2/equal/init.bash';
 
