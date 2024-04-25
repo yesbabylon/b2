@@ -1,7 +1,5 @@
 <?php
 
-echo "server reached !!!!!!!!!!!!";
-
 // Check if the request is a POST method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the URL is correct
@@ -70,8 +68,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Execute the init.bash script with appropriate flags
-//            $init_bash_script = '/root/b2/equal/init.bash';
-//            exec("bash $init_bash_script $flags");
+            $init_bash_script = '/root/b2/equal/init.bash';
+            exec("bash $init_bash_script $flags");
 
             // Respond with HTTP status code 200 (OK)
             http_response_code(200);
