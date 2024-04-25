@@ -33,6 +33,7 @@ replace_placeholders_for_docker_compose() {
 
 replace_placeholders_for_docker_compose
 
+# shellcheck disable=SC2164
 cd /home/"$USERNAME"
 
 print_color "yellow" "Building and starting the containers..."
@@ -43,7 +44,7 @@ print_color "yellow" "Waiting 15 seconds for being sure than containers are corr
 sleep 15
 
 print_color "yellow" "Clone of Equal started..."
-docker exec -ti $USERNAME bash -c "
+docker exec -ti "$USERNAME" bash -c "
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 print_color "cyan" "Clone of eQual framework done."

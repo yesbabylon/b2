@@ -92,7 +92,7 @@ sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/" .env
 
 print_color "yellow" "Load .env file..."
 set -o allexport
-source /root/b2/equal/.env
+source "$script_dir"/.env
 set +o allexport
 
 if [ ${#USERNAME} -gt 32 ]
@@ -117,7 +117,7 @@ print_color "yellow" "Set the home directory of the new user (FTP access)"
 mkdir -p /home/"$USERNAME"/www
 
 print_color "yellow" "Copy the .env file to user directory."
-cp .env /home/"$USERNAME"/.env
+cp "$script_dir"/.env /home/"$USERNAME"/.env
 
 sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
 
@@ -173,12 +173,12 @@ if [ "$WITH_WP" = true ]; then
     print_color "yellow" "Installation of eQualPress."
     wget https://raw.githubusercontent.com/eQualPress/equalpress/main/install.sh -O /home/"$USERNAME"/install.sh
     chmod +x /home/"$USERNAME"/install.sh
-    /home/"$USERNAME"/install.sh
+    bash /home/"$USERNAME"/install.sh
     print_color "yellow" "End of eQualPress installation"
     rm /home/"$USERNAME"/install.sh
 fi
 
 print_color "yellow" "Deleting .env file in /root/b2/equal"
-rm /root/b2/equal/.env
+rm "$script_dir"/.env
 
 print_color "magenta" "Script setup completed successfully!"
