@@ -81,7 +81,6 @@ function log_request($log_message): void
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the URL is correct
     if ($_SERVER['REQUEST_URI'] === '/create-user-instance') {
-        chdir('/root/b2/equal');
 
         // Get the request body
         $json_data = file_get_contents("php://input");
@@ -126,7 +125,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Write data to the .env file
                 file_put_contents($env_file_path, "$key=$value\n", FILE_APPEND);
             }
+            
+            // change directory
+            chdir('/root/b2/equal');
 
+            // change owner of user directory
+            exec('chown -r www-data:www-data /home/' . $data['USERNAME'] . '/www'):
+            
             // Execute the init.bash script with appropriate flags
             $init_bash_script = '/root/b2/equal/init.bash';
 
