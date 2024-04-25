@@ -45,7 +45,7 @@ print_color() {
     esac
 }
 
-print_color "magenta" "Welcome to eQualpress setup script!"
+print_color "magenta" "Welcome to eQual Framework setup script!"
 
 print_color "yellow" "Check if Git is installed..."
 if ! command -v git &> /dev/null; then
