@@ -128,8 +128,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Execute the init.bash script with appropriate flags
             $init_bash_script = '/root/b2/equal/init.bash';
-            $exec = exec("bash $init_bash_script $flags");
-            log_request('init.bash exec result => ' . json_encode($exec));
+
+            $output = '';
+            $exit_code = 0;
+            // Execute the init.bash script with the flags
+            exec("bash $init_bash_script $flags", $output, $exit_code);
+            log_request('----------- init.bash script output -----------');
+            log_request($output . "\n Exit code: " . $exit_code);
+            log_request('-----------------------------------------------');
 
             // Respond with HTTP status code 200 (OK)
             send_http_response(200, "User instance created successfully!");
