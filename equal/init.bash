@@ -73,7 +73,7 @@ fi
 
 print_color "yellow" "Check if .env file exists"
 
-if [ ! -f .env ]
+if [ ! -f /root/b2/equal/.env ]
 then
     print_color "bgred" "A file named .env is expected and should contain following vars definition:"
     print_color "bgred" "USERNAME={domain-name-as-user-name}"
@@ -92,7 +92,7 @@ sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/" .env
 
 print_color "yellow" "Load .env file..."
 set -o allexport
-source .env
+source /root/b2/equal/.env
 set +o allexport
 
 if [ ${#USERNAME} -gt 32 ]
