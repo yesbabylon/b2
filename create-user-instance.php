@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Decode JSON data
         $data = json_decode($json_data, true);
 
+
         // Check if data decoded successfully
         if ($data !== null) {
             // Set default flags
@@ -57,6 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($data['equalpress']) && $data['equalpress'] === true) {
                 $flags .= ' -w';
             }
+
+            // Remove 'symbiose' and 'equalpress' keys from $data
+            unset($data['symbiose'], $data['equalpress']);
 
             // Path to the directory for the .env file
             $env_file_path = '/root/b2/equal/.env';
@@ -77,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Execute the init.bash script with appropriate flags
             $init_bash_script = '/root/b2/equal/init.bash';
-            exec("bash $init_bash_script $flags");
+            $exec = exec("bash $init_bash_script $flags");
+            log_request('init.bash exec result => ' . json_encode($exec));
 
             // Respond with HTTP status code 200 (OK)
             http_response_code(200);
