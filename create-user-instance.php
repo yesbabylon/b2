@@ -1,41 +1,86 @@
 <?php
 
+/**
+ * Send an HTTP response with the specified status code and message.
+ *
+ * @param $status_code
+ * @param $message
+ * @return void
+ */
+function send_http_response($status_code, $message): void
+{
+    // Define the response status codes and their respective messages
+    $status_messages = array(
+        200 => 'OK',
+        400 => 'Bad Request',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        // Add more status codes and messages as needed
+    );
+
+    // Set the HTTP response status code and message
+    $status_message = $status_messages[$status_code] ?? '';
+    header("HTTP/1.1 $status_code $status_message");
+
+    // Set the Content-Type header to indicate JSON response
+    header('Content-Type: application/json');
+
+    // Construct the response body as a JSON object
+    $response = array(
+        'status' => $status_code,
+        'message' => $message
+    );
+
+    // Convert the response data to JSON format
+    $json_response = json_encode($response);
+
+    // Output the JSON response
+    echo $json_response;
+}
+
+/**
+ * Log the request data to a file.
+ *
+ * @param $log_message
+ * @return void
+ */
+function log_request($log_message): void
+{
+    // Chemin du fichier de journal
+    $log_file_path = __DIR__ . "/instance-creation.log";
+
+    // Ouvrir un fichier de journal en mode écriture (ajout)
+    $log_file = fopen($log_file_path, "a");
+
+    // Vérifier si l'ouverture du fichier de journal a réussi
+    if ($log_file !== false) {
+        // Obtenir la date et l'heure actuelles
+        $current_datetime = date("Y-m-d H:i:s");
+
+        // Obtenir l'URI de la requête
+        $request_uri = $_SERVER['REQUEST_URI'];
+
+        // Vérifier le type de log_message
+        if (!is_string($log_message)) {
+            // Si ce n'est pas une chaîne de caractères, tenter de convertir en JSON
+            $log_message = json_encode($log_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+        }
+
+        // Construire le message à enregistrer dans le fichier journal
+        $log_entry = "[$current_datetime] [$request_uri] $log_message\n";
+
+        // Écrire le message dans le fichier journal
+        fwrite($log_file, $log_entry);
+
+        // Fermer le fichier de journal
+        fclose($log_file);
+    }
+}
+
 // Check if the request is a POST method
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the URL is correct
     if ($_SERVER['REQUEST_URI'] === '/create-user-instance') {
-        function log_request($log_message): void
-        {
-            // Chemin du fichier de journal
-            $log_file_path = __DIR__ . "/instance-creation.log";
-
-            // Ouvrir un fichier de journal en mode écriture (ajout)
-            $log_file = fopen($log_file_path, "a");
-
-            // Vérifier si l'ouverture du fichier de journal a réussi
-            if ($log_file !== false) {
-                // Obtenir la date et l'heure actuelles
-                $current_datetime = date("Y-m-d H:i:s");
-
-                // Obtenir l'URI de la requête
-                $request_uri = $_SERVER['REQUEST_URI'];
-
-                // Vérifier le type de log_message
-                if (!is_string($log_message)) {
-                    // Si ce n'est pas une chaîne de caractères, tenter de convertir en JSON
-                    $log_message = json_encode($log_message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-                }
-
-                // Construire le message à enregistrer dans le fichier journal
-                $log_entry = "[$current_datetime] [$request_uri] $log_message\n";
-
-                // Écrire le message dans le fichier journal
-                fwrite($log_file, $log_entry);
-
-                // Fermer le fichier de journal
-                fclose($log_file);
-            }
-        }
 
         // Get the request body
         $json_data = file_get_contents("php://input");
@@ -43,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Decode JSON data
         $data = json_decode($json_data, true);
-
 
         // Check if data decoded successfully
         if ($data !== null) {
@@ -71,6 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 touch($env_file_path);
                 // Set permissions for the .env file
                 chmod($env_file_path, 0644);
+            } else {
+                // Clear the contents of the .env file
+                file_put_contents($env_file_path, '');
             }
 
             // Write data to the .env file
@@ -85,21 +132,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             log_request('init.bash exec result => ' . json_encode($exec));
 
             // Respond with HTTP status code 200 (OK)
-            http_response_code(200);
-            echo "User instance created successfully!";
+            send_http_response(200, "User instance created successfully!");
         } else {
             // Respond with HTTP status code 400 (Bad Request) if JSON data is invalid
-            http_response_code(400);
-            echo "JSON data is invalid!";
+            send_http_response(400, "JSON data is invalid!");
         }
     } else {
         // Respond with HTTP status code 404 (Not Found) if the URL is not correct
-        http_response_code(404);
-        echo "Page not found!";
+        send_http_response(404, "Page not found!");
     }
 } else {
     // Respond with HTTP status code 405 (Method Not Allowed) if the method is not POST
-    http_response_code(405);
-    echo "Method not allowed!";
+    send_http_response(405, "Method not allowed!");
 }
 ?>
