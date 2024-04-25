@@ -61,6 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Path to the directory for the .env file
             $env_file_path = '/root/b2/equal/.env';
 
+            // Check if the .env file exists, and create it if not
+            if (!file_exists($env_file_path)) {
+                // Create the .env file
+                touch($env_file_path);
+                // Set permissions for the .env file
+                chmod($env_file_path, 0644);
+            }
+
             // Write data to the .env file
             foreach ($data as $key => $value) {
                 // Write data to the .env file
