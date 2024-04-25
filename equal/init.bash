@@ -117,6 +117,9 @@ cp -r /home/docker/accounts/status /home/"$USERNAME"/status
 print_color "yellow" "Set the home directory of the new user (FTP access)"
 mkdir -p /home/"$USERNAME"/www
 
+print_color "yellow" "Force group and user to www-data"
+chown -r www-data:www-data /home/"$USERNAME"/www
+
 print_color "yellow" "Copy the .env file to user directory."
 cp "$script_dir/.env" /home/"$USERNAME"/.env
 
