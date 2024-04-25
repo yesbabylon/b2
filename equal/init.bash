@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# shellcheck disable=SC2155
-export script_dir=$(pwd)
-
 # Default values
 export WITH_WP=false
 export WITH_SB=false
@@ -45,6 +42,10 @@ print_color() {
     esac
 }
 
+# shellcheck disable=SC2155
+export script_dir=$(pwd)
+print_color "cyan" "Script directory: $script_dir"
+
 print_color "magenta" "Welcome to eQual Framework setup script!"
 
 print_color "yellow" "Check if Git is installed..."
@@ -73,7 +74,7 @@ fi
 
 print_color "yellow" "Check if .env file exists"
 
-if [ ! -f "$script_dir"/.env ]
+if [ ! -f "$script_dir/.env" ]
 then
     print_color "bgred" "A file named .env is expected and should contain following vars definition:"
     print_color "bgred" "USERNAME={domain-name-as-user-name}"
@@ -88,11 +89,11 @@ print_color "yellow" "Generate MD5 hash."
 md5_hash=$(echo -n "$(head -c 32 /dev/urandom | xxd -p)" | md5sum | cut -d ' ' -f1)
 
 print_color "yellow" "Replace the CIPHER_KEY value in the .env file."
-sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/" "$script_dir"/.env
+sed -i "s/^CIPHER_KEY=.*/CIPHER_KEY=$md5_hash/" "$script_dir/.env"
 
 print_color "yellow" "Load .env file..."
 set -o allexport
-source "$script_dir"/.env
+source "$script_dir/.env"
 set +o allexport
 
 if [ ${#USERNAME} -gt 32 ]
@@ -117,7 +118,7 @@ print_color "yellow" "Set the home directory of the new user (FTP access)"
 mkdir -p /home/"$USERNAME"/www
 
 print_color "yellow" "Copy the .env file to user directory."
-cp "$script_dir"/.env /home/"$USERNAME"/.env
+cp "$script_dir/.env" /home/"$USERNAME"/.env
 
 sudo usermod -d /home/"$USERNAME"/www "$USERNAME"
 
@@ -161,11 +162,11 @@ print_color "yellow" "Define EQ_PORT with the number of directories in /home"
 # shellcheck disable=SC2004
 export EQ_PORT=$(( 80 - 1 + $number_of_directories ))
 
-bash "$script_dir"/equal.setup.bash
+bash "$script_dir/equal.setup.bash"
 
 if [ "$WITH_SB" = true ]; then
     print_color "yellow" "Installation of Symbiose."
-    bash "$script_dir"/symbiose.setup.bash
+    bash "$script_dir/symbiose.setup.bash"
     print_color "yellow" "End of Symbiose installation."
 fi
 
@@ -179,6 +180,6 @@ if [ "$WITH_WP" = true ]; then
 fi
 
 print_color "yellow" "Deleting .env file in /root/b2/equal"
-rm "$script_dir"/.env
+rm "$script_dir/.env"
 
 print_color "magenta" "Script setup completed successfully!"
