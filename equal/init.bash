@@ -43,7 +43,7 @@ print_color() {
 }
 
 # shellcheck disable=SC2155
-export script_dir=$(pwd)
+export script_dir="/root/b2/equal"
 print_color "cyan" "Script directory: $script_dir"
 
 print_color "magenta" "Welcome to eQual Framework setup script!"
