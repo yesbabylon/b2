@@ -10,11 +10,11 @@ try {
         throw new Exception("HTTP Method not allowed!", 405);
     }
 
-    // Check if the URL is correct
     $allowed_routes = [
         '/create-user-instance'
     ];
 
+    // Check if the requested route is allowed
     if (!in_array($_SERVER['REQUEST_URI'], $allowed_routes)) {
         throw new Exception("Unknown route", 404);
     }
