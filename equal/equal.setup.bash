@@ -44,21 +44,21 @@ print_color "yellow" "Waiting 15 seconds for being sure than containers are corr
 sleep 15
 
 print_color "yellow" "Clone of Equal started..."
-docker exec -ti "$USERNAME" bash -c "
+docker exec "$USERNAME" bash -c "
 apt update
-apt install wget
+apt install -y wget
 yes | git clone -b dev-2.0 https://github.com/AlexisVS/equal.git .
 "
 print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Generation of config/config.json"
-docker exec -ti "$USERNAME" bash -c "
+docker exec "$USERNAME" bash -c "
 ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD
 "
 
 print_color "yellow" "Init eQual Framework database and core package"
 print_color "yellow" "Waiting 15 seconds for the database to be initialized..."
-docker exec -ti "$USERNAME" bash -c "
+docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
 ./equal.run --do=init_package --package=core --import=true
 "
