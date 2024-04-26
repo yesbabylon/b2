@@ -27,7 +27,7 @@ try {
 
     // Check if data decoded successfully
     if ($data === null) {
-        send_http_response("JSON data is invalid!", 400);
+        throw new Exception("JSON data is invalid!", 400);
     }
 
     // Set default flags
