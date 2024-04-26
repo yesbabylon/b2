@@ -84,7 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Get the request body
         $json_data = file_get_contents("php://input");
-        log_request($json_data);
 
         // Decode JSON data
         $data = json_decode($json_data, true);
@@ -132,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $output = '';
             $exit_code = 0;
             // Execute the init.bash script with the flags
-            exec("bash $init_bash_script $flags", $output, $exit_code);
+            exec("bash $init_bash_script $flags 2>&1", $output, $exit_code);
             log_request('----------- init.bash script output -----------');
             log_request(json_encode(str_replace(",", "\n", $output)) . "\n Exit code: " . $exit_code);
             log_request('-----------------------------------------------');
