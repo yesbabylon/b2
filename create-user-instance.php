@@ -71,6 +71,7 @@ try {
 
     $output = '';
     $exit_code = 0;
+
     // Execute the init.bash script with the flags
     exec("bash $init_bash_script $flags 2>&1", $output, $exit_code);
 
