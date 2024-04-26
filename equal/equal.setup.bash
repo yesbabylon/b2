@@ -53,9 +53,7 @@ print_color "cyan" "Clone of eQual framework done."
 
 print_color "yellow" "Generation of config/config.json"
 docker exec -ti "$USERNAME" bash -c "
-chmod 0777 config
 ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD
-chmod 0751 config
 "
 
 print_color "yellow" "Init eQual Framework database and core package"
