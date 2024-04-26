@@ -3,23 +3,21 @@
 // Include the http-response.php file to use the send_http_response function
 include_once 'instance_management/http-response.php';
 
-// Verify that the request method is POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    send_http_response("Method not allowed!", 405);
-    exit;
-}
-
-// Check if the URL is correct
-$allowed_routes = [
-    '/create-user-instance'
-];
-
-if (!in_array($_SERVER['REQUEST_URI'], $allowed_routes)) {
-    send_http_response("Unknown route", 404);
-    exit;
-}
-
 try {
+    // Verify that the request method is POST
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception("Method not allowed!", 405);
+    }
+
+    // Check if the URL is correct
+    $allowed_routes = [
+        '/create-user-instance'
+    ];
+
+    if (!in_array($_SERVER['REQUEST_URI'], $allowed_routes)) {
+        throw new Exception("Unknown route", 404);
+    }
+
     // Get the request body
     $json_data = file_get_contents("php://input");
 
