@@ -20,7 +20,7 @@ print_color() {
 }
   
 print_color "yellow" "Clone and setup of Symbiose started..."
-docker exec -ti "$USERNAME" bash -c "
+docker exec "$USERNAME" bash -c "
 mv packages packages-core
 yes | git clone -b dev-2.0 https://github.com/yesbabylon/symbiose.git packages
 mv packages-core/{core,demo} packages/
