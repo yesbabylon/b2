@@ -4,9 +4,10 @@
 include_once 'instance_management/http-response.php';
 
 try {
+    // TODO: Temporary
     // Verify that the request method is POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception("Method not allowed!", 405);
+        throw new Exception("HTTP Method not allowed!", 405);
     }
 
     // Check if the URL is correct
