@@ -47,6 +47,7 @@ print_color "yellow" "Clone of Equal started..."
 docker exec "$USERNAME" bash -c "
 apt update
 apt install -y wget
+git config --global credential.helper 'cache --timeout=300'
 yes | git clone -b dev-2.0 https://github.com/AlexisVS/equal.git .
 "
 print_color "cyan" "Clone of eQual framework done."
