@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash -c '/usr/bin/php -S 0.0.0.0:8000 -t / /root/b2/create-user-instance.php'
+ExecStart=/bin/bash -c '/usr/bin/php -S 0.0.0.0:8000 -t / /root/b2/create-user-instance.php >> /root/b2/instance-creation.log 2>&1 &'
 Restart=always
 
 [Install]
