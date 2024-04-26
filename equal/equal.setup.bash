@@ -69,3 +69,13 @@ docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_package --package=core --import=true
 "
 sleep 15
+
+print_color "yellow" "Testing the instance..."
+wget -qO- http://0.0.0.0:"$EQ_PORT"/welcome | grep -q "Documentation"
+
+# shellcheck disable=SC2181
+if [ $? -eq 0 ]; then
+  print_color "bggreen" "Instance eQual OK"
+else
+  print_color "bgred" "Instance eQual ERROR"
+fi
