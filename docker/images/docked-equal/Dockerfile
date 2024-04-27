@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     procps \
     netcat \
     vim \
+	wget \
     && /usr/sbin/usermod -u $apache_uid www-data \
     && /usr/sbin/groupmod -g $apache_gid www-data
 COPY ./mpm_prefork.conf /etc/apache2/mods-available/
