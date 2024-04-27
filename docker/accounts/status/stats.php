@@ -152,14 +152,31 @@ $commands = [
 	]
 ];
 
+$longopts  = [
+		"instance::",
+	];
+	
+$options = getopt('', $longopts);
 
-$result = [];
+// JSON encoded response
+$response = '';
 
-foreach($commands as $cat => $cat_commands) {
-	foreach($cat_commands as $cmd => $command) {
-		$res = $do_cmd($command['command']);
-		$result[$cat][$cmd] = $command['adapt']($res);
+if(isset($options['instance'])) {
+	$json = $do_cmd('docker stats '.$options['instance'].' --no-stream --format "{{ json . }}"');
+	$result = json_decode($json);
+	$response = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+}
+else {
+	$result = [];
+
+	foreach($commands as $cat => $cat_commands) {
+		foreach($cat_commands as $cmd => $command) {
+			$res = $do_cmd($command['command']);
+			$result[$cat][$cmd] = $command['adapt']($res);
+		}
 	}
+
+	$response = json_encode($result, JSON_PRETTY_PRINT);
 }
 
-echo json_encode($result, JSON_PRETTY_PRINT);
+echo $response.PHP_EOL;
