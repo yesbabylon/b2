@@ -46,6 +46,7 @@ services:
        - VIRTUAL_PORT=80
        - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
        - PMA_HOST={db_ID}
+       - UPLOAD_LIMIT=250M
    wordpress:
      container_name: ${DOMAIN_NAME}
      depends_on:
