@@ -13,8 +13,9 @@ NC='\033[0m' # No Color
 INSTALL_DIR=$(pwd)
 
 # Stop and uninstall postfix, if present
-service postfix stop
-yes | apt-get remove postfix
+# #memo 22.10 - seems no longer needed
+# service postfix stop
+# yes | apt-get remove postfix
 
 # Make sure aptitude cache is up-to-date
 yes | apt-get update 
