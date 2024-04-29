@@ -44,8 +44,14 @@ cp $INSTALL_DIR/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
 cp $INSTALL_DIR/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 touch /etc/fail2ban/emptylog
 
+# Make sure fail2ban starts on boot
+systemctl enable fail2ban
+
+# Start fail2ban
+systemctl start fail2ban
+
 # Restart F2B service
-systemctl restart fail2ban
+# systemctl restart fail2ban
 
 # Add logrotate directive for nginx
 cp $INSTALL_DIR/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
@@ -70,7 +76,7 @@ mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
 
 # Create a odoo user (to link host with VM), no home, no login, no prompt
-adduser --no-create-home --disabled-login --gecos "" odoo
+# adduser --no-create-home --disabled-login --gecos "" odoo
 
 
 # Set scripts as executable
