@@ -70,6 +70,19 @@ docker exec "$USERNAME" bash -c "
 "
 sleep 15
 
+# Check if APP_USERNAME is equal to root if yes, change the password of the root user, else create the user
+if [ "$APP_USERNAME" = "root" ]; then
+    print_color "yellow" "Changing the password of the root user..."
+    docker exec "$USERNAME" bash -c "
+    ./equal.run --do=user_pass-update --user_id=1 --password=$APP_PASSWORD --confirm=$APP_PASSWORD
+    "
+else
+    print_color "yellow" "Creating the user $APP_USERNAME..."
+    docker exec "$USERNAME" bash -c "
+    ./equal.run --do=user_create --login=$APP_USERNAME --password=$APP_PASSWORD
+    "
+fi
+
 print_color "yellow" "Testing the instance..."
 wget -qO- http://0.0.0.0:"$EQ_PORT"/welcome | grep -q "Documentation"
 
