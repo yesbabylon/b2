@@ -10,13 +10,13 @@
 function send_http_response($message, $status_code): void
 {
     // Define the response status codes and their respective messages
-    $status_messages = array(
+    $status_messages = [
         200 => 'OK',
         400 => 'Bad Request',
         404 => 'Not Found',
         405 => 'Method Not Allowed',
         // Add more status codes and messages as needed
-    );
+    ];
 
     // Set the HTTP response status code
     http_response_code($status_code);
@@ -29,10 +29,9 @@ function send_http_response($message, $status_code): void
     header('Content-Type: application/json');
 
     // Construct the response body as a JSON object
-    $response = array(
-        'status' => $status_code,
+    $response = [
         'message' => $message
-    );
+    ];
 
     // Convert the response data to JSON format
     $json_response = json_encode($response);
