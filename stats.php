@@ -42,6 +42,13 @@ $commands = [
 			'adapt'			=> function($res) {
 				return (100-intval($res)).'%';
 			}
+		],
+		'uptime' => [
+			'description' 	=> "average CPU load (%) since last reboot",
+			'command' 		=> 'cat /proc/uptime | awk \'{print $1}\'',
+			'adapt'			=> function($res) {
+				return (intval($res/86400)+1).'days';
+			}
 		]
 	],
 	'instant'		=> [
@@ -114,9 +121,30 @@ $commands = [
 			'adapt'			=> function($res) use($adapt_units) {
 				return $adapt_units($res);
 			}
+		],
+		'usr_active' => [
+			'description'	=> "total number of logged in users",
+			'command' 		=> 'w -h  | wc -l',
+			'adapt'			=> function($res) {
+				return $res;
+			}
+		],
+		'usr_total' => [
+			'description'	=> "total number of logged in users",
+			'command' 		=> 'awk -F\':\' \'$3 >= 1000 && $3 < 60000 {print $1}\' /etc/passwd | wc -l',
+			'adapt'			=> function($res) {
+				return $res;
+			}
 		]
 	],
 	'config'		=> [
+		'host' => [
+			'description'	=> "host name",
+			'command' 		=> 'hostname',
+			'adapt'			=> function($res) use($adapt_units) {
+				return $adapt_units($res);
+			}
+		],
 		'mem' => [
 			'description'	=> "total RAM",
 			'command' 		=> 'free -mh | awk \'/Mem/{print $2}\'',
@@ -147,6 +175,27 @@ $commands = [
 			'command' 		=> 'df . -h | tail -1 | awk \'{print $2}\'',
 			'adapt'			=> function($res) use($adapt_units)  {
 				return $adapt_units($res);
+			}
+		],
+		'ip_protected' => [
+			'description'	=> "main IP address",
+			'command' 		=> 'ifconfig ens3 | grep \'inet \' | awk \'{print $2}\'',
+			'adapt'			=> function($res) {
+				return $res;
+			}
+		],
+		'ip_public' => [
+			'description'	=> "public/failover IP address",
+			'command' 		=> 'ifconfig veth0 | grep \'inet \' | awk \'{print $2}\'',
+			'adapt'			=> function($res) {
+				return $res;
+			}
+		],
+		'ip_private' => [
+			'description'	=> "total disk space",
+			'command' 		=> 'ifconfig ens4 | grep \'inet \' | awk \'{print $2}\'',
+			'adapt'			=> function($res) {
+				return $res;
 			}
 		]
 	]
