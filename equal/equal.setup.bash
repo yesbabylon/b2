@@ -77,9 +77,14 @@ if [ "$APP_USERNAME" = "root" ]; then
     ./equal.run --do=user_pass-update --user_id=1 --password=$APP_PASSWORD --confirm=$APP_PASSWORD
     "
 else
-    print_color "yellow" "Creating the user $APP_USERNAME..."
+    print_color "yellow" "Creating the user $APP_USERNAME and granting admins rights..."
     docker exec "$USERNAME" bash -c "
-    ./equal.run --do=user_create --login=$APP_USERNAME --password=$APP_PASSWORD
+    ./equal.run --do=user_create --login=$APP_USERNAME@equal.local --password=$APP_PASSWORD
+    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=create
+    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=read
+    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=update
+    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=delete
+    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=manage
     "
 fi
 
