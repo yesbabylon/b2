@@ -72,7 +72,7 @@ creating user instances based on the provided data. The script performs the foll
    Checks for the existence of the ``.env`` file and creates it if it does not exist.
    Clears the contents of the ``.env`` file if it already exists.
 5. **Data Persistence:**
-   Writes the configuration data (``$data``) to the ``.env`` file, with each key-value pair separated by an equals sign (``=``)
+   Writes the configuration data (``$data``) to the ``.env`` file, with each key-value pair separated by an equal sign (``=``)
    and appended with a newline character (``\n``).
 6. **Initialization Script Execution:**
    Executes the ``init.bash`` script with the appropriate flags generated earlier. This script likely initializes the
