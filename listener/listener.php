@@ -8,8 +8,9 @@ $message = '';
 
 try {
     $allowed_routes = [
-            '/info',
             '/reboot',
+            '/info',
+            '/instances',
             '/instance/info',
             '/instance/create',
             '/instance/delete',
