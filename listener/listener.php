@@ -8,14 +8,14 @@ $message = '';
 
 try {
     $allowed_routes = [
-            '/reboot',
-            '/info',
-            '/instances',
-            '/instance/info',
-            '/instance/create',
-            '/instance/delete',
-            '/instance/restore'
-        ];
+        '/reboot',
+        '/info',
+        '/instances',
+        '/instance/info',
+        '/instance/create',
+        '/instance/delete',
+        '/instance/restore'
+    ];
 
     // By convention, we accept only POST requests
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -27,7 +27,7 @@ try {
         throw new Exception("unknown_route", 404);
     }
 
-    if($_SERVER['CONTENT_TYPE'] != 'application/json') {
+    if ($_SERVER['CONTENT_TYPE'] != 'application/json') {
         throw new Exception("invalid_body", 400);
     }
 
@@ -55,14 +55,13 @@ try {
     include_once $controller_file;
 
     // Call the controller function with the request data
-    if(!is_callable($handler)) {
+    if (!is_callable($handler)) {
         throw new Exception("missing_method", 501);
     }
 
-   $result = $handler($data);
-   list($message, $code) = [$result['message'], $result['code']];
-}
-catch (Exception $e) {
+    $result = $handler($data);
+    list($message, $code) = [$result['message'], $result['code']];
+} catch (Exception $e) {
     // Respond with the exception message and status code
     $message = $e->getMessage();
     $code = $e->getCode();
