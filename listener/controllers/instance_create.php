@@ -6,10 +6,10 @@ include_once '../helpers/http-response.php';
  * Create a user instance with the specified data.
  *
  * @param array $data
- * @return array
+ * @return array{code: int, message: string}
  */
-function instance_create(array $data): array {
-
+function instance_create(array $data): array
+{
     // Set default flags
     $flags = '';
 
@@ -53,7 +53,7 @@ function instance_create(array $data): array {
     exec("bash $init_bash_script $flags 2>&1");
 
     return [
-        'code'      => 201,
-        'message'   => ''
+        'code' => 201,
+        'message' => ''
     ];
 }
