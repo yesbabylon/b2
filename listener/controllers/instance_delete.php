@@ -12,14 +12,16 @@ function instance_delete(array $data): array
     $status_code = 201;
     $message = '';
 
-    $pwd = getcwd();
-
-    // going to /home/$data['instance']
-    chdir('/home/' . $data['instance']);
 
     if (!isset($data['instance']) || !is_string($data['instance']) || strlen($data['instance']) === 0) {
         $status_code = 400;
     } else {
+        // Get the current working directory
+        $pwd = getcwd();
+
+        // going to /home/$data['instance']
+        chdir('/home/' . $data['instance']);
+
         // Stop and remove the instance with docker-compose to /home/$data['instance']
         exec('docker-compose down -v');
 
