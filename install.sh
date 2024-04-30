@@ -121,7 +121,7 @@ cd /home/docker/accounts
 ln -s /root/b2/listener/equal-instance-listener.service /etc/systemd/system/equal-instance-listener.service
 
 # Start the listener service
-systemctl start equal-instance-listener.service
+systemctl enable equal-instance-listener.service
 
 # Start Portainer
 /home/docker/console_start.sh
