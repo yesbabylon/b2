@@ -6,7 +6,7 @@ include_once '../helpers/http-response.php';
  * Create a user instance with the specified data.
  *
  * @param array $data
- * @throws Exception
+ * @return array
  */
 function instance_create(array $data): array {
 
