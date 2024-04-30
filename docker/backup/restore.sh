@@ -13,7 +13,9 @@ else
     then
         # export vars from .env file
         set -a
-        . /home/$USERNAME/.env
+
+        # shellcheck disable=SC1090
+        . /home/"$USERNAME"/.env
 
         if [ ! -f "/home/$USERNAME/status/replication/enabled" ]
         then
@@ -24,15 +26,15 @@ else
         fi
 
         # stop main service
-        docker stop $USERNAME        
+        docker stop "$USERNAME"
         
         CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-        chmod +x $CURRENT_DIR/$TEMPLATE/restore.sh
-        $CURRENT_DIR/$TEMPLATE/restore.sh
+        chmod +x "$CURRENT_DIR"/"$TEMPLATE"/restore.sh
+        "$CURRENT_DIR"/"$TEMPLATE"/restore.sh
 
         # restart main service
-        cd /home/$USERNAME
+        cd /home/"$USERNAME" || exit
         docker-compose up -d
         
         set +a
