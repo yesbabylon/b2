@@ -15,8 +15,14 @@ function instance_delete(array $data): array
     if (!isset($data['instance']) || !is_string($data['instance']) || strlen($data['instance']) === 0) {
         $status_code = 400;
     } else {
-        exec('docker stop ' . $data['instance']);
-        exec('docker rm -f ' . $data['instance']);
+        // Stop and remove the instance with docker-compose to /home/$data['instance']
+        exec('docker-compose -v -f /home/' . $data['instance'] . '/docker-compose.yml down');
+
+        // Rename the instance directory to /home/$data['instance']_deleted
+        exec('mv /home/' . $data['instance'] . ' /home/' . $data['instance'] . '_deleted');
+
+        // Remove all files and directories in /home/$data['instance']_deleted but keep the directory
+        exec('rm -rf /home/' . $data['instance'] . '_deleted/*');
     }
 
     return [
