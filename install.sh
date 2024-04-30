@@ -118,7 +118,7 @@ cd /home/docker/accounts
 # vi .env ; /home/docker/accounts/init.sh
 
 # Add a symbolic link for the eQual instance listener service
-ln -s /root/b2/listener/equal-instance-listener.service /etc/systemd/system/equal-listener.service
+ln -s /root/b2/listener/equal-instance-listener.service /etc/systemd/system/equal-instance-listener.service
 
 # Start the listener service
 systemctl start equal-instance-listener.service
