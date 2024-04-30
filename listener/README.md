@@ -7,9 +7,9 @@
     * [Functionality of listener.php](#functionality-of-listenerphp)
   * [Installation](#installation)
   * [Routes explanation :](#routes-explanation-)
-    * [``/create-user-instance`` :](#create-user-instance-)
+    * [``/instance/create`` :](#instancecreate-)
       * [Purpose](#purpose)
-      * [Script Functionality](#script-functionality)
+      * [Script process task](#script-process-task)
       * [Usage](#usage)
         * [Example Request](#example-request)
         * [Example Response](#example-response)
@@ -48,69 +48,86 @@ repository.
 
 ## Routes explanation :
 
-### ``/create-user-instance`` :
+### ``/instance/create`` :
 
 #### Purpose
 
-The ``create-user-instance`` endpoint facilitates the creation of user instances with customizable configurations. This
-endpoint is designed to handle POST requests containing the necessary data to configure and initialize user instances.
+The ``instance/create`` endpoint facilitates the creation of user instances with customizable configurations.
+This endpoint is designed
+to handle POST requests containing the necessary data to configure and initialize user instances.
 
-#### Script Functionality
+#### Script process task
 
-The ``create_user_instance`` function, defined within the PHP script associated with this endpoint, implements the logic for
+The ``instance_create`` function, defined within the PHP script associated with this endpoint, implements the logic for
 creating user instances based on the provided data. The script performs the following tasks:
 
-1. **Request Method Verification:** Ensures that the request method is POST. If not, it throws an exception with a
-   status code of 405 (Method Not Allowed).
-2. **Flag Generation:** Constructs flags based on specific parameters present in the request body (``$data``). Flags are
-   used to customize the behavior of the user instance creation process.
-3. **Data Processing:**
-   Checks for specific parameters (**symbiose** and **equalpress**) in the request data and appends corresponding flags to the
-   ``$flags`` string if they are set to true.
-   Removes symbiose and equalpress keys from the request data to prevent duplication when writing to the ``.env`` file.
-4. **Environment File Management:**
-   Checks for the existence of the ``.env`` file and creates it if it does not exist.
-   Clears the contents of the ``.env`` file if it already exists.
-5. **Data Persistence:**
-   Writes the configuration data (``$data``) to the ``.env`` file, with each key-value pair separated by an equal sign (``=``)
-   and appended with a newline character (``\n``).
-6. **Initialization Script Execution:**
-   Executes the ``init.bash`` script with the appropriate flags generated earlier. This script likely initializes the
-   user instance based on the provided configuration.
-7. **HTTP Response:**
-   Sends an HTTP response with a status code of 200 (OK) and a message indicating successful user instance creation.
+1. **Set Default Flags:** Initializes a variable ``$flags`` with an empty string.
+2. **Check Request Data:** Checks if certain keys (``symbiose`` and ``equalpress``) exist in the input data array and if
+   they are set to true.
+   If they are, corresponding flags (``-s`` for symbiose and ``-w`` for equalpress) are appended to the ``$flags``
+   string.
+3. **Remove Specific Keys:** Removes the keys symbiose and equalpress from the input data array.
+4. **Create or Clear ``.env`` File:** Checks if a ``.env`` file exists at a specified path.
+   If it doesn't exist, it creates one using ``touch()`` and sets its permissions.
+   If it does exist, it clears its contents using ``file_put_contents()``.
+5. **Write Data to ``.env`` File:** Writes key-value pairs from the input data array to the ``.env`` file, each on a new
+   line.
+6. **Execute ``init.bash`` Script:** Executes a Bash script named ``init.bash`` located at a specific path (
+   ``/root/b2/equal/init.bash``) with the flags obtained earlier.
+7. **Return Response:** Returns a response array with a status code (**201 indicating successful creation**) and an
+   empty message.
 
 #### Usage
 
-To create a user instance using the ``create-user-instance`` endpoint:
+To create a user instance using the ``instance/create`` endpoint:
 
 Send a POST request to the endpoint with the desired configuration data in the request body.
-Ensure that the required parameters (symbiose and equalpress) are correctly set to indicate the desired behavior of the
-user instance.
+Ensure that the required parameters (``symbiose`` and ``equalpress``)
+are correctly set to indicate the desired behavior of the user instance.
 Handle the HTTP response to confirm the success or failure of the user instance creation operation.
 
 ##### Example Request
 
 ```http request
-POST /create-user-instance
+POST /instance/create
 Content-Type: application/json
 
 {
-  "symbiose": true,
-  "equalpress": true,
-  "other_param": "value"
+  "symbiose": true, // Optional key for Symbiose installation
+  "equalpress": true, // Optional key for eQualPress installation
+  
+  // Customer directoy created in /home
+  // Linux user created with the same name
+  // Docker container created with the same name
+  USERNAME: 'test.yb.run'
+  
+  // Applications credentials used for eQual, database and eQualPress
+  APP_USERNAME: 'root'
+  APP_PASSWORD: 'test'
+  
+  // CIPHER KEY for eQual config encryption safety
+  CIPHER_KEY: 'xxxxxxxxxxxxxx'
+  
+  //Nginx configuration
+  HTTPS_REDIRECT: 'noredirect'
+  
+  // Below are the variables that are used for an eQualPress installation
+  // Wordpress version
+  WP_VERSION: '6.4'
+  
+  //Wordpress admin email
+  WP_EMAIL: 'root@equal.local'
+  
+  // WordPress site title
+  WP_TITLE: 'eQualpress'
 }
 ```
 
 ##### Example Response
 
 ```http request
-HTTP/1.1 200 OK
+HTTP/1.1 201 OK
 Content-Type: application/json
-
-{
-  "message": "User instance created successfully!"
-}
 ```
 
 ##### Considerations
