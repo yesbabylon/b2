@@ -64,7 +64,7 @@ creating user instances based on the provided data. The script performs the foll
 1. **Set Default Flags:** Initializes a variable ``$flags`` with an empty string.
 2. **Check Request Data:** Checks if certain keys (``symbiose`` and ``equalpress``) exist in the input data array and if
    they are set to true.
-   If they are, corresponding flags (``-s`` for symbiose and ``-w`` for equalpress) are appended to the ``$flags``
+   If they are, corresponding flags (``-s`` for **symbiose** and ``-w`` for **equalpress**) are appended to the ``$flags``
    string.
 3. **Remove Specific Keys:** Removes the keys symbiose and equalpress from the input data array.
 4. **Create or Clear ``.env`` File:** Checks if a ``.env`` file exists at a specified path.
