@@ -2,12 +2,14 @@
 
 /**
  * Run a given command and retrieve the resulting output.
+ * ! Not sure
  *
+ * @param array $data
  * @return array{code: int, message: string}
  * @throws Exception
  */
 
-function info(): array
+function info(array $data): array
 {
     $do_cmd = function ($command) {
         $result = null;

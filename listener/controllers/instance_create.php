@@ -10,6 +10,9 @@ include_once '../helpers/http-response.php';
  */
 function instance_create(array $data): array
 {
+    $status_code = 201;
+    $message = '';
+
     // Set default flags
     $flags = '';
 
@@ -53,7 +56,7 @@ function instance_create(array $data): array
     exec("bash $init_bash_script $flags 2>&1");
 
     return [
-        'code' => 201,
-        'message' => ''
+        'code' => $status_code,
+        'message' => $message
     ];
 }

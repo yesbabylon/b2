@@ -2,18 +2,27 @@
 
 /**
  * Retrieve information about a given docker instance.
+ * ! Not sure
  *
- * @param array $data
+ * @param array{instance: string} $data
  * @return array{code: int, message: string}
  */
 function instance_info(array $data): array
 {
+    $status_code = 201;
+    $message = '';
+
     $json = exec('docker stats ' . $data['instance'] . ' --no-stream --format "{{ json . }}"');
     $result = json_decode($json);
-    $response = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    if ($result === null) {
+        $status_code = 404;
+    } else {
+        $message = json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
 
     return [
-        'code' => 201,
-        'message' => $response
+        'code' => $status_code,
+        'message' => $message
     ];
 }
