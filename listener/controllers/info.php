@@ -2,6 +2,7 @@
 
 /**
  * Run a given command and retrieve the resulting output.
+ *
  * @return array{code: int, message: string}
  * @throws Exception
  */
