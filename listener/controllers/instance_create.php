@@ -8,12 +8,7 @@ include_once '../helpers/http-response.php';
  * @param array $data
  * @throws Exception
  */
-function create_user_instance(array $data): void
-{
-    // Verify that the request method is POST
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception("HTTP Method not allowed!", 405);
-    }
+function instance_create(array $data): array {
 
     // Set default flags
     $flags = '';
@@ -57,6 +52,8 @@ function create_user_instance(array $data): void
     // Execute the init.bash script with the flags
     exec("bash $init_bash_script $flags 2>&1");
 
-    // Respond with HTTP status code 200 (OK)
-    send_http_response("User instance created successfully!", 200);
+    return [
+        'code'      => 201,
+        'message'   => ''
+    ];
 }
