@@ -355,11 +355,13 @@ Content-Type: application/json
 HTTP/1.1 201 OK
 Content-Type: application/json
 
-[
-  "test1.yb.run",
-  "test2.yb.run",
-  "test3.yb.run"
-]
+{
+  "instances": [
+      "test1.yb.run",
+      "test2.yb.run",
+      "test3.yb.run"
+    ]
+}
 ```
 
 ### ``/reboot`` :
