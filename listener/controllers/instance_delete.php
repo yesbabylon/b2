@@ -2,7 +2,6 @@
 
 /**
  * Delete an instance.
- * ! Not sure
  *
  * @param array{instance: string} $data
  * @return array
