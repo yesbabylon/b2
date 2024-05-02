@@ -130,7 +130,7 @@ systemctl start fail2ban
 systemctl enable equal-instance-listener.service
 
 # Start the listener service
-sudo systemctl start equal-instance-listener.service
+systemctl start equal-instance-listener.service
 
 # Start Portainer
 /home/docker/console_start.sh
