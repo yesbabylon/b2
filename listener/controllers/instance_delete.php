@@ -33,6 +33,9 @@ function instance_delete(array $data): array
 
         // return to the previous directory
         chdir($pwd);
+
+        // Delete linux user
+        exec('userdel -f ' . $data['instance']);
     }
 
     return [
