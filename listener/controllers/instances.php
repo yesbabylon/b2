@@ -2,7 +2,6 @@
 
 /**
  * Get the list of instances.
- * ! Not sure
  *
  * @param array $data
  * @return array{code: int, message: string}
