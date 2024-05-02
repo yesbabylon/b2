@@ -293,7 +293,7 @@ HTTP/1.1 201 OK
 Content-Type: application/json
 
 {
-  "name": "example_instance",
+  "name": "test.yb.run",
   "cpu_usage": "10%",
   "memory_usage": "500MB",
   "network_io": {
