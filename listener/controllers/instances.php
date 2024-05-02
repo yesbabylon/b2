@@ -13,24 +13,24 @@ function instances(array $data): array
     $message = '';
 
     // Get the list of instances
-    $instances = scandir('/home');
+    $directories = scandir('/home');
 
-    if ($instances === false) {
+    if ($directories === false) {
         $status_code = 500;
     } else {
         // Remove the '.' and '..' and 'ubuntu' and 'docker' entries
-        $instances = array_values(array_diff($instances, ['.', '..', 'ubuntu', 'docker']));
+        $directories = array_values(array_diff($directories, ['.', '..', 'ubuntu', 'docker']));
 
         // remove _deleted instances
-        $active_instances = []
+        $active_instances = [];
 
-        foreach ($instances as $instance) {
-            if () {
-                $message[] = $instance;
+        foreach ($directories as $instance) {
+            if (str_contains($instance, '_deleted') === false) {
+                $active_instances[] = $instance;
             }
         }
 
-        $message = json_encode($instances, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $message = json_encode($active_instances, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
     return [
