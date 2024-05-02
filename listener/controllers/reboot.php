@@ -2,7 +2,6 @@
 
 /**
  * Reboot the system.
- * ! Not sure
  *
  * @param array $data
  * @return array{code: int, message: string}
