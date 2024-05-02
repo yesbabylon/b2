@@ -1,51 +1,53 @@
 # User Instance Management System
 
 <!-- TOC -->
+
 * [User Instance Management System](#user-instance-management-system)
-  * [Overview](#overview)
-    * [Purpose of the Listener](#purpose-of-the-listener)
-    * [Functionality of listener.php](#functionality-of-listenerphp)
-  * [Installation](#installation)
-  * [Routes explanation :](#routes-explanation-)
-    * [``/instance/create`` :](#instancecreate-)
-      * [Purpose](#purpose)
-      * [Script process task](#script-process-task)
-      * [Usage](#usage)
-        * [Request parameters](#request-parameters)
-        * [Example Request](#example-request)
-        * [Example Response](#example-response)
-        * [Considerations](#considerations)
-    * [``/instance/delete`` :](#instancedelete-)
-      * [Purpose](#purpose-1)
-      * [Script process task](#script-process-task-1)
-      * [Usage](#usage-1)
-        * [Request parameters](#request-parameters-1)
-        * [Example Request](#example-request-1)
-        * [Example Response](#example-response-1)
-        * [Considerations](#considerations-1)
-    * [``/instance/info`` :](#instanceinfo-)
-      * [Purpose](#purpose-2)
-      * [Script process task](#script-process-task-2)
-      * [Usage](#usage-2)
-        * [Request parameters](#request-parameters-2)
-        * [Example Request](#example-request-2)
-        * [Example Response](#example-response-2)
-        * [Considerations](#considerations-2)
-    * [``/instance/restore``](#instancerestore)
-    * [``/instances`` :](#instances-)
-      * [Purpose](#purpose-3)
-      * [Script process task](#script-process-task-3)
-      * [Usage](#usage-3)
-        * [Example Request](#example-request-3)
-        * [Example Response](#example-response-3)
-    * [``/reboot`` :](#reboot-)
-      * [Purpose](#purpose-4)
-      * [Script process task](#script-process-task-4)
-      * [Usage](#usage-4)
-        * [Request parameters](#request-parameters-3)
-        * [Example Request](#example-request-4)
-        * [Example Response](#example-response-4)
-    * [``/info``](#info)
+    * [Overview](#overview)
+        * [Purpose of the Listener](#purpose-of-the-listener)
+        * [Functionality of listener.php](#functionality-of-listenerphp)
+    * [Installation](#installation)
+    * [Routes explanation :](#routes-explanation-)
+        * [``/instance/create`` :](#instancecreate-)
+            * [Purpose](#purpose)
+            * [Script process task](#script-process-task)
+            * [Usage](#usage)
+                * [Request parameters](#request-parameters)
+                * [Example Request](#example-request)
+                * [Example Response](#example-response)
+                * [Considerations](#considerations)
+        * [``/instance/delete`` :](#instancedelete-)
+            * [Purpose](#purpose-1)
+            * [Script process task](#script-process-task-1)
+            * [Usage](#usage-1)
+                * [Request parameters](#request-parameters-1)
+                * [Example Request](#example-request-1)
+                * [Example Response](#example-response-1)
+                * [Considerations](#considerations-1)
+        * [``/instance/info`` :](#instanceinfo-)
+            * [Purpose](#purpose-2)
+            * [Script process task](#script-process-task-2)
+            * [Usage](#usage-2)
+                * [Request parameters](#request-parameters-2)
+                * [Example Request](#example-request-2)
+                * [Example Response](#example-response-2)
+                * [Considerations](#considerations-2)
+        * [``/instance/restore``](#instancerestore)
+        * [``/instances`` :](#instances-)
+            * [Purpose](#purpose-3)
+            * [Script process task](#script-process-task-3)
+            * [Usage](#usage-3)
+                * [Example Request](#example-request-3)
+                * [Example Response](#example-response-3)
+        * [``/reboot`` :](#reboot-)
+            * [Purpose](#purpose-4)
+            * [Script process task](#script-process-task-4)
+            * [Usage](#usage-4)
+                * [Request parameters](#request-parameters-3)
+                * [Example Request](#example-request-4)
+                * [Example Response](#example-response-4)
+        * [``/info``](#info)
+
 <!-- TOC -->
 
 ## Overview
@@ -286,6 +288,8 @@ Content-Type: application/json
 
 ##### Example Response
 
+[//]: # Todo: Verify that the result is correct
+
 ```http request
 HTTP/1.1 201 OK
 Content-Type: application/json
@@ -309,22 +313,27 @@ Ensure that the specified instance identifier (`instance`) corresponds to a vali
 
 In progress...
 
-
 ### ``/instances`` :
 
 #### Purpose
 
 The `/instances` endpoint provides a list of active user instances available on the system.
-This endpoint is designed to handle POST requests with an empty JSON body and returns a JSON array containing the names of active user instances.
+This endpoint is designed to handle POST requests with an empty JSON body and returns a JSON array containing the names
+of active user instances.
 
 #### Script process task
 
-The `instances` function, defined within the PHP script associated with this endpoint, implements the logic for retrieving the list of active user instances. The script performs the following tasks:
+The `instances` function, defined within the PHP script associated with this endpoint, implements the logic for
+retrieving the list of active user instances. The script performs the following tasks:
 
-1. **Retrieve Directory Listing:** Uses the `scandir` function to retrieve a list of directories in the `/home` directory, which typically represent user instances.
-2. **Handle Error Conditions:** Checks if the directory listing operation was successful. If not, it sets the status code to `500` indicating an internal server error.
-3. **Filter Active Instances:** Removes entries corresponding to system directories (e.g., `'.'`, `'..'`, `'ubuntu'`, `'docker'`) and instances marked for deletion (`'_deleted'` suffix).
-4. **Return Response:** Returns a response array with a status code (`201` indicating successful operation) and a JSON-encoded array containing the names of active user instances.
+1. **Retrieve Directory Listing:** Uses the `scandir` function to retrieve a list of directories in the `/home`
+   directory, which typically represent user instances.
+2. **Handle Error Conditions:** Checks if the directory listing operation was successful. If not, it sets the status
+   code to `500` indicating an internal server error.
+3. **Filter Active Instances:** Removes entries corresponding to system directories (
+   e.g., `'.'`, `'..'`, `'ubuntu'`, `'docker'`) and instances marked for deletion (`'_deleted'` suffix).
+4. **Return Response:** Returns a response array with a status code (`201` indicating successful operation) and a
+   JSON-encoded array containing the names of active user instances.
 
 #### Usage
 
@@ -364,10 +373,13 @@ This endpoint is designed to handle POST requests triggering a reboot operation 
 
 #### Script process task
 
-The `reboot` function, defined within the PHP script associated with this endpoint, initiates the system reboot based on the provided data. The script performs the following task:
+The `reboot` function, defined within the PHP script associated with this endpoint, initiates the system reboot based on
+the provided data. The script performs the following task:
 
-1. **Reboot System:** Executes a command to reboot the system in detached mode, allowing the function to return immediately.
-    - Uses the `exec` function to run the command `nohup sh -c "sleep 5 && reboot" > /dev/null 2>&1 &`, which initiates a system reboot after a delay of 5 seconds.
+1. **Reboot System:** Executes a command to reboot the system in detached mode, allowing the function to return
+   immediately.
+    - Uses the `exec` function to run the command `nohup sh -c "sleep 5 && reboot" > /dev/null 2>&1 &`, which initiates
+      a system reboot after a delay of 5 seconds.
 
 #### Usage
 
