@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script must be run with root privileges
+# #memo - This script must be run with root privileges
 
 # Define constants for using some colors
 GREEN='\033[0;32m'
@@ -16,7 +16,7 @@ INSTALL_DIR=$(pwd)
 # yes | apt-get remove postfix
 
 # Make sure aptitude cache is up-to-date
-yes | apt-get update 
+yes | apt-get update
 
 # Set timezone to UTC (for synch with containers having UTC as default TZ)
 timedatectl set-timezone UTC
@@ -34,22 +34,6 @@ cp "$INSTALL_DIR"/conf/etc/vsftpd.conf /etc/vsftpd.conf
 
 # Restart FTP service
 systemctl restart vsftpd
-
-# Install F2B service
-yes | apt-get install fail2ban
-cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
-cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
-cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
-touch /etc/fail2ban/emptylog
-
-# Make sure fail2ban starts on boot
-systemctl enable fail2ban
-
-# Start fail2ban
-systemctl start fail2ban
-
-# Restart F2B service
-# systemctl restart fail2ban
 
 # Add logrotate directive for nginx
 cp "$INSTALL_DIR"/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
@@ -72,9 +56,6 @@ cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 
 mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
-
-# Create a odoo user (to link host with VM), no home, no login, no prompt
-# adduser --no-create-home --disabled-login --gecos "" odoo
 
 # Set scripts as executable
 chmod +x /home/docker/console_start.sh
@@ -112,6 +93,19 @@ cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
 # force nginx to load new config
 docker exec nginx-proxy nginx -s reload
 
+# Install F2B service (#memo - we need to do this after nginx init since F2B relies on nginx log folder)
+yes | apt-get install fail2ban
+cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
+cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
+cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
+touch /etc/fail2ban/emptylog
+
+# Make sure fail2ban starts on boot
+systemctl enable fail2ban
+
+# Restart F2B service
+systemctl restart fail2ban
+
 # Edit account parameters and then Run script for account creation
 # shellcheck disable=SC2164
 cd /home/docker/accounts
@@ -128,9 +122,6 @@ systemctl enable equal-instance-listener.service
 
 # Start the listener service
 systemctl start equal-instance-listener.service
-
-# Start fail2ban again
-systemctl start fail2ban
 
 # Start Portainer
 /home/docker/console_start.sh
