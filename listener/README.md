@@ -226,14 +226,6 @@ HTTP/1.1 201 OK
 Content-Type: application/json
 ```
 
-##### Considerations
-
-Ensure that the specified instance identifier (`instance`) corresponds to a valid user instance.
-Handle errors gracefully and provide appropriate feedback to the user in case of failures during the deletion process.
-Monitor the execution of the deletion script for any unexpected behaviors or issues.
-
-Here's the documentation for the `instance_info` script:
-
 ### ``/instance/info`` :
 
 #### Purpose
