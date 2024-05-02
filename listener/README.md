@@ -96,29 +96,29 @@ Content-Type: application/json
   "symbiose": true, // Optional key for Symbiose installation
   "equalpress": true, // Optional key for eQualPress installation
   
-  // Customer directoy created in /home
-  // Linux user created with the same name
-  // Docker container created with the same name
+  # Customer directoy created in /home
+  # Linux user created with the same name
+  # Docker container created with the same name
   USERNAME: 'test.yb.run'
   
-  // Applications credentials used for eQual, database and eQualPress
+  # Applications credentials used for eQual, database and eQualPress
   APP_USERNAME: 'root'
   APP_PASSWORD: 'test'
   
-  // CIPHER KEY for eQual config encryption safety
+  # CIPHER KEY for eQual config encryption safety
   CIPHER_KEY: 'xxxxxxxxxxxxxx'
   
-  //Nginx configuration
+  # Nginx configuration
   HTTPS_REDIRECT: 'noredirect'
   
-  // Below are the variables that are used for an eQualPress installation
-  // Wordpress version
+  # Below are the variables that are used for an eQualPress installation
+  # Wordpress version
   WP_VERSION: '6.4'
   
-  //Wordpress admin email
+  # Wordpress admin email
   WP_EMAIL: 'root@equal.local'
   
-  // WordPress site title
+  # WordPress site title
   WP_TITLE: 'eQualpress'
 }
 ```
