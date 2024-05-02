@@ -29,7 +29,7 @@ function instances(array $data): array
             }
         }
 
-        $message = json_encode($active_instances, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $message = json_encode(['instances' => $active_instances], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
     return [
