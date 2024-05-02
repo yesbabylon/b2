@@ -143,14 +143,14 @@ Content-Type: application/json
 {
   "symbiose": true,
   "equalpress": true,
-  USERNAME: 'test.yb.run'
-  APP_USERNAME: 'root'
-  APP_PASSWORD: 'test'
-  CIPHER_KEY: 'xxxxxxxxxxxxxx'
-  HTTPS_REDIRECT: 'noredirect'
-  WP_VERSION: '6.4'
-  WP_EMAIL: 'root@equal.local'
-  WP_TITLE: 'eQualpress'
+  "USERNAME": 'test.yb.run'
+  "APP_USERNAME": 'root'
+  "APP_PASSWORD": 'test'
+  "CIPHER_KEY": 'xxxxxxxxxxxxxx'
+  "HTTPS_REDIRECT": 'noredirect'
+  "WP_VERSION": '6.4'
+  "WP_EMAIL": 'root@equal.local'
+  "WP_TITLE": 'eQualpress'
 }
 ```
 
