@@ -356,9 +356,9 @@ HTTP/1.1 201 OK
 Content-Type: application/json
 
 [
-  "example_instance_1",
-  "example_instance_2",
-  "example_instance_3"
+  "test1.yb.run",
+  "test2.yb.run",
+  "test3.yb.run"
 ]
 ```
 
