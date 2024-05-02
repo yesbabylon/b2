@@ -329,7 +329,7 @@ retrieving the list of active user instances. The script performs the following 
 2. **Handle Error Conditions:** Checks if the directory listing operation was successful. If not, it sets the status
    code to `500` indicating an internal server error.
 3. **Filter Active Instances:** Removes entries corresponding to system
-   directories (`'.'`, `'..'`, `'ubuntu'`, `'docker'`) and instances marked for deletion (`'_deleted'` suffix).
+   directories (`.`, `..`, `ubuntu`, `docker`) and instances marked for deletion (`_deleted` suffix).
 4. **Return Response:** Returns a response array with a status code (`201` indicating successful operation) and a
    JSON-encoded array containing the names of active user instances.
 
