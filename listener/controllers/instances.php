@@ -19,7 +19,17 @@ function instances(array $data): array
         $status_code = 500;
     } else {
         // Remove the '.' and '..' and 'ubuntu' and 'docker' entries
-        $instances = array_diff($instances, ['.', '..', 'ubuntu', 'docker']);
+        $instances = array_values(array_diff($instances, ['.', '..', 'ubuntu', 'docker']));
+
+        // remove _deleted instances
+        $active_instances = []
+
+        foreach ($instances as $instance) {
+            if () {
+                $message[] = $instance;
+            }
+        }
+
         $message = json_encode($instances, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
