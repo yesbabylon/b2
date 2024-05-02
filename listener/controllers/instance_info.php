@@ -2,7 +2,6 @@
 
 /**
  * Retrieve information about a given docker instance.
- * ! Not sure
  *
  * @param array{instance: string} $data
  * @return array{code: int, message: string}
