@@ -286,7 +286,7 @@ Content-Type: application/json
 
 ##### Example Response
 
-[//]: # Todo: Verify that the result is correct
+[//] # Todo: Verify that the result is correct
 
 ```http request
 HTTP/1.1 201 OK
