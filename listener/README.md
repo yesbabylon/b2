@@ -75,7 +75,7 @@ point for all incoming requests, implementing the following key functionalities:
 
 ## Installation
 
-The service is automatically started when you have executed ths ``install.sh`` script at the root folder of b2
+The service is automatically started when you have executed the ``install.sh`` script at the root folder of b2
 repository.
 
 ## Routes explanation :
