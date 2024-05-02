@@ -64,8 +64,8 @@ or external systems and the underlying infrastructure responsible for creating a
 
 ### Functionality of listener.php
 
-The ``listener.php`` script embodies the core functionality of the User Instance Management System. It serves as the entry
-point for all incoming requests, implementing the following key functionalities:
+The ``listener.php`` script embodies the core functionality of the User Instance Management System.
+It serves as the entry point for all incoming requests, implementing the following key functionalities:
 
 - **Request Routing:** Determines the appropriate action to take based on the requested endpoint.
 - **Data Parsing:** Extracts relevant data from incoming requests for further processing.
@@ -328,8 +328,8 @@ retrieving the list of active user instances. The script performs the following 
    directory, which typically represent user instances.
 2. **Handle Error Conditions:** Checks if the directory listing operation was successful. If not, it sets the status
    code to `500` indicating an internal server error.
-3. **Filter Active Instances:** Removes entries corresponding to system directories (
-   e.g., `'.'`, `'..'`, `'ubuntu'`, `'docker'`) and instances marked for deletion (`'_deleted'` suffix).
+3. **Filter Active Instances:** Removes entries corresponding to system
+   directories (`'.'`, `'..'`, `'ubuntu'`, `'docker'`) and instances marked for deletion (`'_deleted'` suffix).
 4. **Return Response:** Returns a response array with a status code (`201` indicating successful operation) and a
    JSON-encoded array containing the names of active user instances.
 
