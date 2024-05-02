@@ -123,14 +123,14 @@ ln -s /root/b2/listener/equal-instance-listener.service /etc/systemd/system/equa
 # Reload daemon
 systemctl daemon-reload
 
-# Start fail2ban again
-systemctl start fail2ban
-
 # Enable the listener service
 systemctl enable equal-instance-listener.service
 
 # Start the listener service
 systemctl start equal-instance-listener.service
+
+# Start fail2ban again
+systemctl start fail2ban
 
 # Start Portainer
 /home/docker/console_start.sh
