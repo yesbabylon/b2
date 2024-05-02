@@ -64,7 +64,7 @@ or external systems and the underlying infrastructure responsible for creating a
 
 ### Functionality of listener.php
 
-The listener.php script embodies the core functionality of the User Instance Management System. It serves as the entry
+The ``listener.php`` script embodies the core functionality of the User Instance Management System. It serves as the entry
 point for all incoming requests, implementing the following key functionalities:
 
 - **Request Routing:** Determines the appropriate action to take based on the requested endpoint.
@@ -121,18 +121,18 @@ Handle the HTTP response to confirm the success or failure of the user instance 
 
 ##### Request parameters
 
-| Parameter      | Required | Description                                                                                                                    |
-|----------------|:--------:|--------------------------------------------------------------------------------------------------------------------------------|
-| symbiose       |  false   | Flag for installing Symbiose                                                                                                   |
-| equalpress     |  false   | Flag for installing eQualPress                                                                                                 |
-| USERNAME       |   true   | Customer directory created in /home </br>Linux user created with the same name</br>Docker container created with the same name |
-| APP_USERNAME   |   true   | Applications credentials used for eQual, database and eQualPress                                                               |
-| APP_PASSWORD   |   true   | Applications credentials used for eQual, database and eQualPress                                                               |
-| CIPHER_KEY     |   true   | CIPHER KEY for eQual config encryption safety                                                                                  |
-| HTTPS_REDIRECT |   true   | Nginx configuration                                                                                                            |
-| WP_VERSION     |  false   | Wordpress version                                                                                                              |
-| WP_EMAIL       |  false   | Wordpress admin email                                                                                                          |
-| WP_TITLE       |  false   | WordPress site title                                                                                                           |
+| Parameter      | Required | Description                                                                                                                            |
+|----------------|:--------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| symbiose       |  false   | Flag for installing Symbiose                                                                                                           |
+| equalpress     |  false   | Flag for installing eQualPress                                                                                                         |
+| USERNAME       |   true   | - Customer directory created in /home </br> - Linux user created with the same name</br> - Docker container created with the same name |
+| APP_USERNAME   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |
+| APP_PASSWORD   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |
+| CIPHER_KEY     |   true   | CIPHER KEY for eQual config encryption safety                                                                                          |
+| HTTPS_REDIRECT |   true   | Nginx configuration                                                                                                                    |
+| WP_VERSION     |  false   | Wordpress version                                                                                                                      |
+| WP_EMAIL       |  false   | Wordpress admin email                                                                                                                  |
+| WP_TITLE       |  false   | WordPress site title                                                                                                                   |
 
 ##### Example Request
 
