@@ -22,7 +22,7 @@
         * [Request parameters](#request-parameters-1)
         * [Example Request](#example-request-1)
         * [Example Response](#example-response-1)
-    * [``/instance/info`` :](#instanceinfo-)
+    * [``/instance/status`` :](#instancestatus-)
       * [Purpose](#purpose-2)
       * [Script process task](#script-process-task-2)
       * [Usage](#usage-2)
@@ -44,7 +44,7 @@
         * [Request parameters](#request-parameters-3)
         * [Example Request](#example-request-4)
         * [Example Response](#example-response-4)
-    * [``/info`` :](#info-)
+    * [``/status`` :](#status-)
 <!-- TOC -->
 
 ## Overview
@@ -225,17 +225,17 @@ HTTP/1.1 201 OK
 Content-Type: application/json
 ```
 
-### ``/instance/info`` :
+### ``/instance/status`` :
 
 #### Purpose
 
-The `instance/info` endpoint facilitates the retrieval of information about a specified Docker instance.
+The `instance/status` endpoint facilitates the retrieval of information about a specified Docker instance.
 This endpoint is designed to handle POST requests containing the necessary data to identify the instance for which
 information is to be retrieved.
 
 #### Script process task
 
-The `instance_info` function, defined within the PHP script associated with this endpoint, implements the logic for
+The `instance_status` function, defined within the PHP script associated with this endpoint, implements the logic for
 retrieving information about a Docker instance based on the provided data.
 The script performs the following tasks:
 
@@ -252,7 +252,7 @@ The script performs the following tasks:
 
 #### Usage
 
-To retrieve information about a Docker instance using the `instance/info` endpoint:
+To retrieve information about a Docker instance using the `instance/status` endpoint:
 
 Send a POST request to the endpoint with the identifier of the instance for which information is to be
 retrieved (`instance`) in the request body.
@@ -267,7 +267,7 @@ Handle the HTTP response to access the information about the Docker instance.
 ##### Example Request
 
 ```http request
-POST /instance/info
+POST /instance/status
 Content-Type: application/json
 
 {
@@ -399,6 +399,6 @@ HTTP/1.1 201 OK
 Content-Type: application/json
 ```
 
-### ``/info`` :
+### ``/status`` :
 
 In progress...

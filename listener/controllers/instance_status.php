@@ -6,7 +6,7 @@
  * @param array{instance: string} $data
  * @return array{code: int, message: string}
  */
-function instance_info(array $data): array
+function instance_status(array $data): array
 {
     $status_code = 201;
     $message = '';

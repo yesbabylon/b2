@@ -9,9 +9,9 @@ $message = '';
 try {
     $allowed_routes = [
         '/reboot',
-        '/info',
+        '/status',
         '/instances',
-        '/instance/info',
+        '/instance/status',
         '/instance/create',
         '/instance/delete',
         '/instance/restore'

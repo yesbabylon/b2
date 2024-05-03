@@ -9,7 +9,7 @@
  * @throws Exception
  */
 
-function info(array $data): array
+function status(array $data): array
 {
     $do_cmd = function ($command) {
         $result = null;
