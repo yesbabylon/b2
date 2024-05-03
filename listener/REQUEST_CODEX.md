@@ -51,7 +51,7 @@ http://0.0.0.0:8000/instances \
 -d '{}'
 ```
 
-## ``/instance/reboot``
+## ``/reboot``
 
 ```bash
 curl -X POST \
