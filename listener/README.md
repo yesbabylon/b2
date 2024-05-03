@@ -1,53 +1,55 @@
 # User Instance Management System
 
 <!-- TOC -->
+
 * [User Instance Management System](#user-instance-management-system)
-  * [Overview](#overview)
-    * [Purpose of the Listener](#purpose-of-the-listener)
-    * [Functionality of listener.php](#functionality-of-listenerphp)
-  * [Installation](#installation)
-  * [Routes explanation :](#routes-explanation-)
-    * [``/instance/create`` :](#instancecreate-)
-      * [Purpose](#purpose)
-      * [Script process task](#script-process-task)
-      * [Usage](#usage)
-        * [Request parameters](#request-parameters)
-        * [Example Request](#example-request)
-        * [Example Response](#example-response)
-        * [Considerations](#considerations)
-    * [``/instance/delete`` :](#instancedelete-)
-      * [Purpose](#purpose-1)
-      * [Script process task](#script-process-task-1)
-      * [Usage](#usage-1)
-        * [Request parameters](#request-parameters-1)
-        * [Example Request](#example-request-1)
-        * [Example Response](#example-response-1)
-    * [``/instance/status`` :](#instancestatus-)
-      * [Purpose](#purpose-2)
-      * [Script process task](#script-process-task-2)
-      * [Usage](#usage-2)
-        * [Request parameters](#request-parameters-2)
-        * [Example Request](#example-request-2)
-        * [Example Response](#example-response-2)
-        * [Considerations](#considerations-1)
-    * [``/instance/restore`` :](#instancerestore-)
-    * [``/instances`` :](#instances-)
-      * [Purpose](#purpose-3)
-      * [Script process task](#script-process-task-3)
-      * [Usage](#usage-3)
-        * [Example Request](#example-request-3)
-        * [Example Response](#example-response-3)
-    * [``/reboot`` :](#reboot-)
-      * [Purpose](#purpose-4)
-      * [Script process task](#script-process-task-4)
-      * [Usage](#usage-4)
-        * [Request parameters](#request-parameters-3)
-        * [Example Request](#example-request-4)
-        * [Example Response](#example-response-4)
-    * [``/status`` :](#status-)
-    * [``/ip`` :](#ip-)
-    * [``/instance/logs`` :](#instancelogs-)
-    * [``/instance/backup`` :](#instancebackup-)
+    * [Overview](#overview)
+        * [Purpose of the Listener](#purpose-of-the-listener)
+        * [Functionality of listener.php](#functionality-of-listenerphp)
+    * [Installation](#installation)
+    * [Routes explanation :](#routes-explanation-)
+        * [``/instance/create`` :](#instancecreate-)
+            * [Purpose](#purpose)
+            * [Script process task](#script-process-task)
+            * [Usage](#usage)
+                * [Request parameters](#request-parameters)
+                * [Example Request](#example-request)
+                * [Example Response](#example-response)
+                * [Considerations](#considerations)
+        * [``/instance/delete`` :](#instancedelete-)
+            * [Purpose](#purpose-1)
+            * [Script process task](#script-process-task-1)
+            * [Usage](#usage-1)
+                * [Request parameters](#request-parameters-1)
+                * [Example Request](#example-request-1)
+                * [Example Response](#example-response-1)
+        * [``/instance/status`` :](#instancestatus-)
+            * [Purpose](#purpose-2)
+            * [Script process task](#script-process-task-2)
+            * [Usage](#usage-2)
+                * [Request parameters](#request-parameters-2)
+                * [Example Request](#example-request-2)
+                * [Example Response](#example-response-2)
+                * [Considerations](#considerations-1)
+        * [``/instance/restore`` :](#instancerestore-)
+        * [``/instances`` :](#instances-)
+            * [Purpose](#purpose-3)
+            * [Script process task](#script-process-task-3)
+            * [Usage](#usage-3)
+                * [Example Request](#example-request-3)
+                * [Example Response](#example-response-3)
+        * [``/reboot`` :](#reboot-)
+            * [Purpose](#purpose-4)
+            * [Script process task](#script-process-task-4)
+            * [Usage](#usage-4)
+                * [Request parameters](#request-parameters-3)
+                * [Example Request](#example-request-4)
+                * [Example Response](#example-response-4)
+        * [``/status`` :](#status-)
+        * [``/ip`` :](#ip-)
+        * [``/instance/logs`` :](#instancelogs-)
+        * [``/instance/backup`` :](#instancebackup-)
+
 <!-- TOC -->
 
 ## Overview
@@ -56,6 +58,20 @@ The User Instance Management System serves as a robust solution for creating and
 configurations. At its core, the system revolves around a listener component, primarily embodied in the ``listener.php``
 script. This listener acts as the gateway, receiving incoming requests and directing them to the appropriate handlers
 for processing.
+
+### Charts
+
+For a better understanding of the system, the following charts provide an overview of the key components and their
+interactions:
+
+- **System organization:** Illustrates the high-level organization of the User Instance Management System.</br>
+    <div style="text-align:center"><img src="../doc/Organization.png"  alt="Organization"/></div>
+
+- **Backup and Restore Process:** Outlines the process flow for backing up and restoring user instances.</br>
+    <div style="text-align:center"><img src="../doc/Backups.png"  alt="Backups"/></div>
+
+- **Host messages summary:** Summarizes the messages exchanged between the host and the other systems.</br>
+    <div style="text-align:center"><img src="../doc/Host_messages_summary.png"  alt="Host messages summary"/></div>
 
 ### Purpose of the Listener
 
