@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-05-03T13:21:20.699Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="waWP_H2u-hffUn_vvXq0" version="24.2.5" type="device">
+<mxfile host="Electron" modified="2024-05-03T13:22:39.062Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="DeitDf-B1wq1T1DNoWUa" version="24.2.5" type="device">
   <diagram name="Host messages summary" id="2YBvvXClWsGukQMizWep">
-    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="574" dy="334" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -159,8 +159,8 @@
             <mxPoint x="-30" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="MP3uWI7jj2dFw3u_TR2O-12" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;{ ip_address }&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
-          <mxGeometry x="391" y="569" width="60" height="30" as="geometry" />
+        <mxCell id="MP3uWI7jj2dFw3u_TR2O-12" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;{ ip_address }&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="391" y="575" width="80" height="30" as="geometry" />
         </mxCell>
         <mxCell id="MP3uWI7jj2dFw3u_TR2O-13" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Set public ip&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
           <mxGeometry x="391" y="558" width="80" height="30" as="geometry" />
