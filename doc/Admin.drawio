@@ -1,0 +1,129 @@
+<mxfile host="Electron" modified="2024-05-03T14:43:21.967Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.2.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="0uXD-DsQui3OJEY_v2Jk" version="24.2.5" type="device">
+  <diagram name="Admin" id="zxFufBINW5DzYveBnkqI">
+    <mxGraphModel dx="1793" dy="283" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1354" pageHeight="762" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="yAXcgGLpdITlc99WxAyp-1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeWidth=4;strokeColor=#8C4FFF;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="277" y="906" width="800" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-2" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;&lt;u&gt;Stats&lt;/u&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;textShadow=1;" vertex="1" parent="1">
+          <mxGeometry x="291" y="840" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;shadow=1;textShadow=1;fontStyle=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="515" y="986" as="sourcePoint" />
+            <mxPoint x="841" y="986" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-5" value="&lt;b&gt;/host/status&lt;/b&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];textShadow=0;" vertex="1" connectable="0" parent="yAXcgGLpdITlc99WxAyp-4">
+          <mxGeometry x="-0.0653" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;shadow=1;textShadow=1;fontStyle=1" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="515" y="1045.9999999999995" as="sourcePoint" />
+            <mxPoint x="841" y="1045.9999999999995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-7" value="&lt;b&gt;/instance/status&lt;/b&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];textShadow=0;" vertex="1" connectable="0" parent="yAXcgGLpdITlc99WxAyp-6">
+          <mxGeometry x="-0.0819" y="-1" relative="1" as="geometry">
+            <mxPoint x="12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-8" value="Admin Host" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="395" y="966" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-9" value="Stats&lt;br&gt;Host" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="841" y="966" width="120" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-10" value="&lt;font color=&quot;#8c4fff&quot; style=&quot;font-size: 18px;&quot;&gt;Private&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;textShadow=1;" vertex="1" parent="1">
+          <mxGeometry x="279" y="1224" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;shadow=1;textShadow=1;fontStyle=1;endArrow=none;endFill=0;startArrow=classic;startFill=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="515" y="1105.9999999999995" as="sourcePoint" />
+            <mxPoint x="841" y="1105.9999999999995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-12" value="&lt;b&gt;/instance/logs&lt;/b&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];textShadow=0;" vertex="1" connectable="0" parent="yAXcgGLpdITlc99WxAyp-11">
+          <mxGeometry x="-0.0819" y="-1" relative="1" as="geometry">
+            <mxPoint x="8" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-13" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;{ host_ip_address }&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="635" y="1011" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-14" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Give some informations about &lt;br&gt;the host&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="635" y="985" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-15" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;{ instance }&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="633" y="1073" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-16" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;Give some informations about &lt;br&gt;the instance container&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="633" y="1047" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-17" value="Transfert logs" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="635" y="1109" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-18" value="B2 Host" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="522" y="1624" width="100" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-19" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="yAXcgGLpdITlc99WxAyp-18">
+          <mxGeometry x="45" y="70" width="10" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-20" value="Backup&lt;br&gt;Host" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="732" y="1624" width="100" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-21" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="yAXcgGLpdITlc99WxAyp-20">
+          <mxGeometry x="45" y="70" width="10" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-22" value="Acquire token" style="html=1;verticalAlign=bottom;endArrow=none;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;startArrow=classic;startFill=1;endFill=0;" edge="1" parent="1" source="yAXcgGLpdITlc99WxAyp-19" target="yAXcgGLpdITlc99WxAyp-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="677" y="1714" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="662" y="1704" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-23" value="FTP data transfert" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;" edge="1" parent="1" target="yAXcgGLpdITlc99WxAyp-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="577" y="1744" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="662" y="1744" />
+            </Array>
+            <mxPoint x="747" y="1744" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-24" value="CRUD &lt;font style=&quot;font-size: 20px;&quot;&gt;{&lt;/font&gt;" style="text;html=1;align=right;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="568" y="1742" width="70" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-25" value="Data &amp;gt; 0&lt;br&gt;&lt;div style=&quot;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Dara &amp;gt;= previous data&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1743" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-26" value="Release token" style="html=1;verticalAlign=bottom;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;" edge="1" parent="1" target="yAXcgGLpdITlc99WxAyp-21">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="577" y="1834" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="662" y="1834" />
+            </Array>
+            <mxPoint x="747" y="1834" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-27" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="1400" as="sourcePoint" />
+            <mxPoint x="1100" y="1400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAXcgGLpdITlc99WxAyp-28" value="&lt;font style=&quot;font-size: 22px;&quot;&gt;&lt;u&gt;Backup&lt;/u&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;textShadow=1;" vertex="1" parent="1">
+          <mxGeometry x="291" y="1470" width="100" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

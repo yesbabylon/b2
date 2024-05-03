@@ -72,6 +72,9 @@ interactions:
 - **Host messages summary:** Summarizes the messages exchanged between the host and the other systems.</br>
     <div style="text-align:center"><img src="../doc/Host_messages_summary.png"  alt="Host messages summary"/></div>
 
+- **Admin:** Represents the admin interface for managing host backup and host stats.</br>
+    <div style="text-align:center"><img src="../doc/Admin.png"  alt="Admin"/></div>
+
 ### Purpose of the Listener
 
 The listener, encapsulated within ``listener.php``, acts as the central hub for managing user instances. Its primary
