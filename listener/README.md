@@ -45,6 +45,8 @@
         * [Example Request](#example-request-4)
         * [Example Response](#example-response-4)
     * [``/status`` :](#status-)
+    * [``/ip`` :](#ip-)
+    * [``/instance/logs`` :](#instancelogs-)
 <!-- TOC -->
 
 ## Overview
@@ -400,5 +402,13 @@ Content-Type: application/json
 ```
 
 ### ``/status`` :
+
+In progress...
+
+### ``/ip`` :
+
+In progress...
+
+### ``/instance/logs`` :
 
 In progress...
