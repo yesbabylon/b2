@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2/listener /root/b2/listener/listener.php >> equal-instance-listener.log 2>&1
+ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2/listener /root/b2/listener/listener.php >> b2-listener.log 2>&1
 WorkingDirectory=/root/b2/listener
 Restart=always
 SyslogIdentifier=equal-instance-listener

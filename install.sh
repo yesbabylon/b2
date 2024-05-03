@@ -112,16 +112,16 @@ cd /home/docker/accounts
 # vi .env ; /home/docker/accounts/init.sh
 
 # Add a symbolic link for the eQual instance listener service
-ln -s /root/b2/listener/equal-instance-listener.service /etc/systemd/system/equal-instance-listener.service
+ln -s /root/b2/listener/b2-listener.service /etc/systemd/system/b2-listener.service
 
 # Reload daemon
 systemctl daemon-reload
 
 # Enable the listener service
-systemctl enable equal-instance-listener.service
+systemctl enable b2-listener.service
 
 # Start the listener service
-systemctl start equal-instance-listener.service
+systemctl start b2-listener.service
 
 # Start Portainer
 /home/docker/console_start.sh
