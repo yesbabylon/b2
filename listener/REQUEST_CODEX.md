@@ -31,11 +31,11 @@ http://0.0.0.0:8000/instance/delete \
 }'
 ```
 
-## ``/instance/info``
+## ``/instance/status``
 
 ```bash
 curl -X POST \
-http://0.0.0.0:8000/instance/info \
+http://0.0.0.0:8000/instance/status \
 -H 'Content-Type: application/json' \
 -d '{
   "instance": "test2.run"
