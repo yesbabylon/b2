@@ -19,6 +19,7 @@ services:
       - EQ_DB_PASS=${APP_PASSWORD}
       - EQ_DB_NAME=equal
       - EQ_CIPHER_KEY=${CIPHER_KEY}
+      - EQ_MEM_LIMIT=${MEM_LIMIT}
       - HTTPS_METHOD=${HTTPS_REDIRECT}
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=${USERNAME}
@@ -34,10 +35,7 @@ services:
       resources:
         limits:
           cpus: '0.1'
-          memory: 1000M
-        reservations:
-          cpus: '0.0001'
-          memory: 100M    
+          memory: ${MEM_LIMIT}
   mysql:
     image: mysql:5.7
     container_name: {{DB_HOSTNAME}}
