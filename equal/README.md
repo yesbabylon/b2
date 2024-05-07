@@ -15,9 +15,21 @@
   * [``prod.sh``](#prodsh)
     * [Usage](#usage-1)
     * [`.env` file:](#env-file)
-<!-- TOC -->
+      <!-- TOC -->
 
 ### ``equal/init.bash``
+
+The purpose of the init.sh script is to generate a new account and a related folder under `/home`.
+
+And, in that folder, to create a docker-compose.yml file holding all required configuration for building a consistent docker stack.
+
+
+
+Note: in order to consider the resources limitations in the `deploy` section, docker-compose has to be called with the `--compatibility` flag.
+
+`docker-compose --compatibility up -d`
+
+
 
 - Link: [``init.bash``](https://github.com/yesbabylon/b2/blob/master/equal/init.bash)
 
@@ -64,8 +76,12 @@ For further information about these three scripts, please refer to the repositor
 A ``README.md`` file is present for more information about what it does.
 
 - [equal.setup.bash](https://github.com/yesbabylon/b2/blob/master/equal/equal.setup.bash)
+
 - [symbiose.setup.bash](https://github.com/yesbabylon/b2/blob/master/equal/symbiose.setup.bash)
+
 - [equalpress setup script ( ``install.sh`` )](https://github.com/eQualPress/equalpress/blob/main/install.sh)
+
+    
 
 ## ``equal.setup.bash``
 
@@ -140,7 +156,7 @@ sh ./prod.sh --env-path
 # Customer directoy created in /home
 # Linux user created with the same name
 # Docker container created with the same name
-USERNAME=test.yb.run
+USERNAME=equal.local
 
 # Applications credentials used for eQual, database and eQualPress
 APP_USERNAME=root
@@ -149,14 +165,14 @@ APP_PASSWORD=test
 # CIPHER KEY for eQual config encryption safety
 CIPHER_KEY=xxxxxxxxxxxxxx
 
-#Nginx configuration
+# Nginx configuration
 HTTPS_REDIRECT=noredirect
 
 # Below are the variables that are used for an eQualPress installation
 # Wordpress version
 WP_VERSION=6.4
 
-#Wordpress admin email
+# Wordpress admin email
 WP_EMAIL=root@equal.local
 
 # WordPress site title

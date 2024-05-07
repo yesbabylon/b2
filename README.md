@@ -40,8 +40,7 @@ are in the [equal folder](https://github.com/yesbabylon/b2/tree/master/equal) of
    services, this script ensures a smooth and efficient initial deployment.
 
    Whether you're a developer experimenting with the eQual framework or a business owner preparing for
-   production, ``install.sh`` streamlines the setup phase, saving time and effort.
-   <br/><br/>
+   production, ``install.sh`` streamlines the setup phase, saving time and effort.  
 2. ``equal/init.bash``: Building upon the base established by ``install.sh``, ``equal/init.bash`` enriches the server
    environment with advanced functionalities.
 
@@ -57,7 +56,7 @@ are in the [equal folder](https://github.com/yesbabylon/b2/tree/master/equal) of
 
 ### ``install.sh``
 
-This script automates the setup process for various services on a Linux server.
+This script automates the setup process for various services on a Linux server.  
 
 Below is a breakdown of the tasks it performs.
 
