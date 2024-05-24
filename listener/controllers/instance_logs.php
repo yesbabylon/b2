@@ -2,6 +2,7 @@
 
 /**
  * Retrieve the logs of an instance.
+ * ! Not sure
  *
  * @param array{instance: string} $data
  * @return array{code: int, message: string}

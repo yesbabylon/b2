@@ -429,8 +429,65 @@ In progress...
 
 ### ``/instance/logs`` :
 
-In progress...
-Need to write.
+#### Purpose
+
+The `instance/logs` endpoint facilitates the retrieval of log files for a specified user instance. This endpoint is
+designed to handle POST requests containing the necessary data to identify the instance whose logs are to be retrieved.
+
+#### Script process task
+
+The `instance_logs` function, defined within the PHP script associated with this endpoint, implements the logic for
+retrieving logs for a user instance based on the provided data. The script performs the following tasks:
+
+1. **Validate Request Data:** Checks if the `instance` key exists in the input data array and is properly set. If not,
+   it returns a status code `400` indicating a bad request.
+2. **Change Directory:** Changes the current working directory to the logs directory of the specified user instance
+   located at `/home/$instance/export/logs`.
+3. **Retrieve Log Files:** Uses the `glob` function to search for log files (`*.log`) in the ``logs`` directory.
+4. **Handle No Logs Found:** If no log files are found, it returns a status code `200` with a message indicating that no
+   logs were found.
+5. **Read Log Files:** Reads the contents of each log file and stores them in an array.
+6. **Handle Read Errors:** If reading any log file fails, it returns a status code `404` with a message indicating a
+   server error while reading the log file.
+7. **Return Logs:** Returns a response array with a status code `201` and a message containing the logs.
+
+#### Usage
+
+To retrieve logs for a user instance using the `instance/logs` endpoint:
+
+Send a POST request to the endpoint with the identifier of the instance in the request body. Handle the HTTP response to
+access the logs of the user instance.
+
+##### Request parameters
+
+| Parameter | Required | Description                                          |
+|-----------|:--------:|------------------------------------------------------|
+| instance  |   true   | Identifier of the user instance to retrieve logs for |
+
+##### Example Request
+
+```http request
+POST /instance/logs
+Content-Type: application/json
+
+{
+  "instance": "test.yb.run"
+}
+```
+
+##### Example Response
+
+```http request
+HTTP/1.1 201 OK
+Content-Type: application/json
+
+{
+  "message": {
+    "log1.log": "Log contents here...",
+    "log2.log": "Log contents here..."
+  }
+}
+```
 
 ### ``/instance/logs-ack`` :
 
