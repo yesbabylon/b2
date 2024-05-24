@@ -3,8 +3,9 @@
 /**
  * Retrieve information about a given docker instance.
  *
- * @param array{instance: string} $data
+ * @param array{instance: string } $data
  * @return array{code: int, message: string}
+ * @deprecated This function going to be used inside the instance directory. The script is called status.php
  */
 function instance_status(array $data): array
 {

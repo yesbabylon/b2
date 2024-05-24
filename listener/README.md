@@ -31,7 +31,6 @@
         * [Example Request](#example-request-2)
         * [Example Response](#example-response-2)
         * [Considerations](#considerations-1)
-    * [``/instance/restore`` :](#instancerestore-)
     * [``/instances`` :](#instances-)
       * [Purpose](#purpose-3)
       * [Script process task](#script-process-task-3)
@@ -48,7 +47,9 @@
     * [``/status`` :](#status-)
     * [``/ip`` :](#ip-)
     * [``/instance/logs`` :](#instancelogs-)
+    * [``/instance/logs-ack`` :](#instancelogs-ack-)
     * [``/instance/backup`` :](#instancebackup-)
+    * [``/instance/restore`` :](#instancerestore-)
 <!-- TOC -->
 
 ## Overview
@@ -319,10 +320,6 @@ Content-Type: application/json
 
 Ensure that the specified instance identifier (`instance`) corresponds to a valid Docker instance.
 
-### ``/instance/restore`` :
-
-In progress...
-
 ### ``/instances`` :
 
 #### Purpose
@@ -432,6 +429,14 @@ In progress...
 
 In progress...
 
+### ``/instance/logs-ack`` :
+
+In progress...
+
 ### ``/instance/backup`` :
+
+In progress...
+
+### ``/instance/restore`` :
 
 In progress...

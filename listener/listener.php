@@ -14,6 +14,7 @@ try {
         '/instance/status',
         '/instance/create',
         '/instance/delete',
+        '/instance/logs',
         '/instance/restore'
     ];
 
@@ -44,11 +45,27 @@ try {
 
     $handler = str_replace('/', '_', (trim($_SERVER['REQUEST_URI'], '/')));
 
-    // search if the file named as the same as the route exists in controllers directory
-    $controller_file = __DIR__ . '/controllers/' . $handler . '.php';
+    switch ($handler) {
+        case 'status':
+            $controller_file = dirname(__DIR__) . '/docker/status.php';
+            break;
 
+        case 'instance_status':
+            if (!isset($data['instance'])) {
+                throw new Exception("missing_instance_param", 400);
+            }
+
+            $controller_file = '/home/' . $data['instance'] . '/status.php';
+            break;
+
+        default:
+            $controller_file = __DIR__ . '/controllers/' . $handler . '.php';
+            break;
+    }
+
+    // Check if the controller or script file exists
     if (!file_exists($controller_file)) {
-        throw new Exception("missing_controller", 503);
+        throw new Exception("missing_script_file", 503);
     }
 
     // Include the controller file
