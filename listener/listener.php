@@ -15,6 +15,7 @@ try {
         '/instance/create',
         '/instance/delete',
         '/instance/logs',
+        '/instance/logsAck',
         '/instance/restore'
     ];
 
