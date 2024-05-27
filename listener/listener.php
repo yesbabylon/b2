@@ -55,7 +55,7 @@ try {
                 throw new Exception("missing_instance_param", 400);
             }
 
-            $controller_file = '/home/' . $data['instance'] . '/status.php';
+            $controller_file = '/home/' . $data['instance'] . '/status/status.php';
             break;
 
         default:
