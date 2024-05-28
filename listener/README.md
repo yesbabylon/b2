@@ -53,7 +53,7 @@
         * [Request parameters](#request-parameters-4)
         * [Example Request](#example-request-5)
         * [Example Response](#example-response-5)
-    * [``/instance/logs-ack`` :](#instancelogs-ack-)
+    * [``/instance/logsAck`` :](#instancelogsack-)
     * [``/instance/backup`` :](#instancebackup-)
     * [``/instance/restore`` :](#instancerestore-)
 <!-- TOC -->
@@ -75,6 +75,7 @@ interactions:
 
 - **Backup and Restore Process:** Outlines the process flow for backing up and restoring user instances.</br>
     <div style="text-align:center"><img src="../doc/Backups.png"  alt="Backups"/></div>
+    <div style="text-align:center"><img src="../doc/Backups_process.png"  alt="Backups process"/></div>
 
 - **Host messages summary:** Summarizes the messages exchanged between the host and the other systems.</br>
     <div style="text-align:center"><img src="../doc/Host_messages_summary.png"  alt="Host messages summary"/></div>
@@ -493,7 +494,7 @@ Content-Type: application/json
 }
 ```
 
-### ``/instance/logs-ack`` :
+### ``/instance/logsAck`` :
 
 In progress...
 
