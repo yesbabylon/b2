@@ -15,7 +15,7 @@ try {
         '/instance/create',
         '/instance/delete',
         '/instance/logs',
-        '/instance/logsAck',
+        '/instance/logs-ack',
         '/instance/restore'
     ];
 
@@ -44,7 +44,11 @@ try {
         throw new Exception("invalid_json", 400);
     }
 
-    $handler = str_replace('/', '_', (trim($_SERVER['REQUEST_URI'], '/')));
+    $handler = trim($_SERVER['REQUEST_URI'], '/');
+    $handler = str_replace('/', '_', $handler);
+    $handler = preg_replace_callback('/-./', function ($matches) {
+        return strtoupper($matches[0][1]);
+    }, $handler);
 
     switch ($handler) {
         case 'status':
