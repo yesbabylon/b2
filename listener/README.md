@@ -3,7 +3,6 @@
 <!-- TOC -->
 * [User Instance Management System](#user-instance-management-system)
   * [Overview](#overview)
-    * [Charts](#charts)
     * [Purpose of the Listener](#purpose-of-the-listener)
     * [Functionality of listener.php](#functionality-of-listenerphp)
   * [Installation](#installation)
@@ -76,24 +75,6 @@ The User Instance Management System serves as a robust solution for creating and
 configurations. At its core, the system revolves around a listener component, primarily embodied in the ``listener.php``
 script. This listener acts as the gateway, receiving incoming requests and directing them to the appropriate handlers
 for processing.
-
-### Charts
-
-For a better understanding of the system, the following charts provide an overview of the key components and their
-interactions:
-
-- **System organization:** Illustrates the high-level organization of the User Instance Management System.</br>
-    <div style="text-align:center"><img src="../doc/Organization.png"  alt="Organization"/></div>
-
-- **Backup and Restore Process:** Outlines the process flow for backing up and restoring user instances.</br>
-    <div style="text-align:center"><img src="../doc/Backups.png"  alt="Backups"/></div>
-    <div style="text-align:center"><img src="../doc/Backups_process.png"  alt="Backups process"/></div>
-
-- **Host messages summary:** Summarizes the messages exchanged between the host and the other systems.</br>
-    <div style="text-align:center"><img src="../doc/Host_messages_summary.png"  alt="Host messages summary"/></div>
-
-- **Admin:** Represents the admin interface for managing host backup and host stats.</br>
-    <div style="text-align:center"><img src="../doc/Admin.png"  alt="Admin"/></div>
 
 ### Purpose of the Listener
 
