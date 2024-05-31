@@ -5,7 +5,7 @@
  * ! Not sure
  *
  * @param array{instance: string} $data
- * @return array{code: int, message: string}
+ * @return array{code: int, message: string|string[]}
  */
 function instance_logs(array $data): array
 {

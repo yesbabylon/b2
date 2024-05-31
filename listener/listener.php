@@ -16,7 +16,8 @@ try {
         '/instance/delete',
         '/instance/logs',
         '/instance/logs-ack',
-        '/instance/restore'
+        '/instance/restore',
+        '/backup-send'
     ];
 
     // By convention, we accept only POST requests
