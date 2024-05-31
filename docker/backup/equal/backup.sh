@@ -10,7 +10,7 @@ cd /home/$DOMAIN_NAME/export
 docker exec sql.$DOMAIN_NAME /usr/bin/mysqldump -u root --password=qinoa qinoa | gzip > database.sql.gz
 
 # create a compressed archive with the whole content of the filestore
-tar -zcf filestore.tar.gz /home/$DOMAIN_NAME/www
+tar --exclude='./.*' --exclude='./log/equal.log' -zcf filestore.tar.gz /home/$DOMAIN_NAME/www
 
 # merge both files into a tarball
 tar -cf backup.tar *.gz

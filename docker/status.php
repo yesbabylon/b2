@@ -152,6 +152,13 @@ function status(array $data): array
                     return $adapt_units($res);
                 }
             ],
+            'uptime' => [
+                'description' => "time since last reboot",
+                'command' => 'uptime -s',
+                'adapt' => function ($res) {
+                    return date('c', strtotime($res));
+                }
+            ],
             'mem' => [
                 'description' => "total RAM",
                 'command' => 'free -mh | awk \'/Mem/{print $2}\'',
