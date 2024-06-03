@@ -3,6 +3,8 @@
 <!-- TOC -->
 * [User Instance Management System](#user-instance-management-system)
   * [Overview](#overview)
+  * [Important note](#important-note)
+    * [Developer note](#developer-note)
     * [Purpose of the Listener](#purpose-of-the-listener)
     * [Functionality of listener.php](#functionality-of-listenerphp)
   * [Installation](#installation)
@@ -75,6 +77,18 @@ The User Instance Management System serves as a robust solution for creating and
 configurations. At its core, the system revolves around a listener component, primarily embodied in the ``listener.php``
 script. This listener acts as the gateway, receiving incoming requests and directing them to the appropriate handlers
 for processing.
+
+## Important note
+
+This repository needs to be cloned in the root folder of the server.
+
+### Developer note
+
+- The current backup_host url is :``http://backup-host``.
+- The current backup_host port is :``8000``.
+- Instance backup files are stored in the ``/home/$instance/export/`` directory.
+- The host JWT token is stored in the ``/home/status/jwt.txt`` file.
+- Instance logs are stored in the ``/home/$instance/export/logs/`` directory.
 
 ### Purpose of the Listener
 
