@@ -3,7 +3,8 @@
 <!-- TOC -->
 * [User Instance Management System](#user-instance-management-system)
   * [Overview](#overview)
-    * [Charts](#charts)
+  * [Important note](#important-note)
+    * [Developer note](#developer-note)
     * [Purpose of the Listener](#purpose-of-the-listener)
     * [Functionality of listener.php](#functionality-of-listenerphp)
   * [Installation](#installation)
@@ -53,8 +54,20 @@
         * [Request parameters](#request-parameters-4)
         * [Example Request](#example-request-5)
         * [Example Response](#example-response-5)
-    * [``/instance/logsAck`` :](#instancelogsack-)
-    * [``/instance/backup`` :](#instancebackup-)
+    * [``/instance/logs-ack`` :](#instancelogs-ack-)
+      * [Purpose](#purpose-6)
+      * [Script process task](#script-process-task-6)
+      * [Usage](#usage-6)
+        * [Request parameters](#request-parameters-5)
+        * [Example Request](#example-request-6)
+        * [Example Response](#example-response-6)
+    * [``/backup-send`` :](#backup-send-)
+      * [Purpose](#purpose-7)
+      * [Script process task](#script-process-task-7)
+      * [Usage](#usage-7)
+        * [Request parameters](#request-parameters-6)
+        * [Example Request](#example-request-7)
+        * [Example Response](#example-response-7)
     * [``/instance/restore`` :](#instancerestore-)
 <!-- TOC -->
 
@@ -65,23 +78,17 @@ configurations. At its core, the system revolves around a listener component, pr
 script. This listener acts as the gateway, receiving incoming requests and directing them to the appropriate handlers
 for processing.
 
-### Charts
+## Important note
 
-For a better understanding of the system, the following charts provide an overview of the key components and their
-interactions:
+This repository needs to be cloned in the root folder of the server.
 
-- **System organization:** Illustrates the high-level organization of the User Instance Management System.</br>
-    <div style="text-align:center"><img src="../doc/Organization.png"  alt="Organization"/></div>
+### Developer note
 
-- **Backup and Restore Process:** Outlines the process flow for backing up and restoring user instances.</br>
-    <div style="text-align:center"><img src="../doc/Backups.png"  alt="Backups"/></div>
-    <div style="text-align:center"><img src="../doc/Backups_process.png"  alt="Backups process"/></div>
-
-- **Host messages summary:** Summarizes the messages exchanged between the host and the other systems.</br>
-    <div style="text-align:center"><img src="../doc/Host_messages_summary.png"  alt="Host messages summary"/></div>
-
-- **Admin:** Represents the admin interface for managing host backup and host stats.</br>
-    <div style="text-align:center"><img src="../doc/Admin.png"  alt="Admin"/></div>
+- The current backup_host url is :``http://backup-host``.
+- The current backup_host port is :``8000``.
+- Instance backup files are stored in the ``/home/$instance/export/`` directory.
+- The host JWT token is stored in the ``/home/status/jwt.txt`` file.
+- Instance logs are stored in the ``/home/$instance/export/logs/`` directory.
 
 ### Purpose of the Listener
 
@@ -494,13 +501,128 @@ Content-Type: application/json
 }
 ```
 
-### ``/instance/logsAck`` :
+### ``/instance/logs-ack`` :
 
-In progress...
+#### Purpose
 
-### ``/instance/backup`` :
+The `instance/logs-ack` endpoint facilitates the deletion of a specified log file from a user instance. This endpoint is
+designed to handle POST requests containing the necessary data to identify the instance and the log file to be deleted.
 
-In progress...
+#### Script process task
+
+The `instance_logsAck` function, defined within the PHP script associated with this endpoint, implements the logic for
+deleting a log file from a user instance based on the provided data. The script performs the following tasks:
+
+1. **Validate Request Data:** Checks if the `instance` and `log_name` keys exist in the input data array and are
+   properly set. If not, it returns a status code `400` indicating a bad request.
+2. **Check Log File Existence:** Verifies if the specified log file exists in the logs directory of the user instance
+   located at `/home/$instance/export/logs/`.
+3. **Handle Log File Not Found:** If the log file does not exist, it returns a status code `404` with a message
+   indicating that the log file was not found.
+4. **Delete Log File:** If the log file exists, it deletes the log file using the `unlink` function.
+5. **Return Response:** Returns a response array with a status code `201` and a message indicating that the log file was
+   successfully deleted.
+
+#### Usage
+
+To delete a log file from a user instance using the `instance/logs-ack` endpoint:
+
+Send a POST request to the endpoint with the identifier of the instance and the name of the log file to be deleted in
+the request body. Handle the HTTP response to confirm the success or failure of the log file deletion operation.
+
+##### Request parameters
+
+| Parameter | Required | Description                        |
+|-----------|:--------:|------------------------------------|
+| instance  |   true   | Identifier of the user instance    |
+| log_name  |   true   | Name of the log file to be deleted |
+
+##### Example Request
+
+```http request
+POST /instance/logs-ack
+Content-Type: application/json
+
+{
+  "instance": "test.yb.run",
+  "log_name": "log1.log"
+}
+```
+
+##### Example Response
+
+```http request
+HTTP/1.1 201 OK
+Content-Type: application/json
+
+{
+  "message": "Log file deleted"
+}
+```
+
+### ``/backup-send`` :
+
+#### Purpose
+
+The `backup-send` endpoint facilitates the sending of a backup file to a specified backup host. This endpoint is
+designed to handle POST requests containing the necessary data to identify the instance and backup file to be sent.
+
+#### Script process task
+
+The `backupSend` function, defined within the PHP script associated with this endpoint, implements the logic for sending
+a backup file to a backup host based on the provided data. The script performs the following tasks:
+
+1. **Validate Request Data:** Checks if the `instance` and `backup_filename` keys exist in the input data array and are
+   properly set. If not, it throws an `InvalidArgumentException` with a status code `400` indicating a bad request.
+2. **Retrieve FTP Credentials:** Continuously attempts to retrieve FTP credentials from the backup host (`/token`
+   endpoint) until successful, with a 60-second delay between attempts.
+3. **Connect to Backup Host:** Establishes an FTP connection to the backup host.
+4. **Login to Backup Host:** Attempts to log in to the backup host using the retrieved credentials. If the login fails,
+   it throws an `Exception` with a status code `500` indicating a server error.
+5. **Send Backup File:** Transfers the specified backup file from the instance's export directory to the backup host via
+   FTP. If the transfer fails, it throws an `Exception` with a status code `500` indicating a server error.
+6. **Close FTP Connection:** Closes the FTP connection after the transfer is complete.
+7. **Release Token:** Sends a request to the backup host (`/token-release` endpoint) to release the token, including a
+   JWT and the instance identifier in the request body.
+8. **Return Response:** Returns a response array with a status code `201` and a message indicating the successful
+   sending of the backup file.
+
+#### Usage
+
+To send a backup file to the backup host using the `backup-send` endpoint:
+
+Send a POST request to the endpoint with the instance identifier and backup filename in the request body. Handle the
+HTTP response to confirm the success of the backup file transfer operation.
+
+##### Request parameters
+
+| Parameter       | Required | Description                        |
+|-----------------|:--------:|------------------------------------|
+| instance        |   true   | Identifier of the user instance    |
+| backup_filename |   true   | Name of the backup file to be sent |
+
+##### Example Request
+
+```http request
+POST /backup-send
+Content-Type: application/json
+
+{
+  "instance": "test.yb.run",
+  "backup_filename": "backup_20240531.tar.gz"
+}
+```
+
+##### Example Response
+
+```http request
+HTTP/1.1 201 OK
+Content-Type: application/json
+
+{
+  "message": "Backup: backup_20240531.tar.gz sent"
+}
+```
 
 ### ``/instance/restore`` :
 

@@ -2,6 +2,7 @@
 
 /**
  * Get the list of instances.
+ * ! Not sure
  *
  * @param array $data
  * @return array{code: int, message: string}
@@ -24,7 +25,7 @@ function instances(array $data): array
         $active_instances = [];
 
         foreach ($directories as $instance) {
-            if (str_contains($instance, '_deleted') === false) {
+            if (/** @version PHP 8.1 function */ str_contains($instance, '_deleted') === false) {
                 $active_instances[] = $instance;
             }
         }
