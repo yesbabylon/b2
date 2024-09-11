@@ -1,4 +1,4 @@
-FROM wordpress:6.1.1
+FROM wordpress:6.6.1-php8.3
 LABEL   Description="Latest version of Wordpress with Apache UID and GUID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
@@ -10,7 +10,7 @@ ARG apache_gid
 RUN apt-get update && apt-get install -y \
     git \
     procps \
-    netcat \
+    netcat-traditional \
     vim \
     && /usr/sbin/usermod -u $apache_uid www-data \
     && /usr/sbin/groupmod -g $apache_gid www-data

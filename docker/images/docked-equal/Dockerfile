@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.4-apache
 LABEL   Description="Latest version of eQual with Apache UID and GUID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
@@ -6,6 +6,7 @@ LABEL   Description="Latest version of eQual with Apache UID and GUID injection"
 ARG apache_uid
 ARG apache_gid
 RUN apt-get update && apt-get install -y \
+	gnupg2 \
     git \
     procps \
     netcat \
@@ -15,6 +16,12 @@ RUN apt-get update && apt-get install -y \
     && /usr/sbin/groupmod -g $apache_gid www-data
 COPY ./mpm_prefork.conf /etc/apache2/mods-available/
 COPY ./000-default.conf /etc/apache2/sites-available/
+# install sqlsrv drivers
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - 
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 odbcinst=2.3.7 odbcinst1debian2=2.3.7 unixodbc-dev=2.3.7 unixodbc=2.3.7
+RUN pecl install sqlsrv-5.10.1 pdo_sqlsrv-5.10.1
 # install the PHP extensions we need
 RUN set -ex; \
         \
@@ -22,18 +29,22 @@ RUN set -ex; \
         \
         apt-get update; \
         apt-get install -y --no-install-recommends \
+				libfreetype6-dev \
                 libjpeg-dev \
                 libpng-dev \
+                libwebp-dev \
                 libtidy-dev \
                 libzip-dev \
-                libicu-dev \                
+                libicu-dev \
+				libonig-dev \
                 zip \
         ; \
         \
-        docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-        docker-php-ext-configure zip --with-libzip; \
+        docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
         docker-php-ext-configure intl; \		
         docker-php-ext-install gd mysqli opcache zip tidy intl; \
+		docker-php-ext-install mbstring; \
+		docker-php-ext-enable sqlsrv pdo_sqlsrv mbstring; \
         \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
         apt-mark auto '.*' > /dev/null; \

@@ -28,6 +28,8 @@ findtime = 10m
 # amount of time during which a host is banned.
 bantime = 10m
 
+# journalmatch and systemd are mutually exclusive (in version 1.xx fail2ban default is set to systemd, but we want to check logs)
+backend = auto
 
 
 #

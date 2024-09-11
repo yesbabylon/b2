@@ -89,6 +89,8 @@ cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 
 # add custom nginx conf in the newly created dir env
 cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
+# (#memo - in latest deployments, file was not created automatically by letencrypt-companion)
+cp "$INSTALL_DIR"/conf/vhost.d/default /srv/docker/nginx/vhost.d/default
 
 # force nginx to load new config
 docker exec nginx-proxy nginx -s reload
