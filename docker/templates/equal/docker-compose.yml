@@ -38,7 +38,8 @@ services:
      networks:
        - proxynet
      environment:
-       - HTTPS_METHOD=noredirect
+       # Login page requires HTTPS, so we must redirect even if no valid certificate is set
+       #- HTTPS_METHOD=noredirect
        - VIRTUAL_PORT=80
        - VIRTUAL_HOST=phpmyadmin.${DOMAIN_NAME}
        - UPLOAD_LIMIT=100M
@@ -55,7 +56,11 @@ services:
      restart: always
      volumes:
        - /home/${DOMAIN_NAME}/www:/var/www/html
+       # Map local file for custom PHP config (e.g. upload_max_filesize)
        - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+     extra_hosts:
+       # If instance calls itself through HTTP, force sending the requests to the reverse proxy 
+       - "${DOMAIN_NAME}:${EXTERNAL_IP_ADDRESS}"
      networks:
        - proxynet
      environment:
@@ -65,8 +70,10 @@ services:
        - EQ_DB_PORT=3306
        - EQ_DB_USER=${MYSQL_USER}
        - EQ_DB_PASSWORD=${MYSQL_PASSWORD}
+       # Remember to disable noredirect once the SSL certificate has been set up
        - HTTPS_METHOD=noredirect
        - VIRTUAL_PORT=80
+       # Add domains that require a SSL cert [comma separated] (necessary for direct HTTPS connection)
        - VIRTUAL_HOST=${DOMAIN_NAME}
        - LETSENCRYPT_HOST=${DOMAIN_NAME}
        - LETSENCRYPT_EMAIL=${DOMAIN_CONTACT}
