@@ -53,6 +53,7 @@ then
         echo "DOMAIN_CONTACT=info@$USERNAME" >> /home/$USERNAME/.env
         echo "TEMPLATE=$TEMPLATE" >> /home/$USERNAME/.env
         
+		echo "EXTERNAL_IP_ADDRESS=$(ip -4 addr show ens3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')" >> /home/$USERNAME/.env
         chmod +x /home/docker/accounts/$TEMPLATE/init.sh
         /home/docker/accounts/$TEMPLATE/init.sh
         
