@@ -57,7 +57,7 @@ services:
      volumes:
        - /home/${DOMAIN_NAME}/www:/var/www/html
        # Map local file for custom PHP config (e.g. upload_max_filesize)
-       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+       - ./php.ini:/usr/local/etc/php/conf.d/zz-custom.ini
      extra_hosts:
        # If instance calls itself through HTTP, force sending the requests to the reverse proxy 
        - "${DOMAIN_NAME}:${EXTERNAL_IP_ADDRESS}"
