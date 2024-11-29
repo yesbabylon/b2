@@ -39,7 +39,7 @@ function send_http_response($body, $status_code): void {
     }
 
     // Convert the response data to JSON format
-    $json_response = json_encode($data, JSON_PRETTY_PRINT);
+    $json_response = json_encode($data);
 
     if(!$json_response) {
         $json_response = '';

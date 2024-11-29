@@ -10,11 +10,6 @@ NC='\033[0m' # No Color
 # Store current directory path
 INSTALL_DIR=$(pwd)
 
-# Stop and uninstall postfix, if present
-# #memo 22.10 - seems no longer needed
-# service postfix stop
-# apt-get remove -y postfix
-
 
 ############
 ### Base ###
