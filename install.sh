@@ -60,16 +60,10 @@ systemctl enable docker
 # Prepare directory structure
 cp -r "$INSTALL_DIR"/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
+chmod +x /usr/local/bin/ssh-login
 
 mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
-
-# Set scripts as executable
-chmod +x /home/docker/console_start.sh
-chmod +x /home/docker/accounts/init.sh
-chmod +x /home/docker/images/docked-nginx/build.sh
-chmod +x /home/docker/backup/backup.sh
-chmod +x /usr/local/bin/ssh-login
 
 sh -c "echo '/usr/local/bin/ssh-login' >> /etc/shells"
 
