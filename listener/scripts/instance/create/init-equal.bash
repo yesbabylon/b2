@@ -7,7 +7,7 @@
 #####################
 
 # Add docker-compose.yml file
-cp ./docker-compose.yml /home/"$USERNAME"/docker-compose.yml
+cp /root/b2/listener/scripts/instance/create/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
 # Replace newly created docker-file.yml placeholders with computed values
 for key in EQ_PORT DB_HOSTNAME DB_PORT PMA_HOSTNAME PMA_PORT; do
