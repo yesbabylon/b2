@@ -39,11 +39,19 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_APP_PASSWORD", 400);
     }
 
+    if(isset($data['WITH_SB'])) {
+        $data['WITH_SB'] = $data['WITH_SB'] ? 'true' : 'false';
+    }
+
+    if(isset($data['WITH_WP'])) {
+        $data['WITH_WP'] = $data['WITH_WP'] ? 'true' : 'false';
+    }
+
     $data = array_merge([
         'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
         'HTTPS_REDIRECT'    => 'noredirect',
-        'WITH_SB'           => false,
-        'WITH_WP'           => false,
+        'WITH_SB'           => 'false',
+        'WITH_WP'           => 'false',
         'WP_VERSION'        => '6.4',
         'WP_EMAIL'          => 'root@equal.local',
         'WP_TITLE'          => 'eQualPress'

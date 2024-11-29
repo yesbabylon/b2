@@ -142,12 +142,12 @@ printf "Env file created.\n"
 printf "Init eQual\n"
 bash "./init-equal.bash"
 
-if [ "$WITH_SB" = true ]; then
+if [ "$WITH_SB" = "true" ]; then
     printf "Init Symbiose\n"
     bash "./init-symbiose.bash"
 fi
 
-if [ "$WITH_WP" = true ]; then
+if [ "$WITH_WP" = "true" ]; then
     printf "Init eQualPress\n"
     bash "./init-equalpress.bash"
 fi
