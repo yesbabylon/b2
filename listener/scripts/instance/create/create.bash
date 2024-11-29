@@ -51,7 +51,7 @@ printf "Env vars OK\n"
 
 # Create a new user and set its password
 adduser --force-badname --disabled-password --gecos ",,," "$USERNAME"
-echo "$USERNAME:$PASSWORD" | chpasswd
+echo "$USERNAME:$APP_PASSWORD" | chpasswd
 
 # Add user to docker group
 usermod -a -G docker "$USERNAME"
@@ -75,7 +75,7 @@ chsh -s /usr/local/bin/ssh-login "$USERNAME"
 systemctl restart vsftpd
 
 # Add scripts for instance (backup, htpasswd, maintenance, replication, restore)
-tar -xzvf ./scripts.tar.gz -C /home/"$USERNAME"/scripts
+tar -xzvf /root/b2/listener/scripts/instance/create/scripts.tar.gz -C /home/"$USERNAME"/scripts
 
 # Create a directory for maintenance switch
 mkdir /srv/docker/nginx/html/"$USERNAME"
@@ -140,16 +140,16 @@ printf "Env file created.\n"
 ########################################
 
 printf "Init eQual\n"
-bash "./init-equal.bash"
+bash "/root/b2/listener/scripts/instance/create/init-equal.bash"
 
 if [ "$WITH_SB" = "true" ]; then
     printf "Init Symbiose\n"
-    bash "./init-symbiose.bash"
+    bash "/root/b2/listener/scripts/instance/create/init-symbiose.bash"
 fi
 
 if [ "$WITH_WP" = "true" ]; then
     printf "Init eQualPress\n"
-    bash "./init-equalpress.bash"
+    bash "/root/b2/listener/scripts/instance/create/init-equalpress.bash"
 fi
 
 printf "Instance successfully created.\n"
