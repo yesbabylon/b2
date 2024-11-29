@@ -259,7 +259,7 @@ function status(): array {
     }
 
     return [
-        'code' => 201,
+        'code' => 200,
         'body' => $result
     ];
 }
