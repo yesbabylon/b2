@@ -9,12 +9,6 @@
 # Add docker-compose.yml file
 cp /root/b2/listener/scripts/instance/create/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
-printf "EQ_PORT is $EQ_PORT"
-printf "DB_HOSTNAME is $DB_HOSTNAME"
-printf "DB_PORT is $DB_PORT"
-printf "PMA_HOSTNAME is $PMA_HOSTNAME"
-printf "PMA_PORT is $PMA_PORT"
-
 # Replace newly created docker-file.yml placeholders with computed values
 for key in EQ_PORT DB_HOSTNAME DB_PORT PMA_HOSTNAME PMA_PORT; do
     value=$(eval echo \$$key)
