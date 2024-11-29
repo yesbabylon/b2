@@ -1,4 +1,3 @@
-version: "3"
 services:
   equal_srv:
     image: equalframework/equal
