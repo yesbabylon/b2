@@ -7,14 +7,13 @@
  * @param array{instance: string, backup_id: string} $data
  * @return array{code: int, message: string}
  */
-function instance_restore(array $data): array
-{
-    $status_code = 201;
-    $message = '';
+function instance_restore(array $data): array {
+    if (!isset($data['instance'])) {
+        throw new InvalidArgumentException("missing_instance", 400);
+    }
 
-    if (!isset($data['instance']) || !isset($data['backup_id'])) {
-        $status_code = 400;
-        $message = 'Bad Request';
+    if(!isset($data['backup_id'])) {
+        throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
     // 1. active maintenance mode
@@ -28,7 +27,7 @@ function instance_restore(array $data): array
     exec('sh /home/' . $data['instance'] . '/status/maintenance/disable.sh');
 
     return [
-        'code' => $status_code,
-        'message' => $message
+        'code' => 200,
+        'body' => "instance_successfully_restored"
     ];
 }

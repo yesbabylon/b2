@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Send an HTTP response with the specified status code and message.
+ * Sends an HTTP response with the specified status code and message.
  *
  * @param $body
  * @param $status_code
  * @return void
  */
-function send_http_response($body, $status_code) : void {
+function send_http_response($body, $status_code): void {
     // Define the response status codes and their respective messages
     $map_status_messages = [
         200 => 'OK',
@@ -32,7 +32,6 @@ function send_http_response($body, $status_code) : void {
     header('Content-Type: application/json');
 
     $data = $body;
-
     if($status_code > 299) {
         $data = [
             'errors' => $body
@@ -40,7 +39,7 @@ function send_http_response($body, $status_code) : void {
     }
 
     // Convert the response data to JSON format
-    $json_response = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    $json_response = json_encode($data, JSON_PRETTY_PRINT);
 
     if(!$json_response) {
         $json_response = '';

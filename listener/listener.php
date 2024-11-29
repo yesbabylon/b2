@@ -11,26 +11,26 @@ try {
         '/reboot',
         '/status',
         '/instances',
-        '/instance/status',
+        '/instance/backup-send',
         '/instance/create',
         '/instance/delete',
         '/instance/logs',
         '/instance/logs-ack',
         '/instance/restore',
-        '/backup-send'
+        '/instance/status'
     ];
 
     // By convention, we accept only POST requests
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    if($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("method_not_allowed", 405);
     }
 
     // Check if the requested route is allowed
-    if (!in_array($_SERVER['REQUEST_URI'], $allowed_routes)) {
+    if(!in_array($_SERVER['REQUEST_URI'], $allowed_routes)) {
         throw new Exception("unknown_route", 404);
     }
 
-    if ($_SERVER['CONTENT_TYPE'] != 'application/json') {
+    if($_SERVER['CONTENT_TYPE'] != 'application/json') {
         throw new Exception("invalid_body", 400);
     }
 
@@ -46,49 +46,34 @@ try {
     }
 
     $handler = trim($_SERVER['REQUEST_URI'], '/');
-    $handler = str_replace('/', '_', $handler);
-    $handler = preg_replace_callback('/-./', function ($matches) {
-        return strtoupper($matches[0][1]);
-    }, $handler);
 
-    switch ($handler) {
-        case 'status':
-            $controller_file = dirname(__DIR__) . '/docker/status.php';
-            break;
-
-        case 'instance_status':
-            if (!isset($data['instance'])) {
-                throw new Exception("missing_instance_param", 400);
-            }
-
-            $controller_file = '/home/' . $data['instance'] . '/status/status.php';
-            break;
-
-        default:
-            $controller_file = __DIR__ . '/controllers/' . $handler . '.php';
-            break;
-    }
+    $controller_file = __DIR__ . '/controllers/' . $handler . '.php';
 
     // Check if the controller or script file exists
-    if (!file_exists($controller_file)) {
+    if(!file_exists($controller_file)) {
         throw new Exception("missing_script_file", 503);
     }
 
     // Include the controller file
     include_once $controller_file;
 
+    $handler_method_name = preg_replace('/[-\/]/', '_', $handler);
+
     // Call the controller function with the request data
-    if (!is_callable($handler)) {
+    if(!is_callable($handler_method_name)) {
         throw new Exception("missing_method", 501);
     }
 
-    $result = $handler($data);
-    list($message, $code) = [$result['message'], $result['code']];
-} catch (Exception $e) {
+    define('BASE_DIR', __DIR__);
+    define('SCRIPTS_DIR', BASE_DIR.'/scripts');
+
+    // Respond with the returned body and code
+    ['body' => $body, 'code' => $code] = $handler_method_name($data);
+}
+catch(Exception $e) {
     // Respond with the exception message and status code
-    $message = $e->getMessage();
-    $code = $e->getCode();
+    [$body, $code] = [$e->getMessage(), $e->getCode()];
 }
 
 // Respond with the exception message and status code
-send_http_response($message, $code);
+send_http_response($body, $code);

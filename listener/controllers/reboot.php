@@ -1,18 +1,15 @@
 <?php
 
 /**
- * Reboot the system.
+ * Reboots the system, with sleep of 5 seconds and in detached mod to return the response.
  *
- * @param array $data
- * @return array{code: int, message: string}
+ * @return array{code: int, body: string}
  */
-function reboot(array $data): array
-{
-    // reboot the system with sleep of 5 sec in detached mod for having the return of the function
+function reboot(): array {
     exec('nohup sh -c "sleep 5 && reboot" > /dev/null 2>&1 &');
 
     return [
-        'code' => 201,
-        'message' => ''
+        'code' => 200,
+        'body' => "host_will_reboot_now",
     ];
 }

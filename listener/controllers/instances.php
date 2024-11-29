@@ -1,40 +1,41 @@
 <?php
 
 /**
- * Get the list of instances.
- * ! Not sure
+ * Returns list of instances present on the host, separates active and deleted instances.
  *
- * @param array $data
- * @return array{code: int, message: string}
+ * @return array{
+ *     code: int,
+ *     body: array{
+ *         active_instances: string[],
+ *         deleted_instances: string[]
+ *     }
+ * }
+ * @throws Exception
  */
-function instances(array $data): array
-{
-    $status_code = 201;
-    $message = '';
-
+function instances(): array {
     // Get the list of instances
     $directories = scandir('/home');
+    if($directories === false) {
+        throw new Exception("could_not_read_home_directory", 500);
+    }
 
-    if ($directories === false) {
-        $status_code = 500;
-    } else {
-        // Remove the '.' and '..' and 'ubuntu' and 'docker' entries
-        $directories = array_values(array_diff($directories, ['.', '..', 'ubuntu', 'docker']));
+    // Remove the '.' and '..' and 'ubuntu' and 'docker' entries
+    $directories = array_values(array_diff($directories, ['.', '..', 'ubuntu', 'docker']));
 
-        // remove _deleted instances
-        $active_instances = [];
-
-        foreach ($directories as $instance) {
-            if (/** @version PHP 8.1 function */ str_contains($instance, '_deleted') === false) {
-                $active_instances[] = $instance;
-            }
+    // Separate active and deleted instances
+    $active_instances = [];
+    $deleted_instances = [];
+    foreach($directories as $instance) {
+        if(strpos($instance, '_deleted') === false) {
+            $active_instances[] = $instance;
         }
-
-        $message = json_encode(['instances' => $active_instances], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        else {
+            $deleted_instances[] = $instance;
+        }
     }
 
     return [
-        'code' => $status_code,
-        'message' => $message
+        'code' => 200,
+        'body' => compact('active_instances', 'deleted_instances')
     ];
 }
