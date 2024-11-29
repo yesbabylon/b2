@@ -20,8 +20,8 @@ done
 
 cd /home/"$USERNAME"
 
-docker-compose build
-docker-compose up -d
+docker compose build
+docker compose up -d
 sleep 15
 
 printf "Docker images built and containers started\n"

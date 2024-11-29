@@ -18,7 +18,7 @@ INSTALL_DIR=$(pwd)
 # Make sure aptitude cache is up-to-date
 yes | apt-get update
 
-# Set timezone to UTC (for synch with containers having UTC as default TZ)
+# Set timezone to UTC (for sync with containers having UTC as default TZ)
 timedatectl set-timezone UTC
 
 # Allow using domains as user names
@@ -39,16 +39,23 @@ systemctl restart vsftpd
 cp "$INSTALL_DIR"/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
 
 # Install Docker
-yes | apt install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-yes | add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-yes | apt update
-yes | apt-get install docker-ce docker-ce-cli containerd.io
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
-# Install Docker-Compose
-# shellcheck disable=SC2046
-curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# Add Docker's official GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o docker.gpg
+gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg docker.gpg
+rm docker.gpg
+
+# Add Docker repository
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+# Update package list and install Docker
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Start and enable Docker
+systemctl start docker
+systemctl enable docker
 
 # Prepare directory structure
 cp -r "$INSTALL_DIR"/docker /home/docker

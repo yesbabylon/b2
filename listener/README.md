@@ -220,7 +220,7 @@ tasks:
    and is properly formatted. If not, it returns a status code `400` indicating a bad request.
 2. **Change Directory:** Changes the current working directory to the directory of the specified user instance located
    at `/home/$instance`.
-3. **Stop and Remove Docker Containers:** Executes the `docker-compose down -v` command to stop and remove any Docker
+3. **Stop and Remove Docker Containers:** Executes the `docker compose down -v` command to stop and remove any Docker
    containers associated with the user instance.
 4. **Rename Instance Directory:** Renames the directory of the specified user instance to `$instance_deleted` to mark it
    for deletion.

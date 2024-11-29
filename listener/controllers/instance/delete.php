@@ -17,8 +17,8 @@ function instance_delete(array $data): array {
     // going to /home/$data['instance']
     chdir('/home/' . $data['instance']);
 
-    // Stop and remove the instance with docker-compose to /home/$data['instance']
-    exec('docker-compose down -v');
+    // Stop and remove the instance with docker compose to /home/$data['instance']
+    exec('docker compose down -v');
 
     // Rename the instance directory to /home/$data['instance']_deleted
     exec('mv /home/' . $data['instance'] . ' /home/' . $data['instance'] . '_deleted');
