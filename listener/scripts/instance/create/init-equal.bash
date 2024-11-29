@@ -41,6 +41,7 @@ docker exec "$USERNAME" bash -c "
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
+touch "/home/$USERNAME/www/config/config.json"
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD
 "
