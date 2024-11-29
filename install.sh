@@ -13,10 +13,15 @@ INSTALL_DIR=$(pwd)
 # Stop and uninstall postfix, if present
 # #memo 22.10 - seems no longer needed
 # service postfix stop
-# yes | apt-get remove postfix
+# apt-get remove -y postfix
+
+
+############
+### Base ###
+############
 
 # Make sure aptitude cache is up-to-date
-yes | apt-get update
+apt-get update
 
 # Set timezone to UTC (for sync with containers having UTC as default TZ)
 timedatectl set-timezone UTC
@@ -26,7 +31,7 @@ mv /etc/adduser.conf /etc/adduser.conf.orig
 cp "$INSTALL_DIR"/conf/etc/adduser.conf /etc/adduser.conf
 
 # Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for scripts), FTP service
-yes | apt-get install apache2-utils vnstat php-cli vsftpd
+apt-get install -y apache2-utils vnstat php-cli vsftpd
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
@@ -38,7 +43,10 @@ systemctl restart vsftpd
 # Add logrotate directive for nginx
 cp "$INSTALL_DIR"/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
 
-# Install Docker
+
+######################
+### Install Docker ###
+######################
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Add Docker's official GPG key
@@ -53,8 +61,10 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# Start and enable Docker
+# Start docker
 systemctl start docker
+
+# Make sure docker starts on boot
 systemctl enable docker
 
 # Prepare directory structure
@@ -69,6 +79,8 @@ sh -c "echo '/usr/local/bin/ssh-login' >> /etc/shells"
 
 # Create proxy network
 docker network create proxynet
+
+# Create portainer volume
 docker volume create portainer_data
 
 # Install OVH real time monitoring
@@ -80,7 +92,7 @@ cd /home/docker/images/docked-nginx/
 ./build.sh
 
 # Start reverse proxy and let's encrypt companion
-docker-compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
+docker compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 
 # wait for the services to be fully started (to prevent following files to be overwritten)
 sleep 30
@@ -90,7 +102,7 @@ cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 
 # add custom nginx conf in the newly created dir env
 cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
-# (#memo - in latest deployments, file was not created automatically by letencrypt-companion)
+# (#memo - in latest deployments, file was not created automatically by letsencrypt-companion)
 mkdir -p /usr/share/nginx/html
 mkdir -p /srv/docker/nginx/vhost.d
 cp "$INSTALL_DIR"/conf/vhost.d/default /srv/docker/nginx/vhost.d/default
@@ -98,8 +110,13 @@ cp "$INSTALL_DIR"/conf/vhost.d/default /srv/docker/nginx/vhost.d/default
 # force nginx to load new config
 docker exec nginx-proxy nginx -s reload
 
+
+###################
+### Install F2B ###
+###################
+
 # Install F2B service (#memo - we need to do this after nginx init since F2B relies on nginx log folder)
-yes | apt-get install fail2ban
+apt-get -y install fail2ban
 cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
 cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
 cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
@@ -108,18 +125,18 @@ touch /etc/fail2ban/emptylog
 # Make sure fail2ban starts on boot
 systemctl enable fail2ban
 
-# Restart F2B service
+# Restart fail2ban service
 systemctl restart fail2ban
 
-# Edit account parameters and then Run script for account creation
-# shellcheck disable=SC2164
-cd /home/docker/accounts
-# vi .env ; /home/docker/accounts/init.sh
+
+########################
+### Install listener ###
+########################
 
 # Add a symbolic link for the eQual instance listener service
 ln -s /root/b2/listener/b2-listener.service /etc/systemd/system/b2-listener.service
 
-# Reload daemon
+# Reload daemon to update after symlink added
 systemctl daemon-reload
 
 # Enable the listener service
@@ -128,9 +145,31 @@ systemctl enable b2-listener.service
 # Start the listener service
 systemctl start b2-listener.service
 
-# Start Portainer
-/home/docker/console_start.sh
+# Add a symbolic link for portainer
+ln -s /root/b2/docker/portainer.service /etc/systemd/system/portainer.service
+
+# Reload daemon to update after symlink added
+systemctl daemon-reload
+
+
+#########################
+### Install portainer ###
+#########################
+
+# Enable the portainer service
+systemctl enable portainer.service
+
+# Start the portainer service
+systemctl start portainer.service
+
+# Alert portainer running
 echo -e "${RED}Portainer${NC} is running and listening on ${GREEN}http://$(hostname -I | cut -d' ' -f1):9000${NC}\n"
+
+
+################
+### Finished ###
+################
+
 echo "Setup is now finished."
 echo "Make sure to setup services accordingly to the desired configuration."
-echo -e "Then run ${GREEN}docker-compose up -d${NC}"
+echo -e "Then run ${GREEN}docker compose up -d${NC}"
