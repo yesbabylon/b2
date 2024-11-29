@@ -8,7 +8,7 @@
  * @return array{code: int, message: string}
  */
 function instance_restore(array $data): array {
-    if (!isset($data['instance'])) {
+    if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }
 

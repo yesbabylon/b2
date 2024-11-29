@@ -49,7 +49,7 @@
 function status(): array {
     $do_cmd = function ($command) {
         $result = null;
-        if (exec($command, $output) !== false) {
+        if(exec($command, $output) !== false) {
             $result = reset($output);
         }
         return $result;
@@ -61,7 +61,7 @@ function status(): array {
 
     // retrieve interface (usually either eth0 or ens3)
     $interface = $do_cmd('ip link show | head -3 | tail -1 | awk \'{print $2}\'');
-    if (!$interface) {
+    if(!$interface) {
         throw new Exception("unable_to_retrieve_main_interface", 500);
     }
 
@@ -213,7 +213,7 @@ function status(): array {
                 'command'     => 'cat /proc/cpuinfo | grep -m1 MHz | awk \'{ print $4 }\'',
                 'adapt'       => function ($res) {
                     $res = floatval($res);
-                    if ($res > 1000) {
+                    if($res > 1000) {
                         $res /= 1000;
                     }
                     return round($res, 1) . 'GHz';

@@ -11,7 +11,7 @@ function instance_status(array $data): array {
     $docker_stats_json = exec('docker stats '.$data['instance'].' --no-stream --format "{{ json . }}"');
     $result = json_decode($docker_stats_json);
 
-    if ($result === null) {
+    if($result === null) {
         throw new \Exception("instance_not_found", 404);
     }
 

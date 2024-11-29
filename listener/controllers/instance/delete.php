@@ -7,7 +7,7 @@
  * @return array{code: int, body: string}
  */
 function instance_delete(array $data): array {
-    if (!isset($data['instance']) || !is_string($data['instance']) || strlen($data['instance']) === 0) {
+    if(!isset($data['instance']) || !is_string($data['instance']) || strlen($data['instance']) === 0) {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 

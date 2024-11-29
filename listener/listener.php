@@ -41,7 +41,7 @@ try {
     $data = json_decode($json, true);
 
     // Check if data decoded successfully
-    if ($data === null || gettype($data) !== 'array') {
+    if($data === null || gettype($data) !== 'array') {
         throw new Exception("invalid_json", 400);
     }
 
