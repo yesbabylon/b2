@@ -32,6 +32,7 @@ required_vars=(
     "WP_VERSION"
     "WP_EMAIL"
     "WP_TITLE"
+    "MEM_LIMIT"
 )
 
 # Check that all required vars are set
@@ -130,6 +131,8 @@ touch "$env_file"
   echo "PMA_PORT=$PMA_PORT"
   echo ""
   echo "EQ_PORT=$EQ_PORT"
+  echo ""
+  echo "MEM_LIMIT=$MEM_LIMIT"
 } > "$env_file"
 
 printf "Env file created.\n"

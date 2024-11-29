@@ -13,7 +13,8 @@
  *     WITH_WP?: bool,
  *     WP_VERSION?: string,
  *     WP_EMAIL?: string,
- *     WP_TITLE?: string
+ *     WP_TITLE?: string,
+ *     MEM_LIMIT?: string
  * } $data
  * @return array{code: int, body: string}
  * @throws Exception
@@ -54,7 +55,8 @@ function instance_create(array $data): array {
         'WITH_WP'           => 'false',
         'WP_VERSION'        => '6.4',
         'WP_EMAIL'          => 'root@equal.local',
-        'WP_TITLE'          => 'eQualPress'
+        'WP_TITLE'          => 'eQualPress',
+        'MEM_LIMIT'         => '1000M'
     ], $data);
 
     foreach ($data as $key => $value) {
