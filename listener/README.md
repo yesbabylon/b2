@@ -46,28 +46,31 @@
         * [Example Request](#example-request-4)
         * [Example Response](#example-response-4)
     * [``/status`` :](#status-)
+      * [Usage](#usage-5)
+        * [Example Request](#example-request-5)
+        * [Example Response](#example-response-5)
     * [``/ip`` :](#ip-)
     * [``/instance/logs`` :](#instancelogs-)
       * [Purpose](#purpose-5)
       * [Script process task](#script-process-task-5)
-      * [Usage](#usage-5)
+      * [Usage](#usage-6)
         * [Request parameters](#request-parameters-4)
-        * [Example Request](#example-request-5)
-        * [Example Response](#example-response-5)
+        * [Example Request](#example-request-6)
+        * [Example Response](#example-response-6)
     * [``/instance/logs-ack`` :](#instancelogs-ack-)
       * [Purpose](#purpose-6)
       * [Script process task](#script-process-task-6)
-      * [Usage](#usage-6)
+      * [Usage](#usage-7)
         * [Request parameters](#request-parameters-5)
-        * [Example Request](#example-request-6)
-        * [Example Response](#example-response-6)
+        * [Example Request](#example-request-7)
+        * [Example Response](#example-response-7)
     * [``/backup-send`` :](#backup-send-)
       * [Purpose](#purpose-7)
       * [Script process task](#script-process-task-7)
-      * [Usage](#usage-7)
+      * [Usage](#usage-8)
         * [Request parameters](#request-parameters-6)
-        * [Example Request](#example-request-7)
-        * [Example Response](#example-response-7)
+        * [Example Request](#example-request-8)
+        * [Example Response](#example-response-8)
     * [``/instance/restore`` :](#instancerestore-)
 <!-- TOC -->
 
@@ -150,24 +153,23 @@ creating user instances based on the provided data. The script performs the foll
 To create a user instance using the ``instance/create`` endpoint:
 
 Send a POST request to the endpoint with the desired configuration data in the request body.
-Ensure that the required parameters (``symbiose`` and ``equalpress``)
-are correctly set to indicate the desired behavior of the user instance.
 Handle the HTTP response to confirm the success or failure of the user instance creation operation.
 
 ##### Request parameters
 
-| Parameter      | Required | Description                                                                                                                            |
-|----------------|:--------:|----------------------------------------------------------------------------------------------------------------------------------------|
-| symbiose       |  false   | Flag for installing Symbiose                                                                                                           |
-| equalpress     |  false   | Flag for installing eQualPress                                                                                                         |
-| USERNAME       |   true   | - Customer directory created in /home </br> - Linux user created with the same name</br> - Docker container created with the same name |
-| APP_USERNAME   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |
-| APP_PASSWORD   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |
-| CIPHER_KEY     |   true   | CIPHER KEY for eQual config encryption safety                                                                                          |
-| HTTPS_REDIRECT |   true   | Nginx configuration                                                                                                                    |
-| WP_VERSION     |  false   | Wordpress version                                                                                                                      |
-| WP_EMAIL       |  false   | Wordpress admin email                                                                                                                  |
-| WP_TITLE       |  false   | WordPress site title                                                                                                                   |
+| Parameter      | Required | Description                                                                                                                            |     Default      |
+|----------------|:--------:|----------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| symbiose       |  false   | Flag for installing Symbiose                                                                                                           |      false       |
+| equalpress     |  false   | Flag for installing eQualPress                                                                                                         |      false       |
+| USERNAME       |   true   | - Customer directory created in /home </br> - Linux user created with the same name</br> - Docker container created with the same name |                  |
+| APP_USERNAME   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |                  |
+| APP_PASSWORD   |   true   | Applications credentials used for eQual, database and eQualPress                                                                       |                  |
+| CIPHER_KEY     |  false   | CIPHER KEY for eQual config encryption safety                                                                                          |   (random md5)   |
+| HTTPS_REDIRECT |  false   | Nginx configuration                                                                                                                    |    noredirect    |
+| WP_VERSION     |  false   | Wordpress version                                                                                                                      |       6.4        |
+| WP_EMAIL       |  false   | Wordpress admin email                                                                                                                  | root@equal.local |
+| WP_TITLE       |  false   | WordPress site title                                                                                                                   |    eQualPress    |
+| MEM_LIMIT      |  false   | Memory limit of equal_srv container                                                                                                    |      1000M       |
 
 ##### Example Request
 
@@ -181,34 +183,37 @@ Content-Type: application/json
   "USERNAME": "test.yb.run"
   "APP_USERNAME": "root"
   "APP_PASSWORD": "test"
-  "CIPHER_KEY": "xxxxxxxxxxxxxx"
+  "CIPHER_KEY": "31b68f2e63bf26bcbed9b96279a84913"
   "HTTPS_REDIRECT": "noredirect"
   "WP_VERSION": "6.4"
   "WP_EMAIL": "root@equal.local"
-  "WP_TITLE": "eQualpress"
+  "WP_TITLE": "eQualpress",
+  "MEM_LIMIT": "1000M"
 }
 ```
 
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 201 Created
 Content-Type: application/json
+
+"instance_successfully_created"
 ```
 
 ##### Considerations
 
-Ensure that the necessary permissions are set for file operations to successfully create and modify the ``.env`` file.
+Ensure that the necessary permissions are set for file operations to successfully create.
 Validate and sanitize user input to prevent security vulnerabilities such as injection attacks.
-Monitor the execution of the ``init.bash`` script for any errors or issues during user instance initialization.
+Monitor the execution of the ``create.bash`` script for any errors or issues during user instance initialization
+(see /root/b2/listener/logs/*).
 
 ### ``/instance/delete`` :
 
 #### Purpose
 
 The `instance/delete` endpoint facilitates the deletion of user instances and associated resources.
-This endpoint is designed
-to handle POST requests containing the necessary data to identify and delete the specified user instance.
+This endpoint is designed to handle POST requests containing the necessary data to identify and delete the specified user instance.
 
 #### Script process task
 
@@ -257,8 +262,10 @@ Content-Type: application/json
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
+
+"instance_successfully_deleted"
 ```
 
 ### ``/instance/status`` :
@@ -313,20 +320,20 @@ Content-Type: application/json
 
 ##### Example Response
 
-[//] # Todo: Verify that the result is correct
-
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "name": "test.yb.run",
-  "cpu_usage": "10%",
-  "memory_usage": "500MB",
-  "network_io": {
-    "received": "1GB",
-    "transmitted": "500MB"
-  }
+    "BlockIO": "90.9MB / 61.4kB",
+    "CPUPerc": "0.00%",
+    "Container": "test.yb.run",
+    "ID": "daf62ef9ab46",
+    "MemPerc": "7.05%",
+    "MemUsage": "70.48MiB / 1000MiB",
+    "Name": "test.yb.run",
+    "NetIO": "22.5kB / 373kB",
+    "PIDs": "6"
 }
 ```
 
@@ -338,7 +345,7 @@ Ensure that the specified instance identifier (`instance`) corresponds to a vali
 
 #### Purpose
 
-The `/instances` endpoint provides a list of active user instances available on the system.
+The `/instances` endpoint provides a list of active and deleted user instances available on the system.
 This endpoint is designed to handle POST requests with an empty JSON body and returns a JSON array containing the names
 of active user instances.
 
@@ -352,9 +359,9 @@ retrieving the list of active user instances. The script performs the following 
 2. **Handle Error Conditions:** Checks if the directory listing operation was successful. If not, it sets the status
    code to `500` indicating an internal server error.
 3. **Filter Active Instances:** Removes entries corresponding to system
-   directories (`.`, `..`, `ubuntu`, `docker`) and instances marked for deletion (`_deleted` suffix).
-4. **Return Response:** Returns a response array with a status code (`201` indicating successful operation) and a
-   JSON-encoded array containing the names of active user instances.
+   directories (`.`, `..`, `ubuntu`, `docker`).
+4. **Return Response:** Returns a response array with a status code (`200` indicating successful operation) and a
+   JSON-encoded array containing the names of active and deleted user instances.
 
 #### Usage
 
@@ -375,14 +382,16 @@ Content-Type: application/json
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "instances": [
-      "test1.yb.run",
-      "test2.yb.run",
-      "test3.yb.run"
+    "active_instances": [
+        "test1.yb.run",
+        "test3.yb.run"
+    ],
+    "deleted_instances": [
+        "test2.yb.run_deleted"
     ]
 }
 ```
@@ -427,13 +436,71 @@ Content-Type: application/json
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
+
+"host_will_reboot_now"
 ```
 
 ### ``/status`` :
 
-In progress...
+#### Usage
+
+Retrieve information and statistics about host.
+
+##### Example Request
+
+```http request
+POST /status
+Content-Type: application/json
+
+{}
+```
+
+##### Example Response
+
+```http request
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "stats": {
+        "net": {
+            "rx": "1.05G",
+            "tx": "30.51M",
+            "total": "1.08G",
+            "avg_rate": "66.51kbs"
+        },
+        "cpu": "0%",
+        "uptime": "1days"
+    },
+    "instant": {
+        "mysql_mem": "0%",
+        "apache_mem": "4.5%",
+        "nginx_mem": "0.8%",
+        "apache_proc": "13",
+        "nginx_proc": "7",
+        "mysql_proc": "2",
+        "total_proc": "170",
+        "ram_use": "774M",
+        "cpu_use": "0.0%",
+        "disk_use": "9.6G",
+        "usr_active": "1",
+        "usr_total": "2"
+    },
+    "config": {
+        "host": "b2",
+        "uptime": "2024-12-02T13:48:38+00:00",
+        "mem": "3.8G",
+        "cpu_qty": 4,
+        "cpu_freq": "3.2GHz",
+        "disk": "22G",
+        "ip_protected": false,
+        "ip_public": false,
+        "ip_private": false
+    }
+}
+```
 
 ### ``/ip`` :
 
@@ -461,7 +528,7 @@ retrieving logs for a user instance based on the provided data. The script perfo
 5. **Read Log Files:** Reads the contents of each log file and stores them in an array.
 6. **Handle Read Errors:** If reading any log file fails, it returns a status code `404` with a message indicating a
    server error while reading the log file.
-7. **Return Logs:** Returns a response array with a status code `201` and a message containing the logs.
+7. **Return Logs:** Returns a response array with a status code `200` and a message containing the logs.
 
 #### Usage
 
@@ -490,7 +557,7 @@ Content-Type: application/json
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
@@ -520,7 +587,7 @@ deleting a log file from a user instance based on the provided data. The script 
 3. **Handle Log File Not Found:** If the log file does not exist, it returns a status code `404` with a message
    indicating that the log file was not found.
 4. **Delete Log File:** If the log file exists, it deletes the log file using the `unlink` function.
-5. **Return Response:** Returns a response array with a status code `201` and a message indicating that the log file was
+5. **Return Response:** Returns a response array with a status code `200` and a message indicating that the log file was
    successfully deleted.
 
 #### Usage
@@ -552,7 +619,7 @@ Content-Type: application/json
 ##### Example Response
 
 ```http request
-HTTP/1.1 201 OK
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
