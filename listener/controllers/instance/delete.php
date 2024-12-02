@@ -10,7 +10,7 @@ function instance_delete(array $data): array {
     if(
         !isset($data['instance']) || !is_string($data['instance']) || strlen($data['instance']) === 0
         || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0
-        || !is_dir($data['instance'])
+        || !is_dir('/home/'.$data['instance'])
     ) {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
