@@ -3,9 +3,6 @@
 // Include the http-response.php file to use the send_http_response function
 include_once 'helpers/http-response.php';
 
-$code = 200;
-$message = '';
-
 try {
     $allowed_routes = [
         '/reboot',
@@ -30,12 +27,12 @@ try {
         throw new Exception("unknown_route", 404);
     }
 
-    if($_SERVER['CONTENT_TYPE'] != 'application/json') {
+    if($_SERVER['CONTENT_TYPE'] !== 'application/json') {
         throw new Exception("invalid_body", 400);
     }
 
     // Get the request body
-    $json = file_get_contents("php://input");
+    $json = file_get_contents('php://input');
 
     // Decode JSON data
     $data = json_decode($json, true);
@@ -75,5 +72,5 @@ catch(Exception $e) {
     [$body, $code] = [$e->getMessage(), $e->getCode()];
 }
 
-// Respond with the exception message and status code
+// Send response with body and code
 send_http_response($body, $code);
