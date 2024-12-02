@@ -4,7 +4,7 @@ services:
     container_name: ${USERNAME}
     restart: always
     ports:
-      - "{{EQ_PORT}}:80"
+      - "${EQ_PORT}:80"
     volumes:
       - ./www/.:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -13,7 +13,7 @@ services:
     hostname: ${USERNAME}
     domainname: local
     environment:
-      - EQ_DB_HOST={{DB_HOSTNAME}}
+      - EQ_DB_HOST=${DB_HOSTNAME}
       - EQ_DB_USER=${APP_USERNAME}
       - EQ_DB_PASS=${APP_PASSWORD}
       - EQ_DB_NAME=equal
@@ -37,10 +37,10 @@ services:
           memory: ${MEM_LIMIT}
   mysql:
     image: mysql:5.7
-    container_name: {{DB_HOSTNAME}}
+    container_name: ${DB_HOSTNAME}
     restart: always
     ports:
-      - "{{DB_PORT}}:3306"
+      - "${DB_PORT}:3306"
     environment:
       - MYSQL_DATABASE=equal
       - MYSQL_ROOT_PASSWORD=${APP_PASSWORD}
@@ -53,13 +53,13 @@ services:
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf            
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: {{PMA_HOSTNAME}}
+    container_name: ${PMA_HOSTNAME}
     restart: always
     ports:
-      - "{{PMA_PORT}}:80"
+      - "${PMA_PORT}:80"
     environment:
       - PMA_ARBITRARY=1
-      - PMA_HOST={{DB_HOSTNAME}}
+      - PMA_HOST=${DB_HOSTNAME}
       - PMA_USER=${APP_USERNAME}
       - PMA_PASSWORD=${APP_PASSWORD}      
       - HTTPS_METHOD=${HTTPS_REDIRECT}

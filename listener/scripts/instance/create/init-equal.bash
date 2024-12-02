@@ -9,15 +9,7 @@
 # Add docker-compose.yml file
 cp /root/b2/listener/scripts/instance/create/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
-# Replace newly created docker-file.yml placeholders with computed values
-for key in EQ_PORT DB_HOSTNAME DB_PORT PMA_HOSTNAME PMA_PORT; do
-    value=$(eval echo \$$key)
-    for file in /home/"$USERNAME"/docker-compose.yml; do
-        # Replace placeholder with value
-        sed -i "s/{{$key}}/$value/g" "$file"
-    done
-done
-
+# Move to newly created docker-compose.yml
 cd /home/"$USERNAME"
 
 docker compose build
