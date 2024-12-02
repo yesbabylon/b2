@@ -79,6 +79,9 @@ function instance_create(array $data): array {
     ], $data);
 
     foreach ($data as $key => $value) {
+        if(is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
         if(!putenv("$key=$value")) {
             throw new Exception("failed_to_set_environment_variable", 500);
         }

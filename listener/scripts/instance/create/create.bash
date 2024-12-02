@@ -143,12 +143,12 @@ bash "/root/b2/listener/scripts/instance/create/init-equal.bash"
 symbiose=${symbiose:-false}
 equalpress=${equalpress:-false}
 
-if [ "$symbiose" = true ]; then
+if [ "$symbiose" = "true" ]; then
     printf "Init Symbiose\n"
     bash "/root/b2/listener/scripts/instance/create/init-symbiose.bash"
 fi
 
-if [ "$equalpress" = true ]; then
+if [ "$equalpress" = "true" ]; then
     printf "Init eQualPress\n"
     bash "/root/b2/listener/scripts/instance/create/init-equalpress.bash"
 fi
