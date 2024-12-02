@@ -8,6 +8,7 @@ try {
         '/reboot',
         '/status',
         '/instances',
+        '/instance/backup',
         '/instance/backup-send',
         '/instance/create',
         '/instance/delete',
