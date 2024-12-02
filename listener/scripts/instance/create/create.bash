@@ -27,8 +27,6 @@ required_vars=(
     "APP_USERNAME"
     "APP_PASSWORD"
     "CIPHER_KEY"
-    "WITH_SB"
-    "WITH_WP"
     "WP_VERSION"
     "WP_EMAIL"
     "WP_TITLE"
@@ -116,8 +114,6 @@ touch "$env_file"
   echo "APP_USERNAME=$APP_USERNAME"
   echo "CIPHER_KEY=$CIPHER_KEY"
   echo "HTTPS_REDIRECT=$HTTPS_REDIRECT"
-  echo "WITH_SB=$WITH_SB"
-  echo "WITH_WP=$WITH_WP"
   echo ""
   echo "WP_VERSION=$WP_VERSION"
   echo "WP_EMAIL=$WP_EMAIL"
@@ -144,12 +140,15 @@ printf "Env file created.\n"
 printf "Init eQual\n"
 bash "/root/b2/listener/scripts/instance/create/init-equal.bash"
 
-if [ "$WITH_SB" = "true" ]; then
+symbiose=${symbiose:-false}
+equalpress=${equalpress:-false}
+
+if [ "$symbiose" = true ]; then
     printf "Init Symbiose\n"
     bash "/root/b2/listener/scripts/instance/create/init-symbiose.bash"
 fi
 
-if [ "$WITH_WP" = "true" ]; then
+if [ "$equalpress" = true ]; then
     printf "Init eQualPress\n"
     bash "/root/b2/listener/scripts/instance/create/init-equalpress.bash"
 fi
