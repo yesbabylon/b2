@@ -18,17 +18,17 @@ function instance_delete(array $data): array {
     // Stop and remove the instance with docker compose to /home/$data['instance']
     exec('docker compose -f /home/'.$data['instance'].'/docker-compose.yml down -v');
 
-    // Get delete folder name
+    // Create delete directory name
     $original_delete_directory = $delete_directory = $data['instance'].'_deleted';
     $counter = 1;
 
-    // Loop until a unique folder name is found
+    // Loop until a unique directory name is found
     while (file_exists('/home/' . $delete_directory)) {
         $delete_directory = $original_delete_directory . '_' . $counter;
         $counter++;
     }
 
-    // Rename the instance directory to /home/$data['instance']_deleted
+    // Rename the instance directory to /home/$data['instance']_deleted (add counter if it has been deleted previously)
     exec('mv /home/'.$data['instance'].' /home/'.$delete_directory);
 
     // Remove all files and directories in /home/$data['instance']_deleted but keep the directory
