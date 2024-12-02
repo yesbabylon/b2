@@ -73,9 +73,6 @@ chsh -s /usr/local/bin/ssh-login "$USERNAME"
 # Restart SFTP service (to enable FTP login at user home)
 systemctl restart vsftpd
 
-# Add scripts for instance (backup, htpasswd, maintenance, replication, restore)
-tar -xzvf /root/b2/listener/scripts/instance/create/scripts.tar.gz -C /home/"$USERNAME"/scripts
-
 # Create a directory for maintenance switch
 mkdir /srv/docker/nginx/html/"$USERNAME"
 
