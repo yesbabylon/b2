@@ -8,7 +8,7 @@
  * @return array{code: int, body: string}
  * @throws Exception
  */
-function instance_log_delete(array $data): array {
+function instance_delete_log(array $data): array {
     if(empty($data['instance'])) {
         throw new InvalidArgumentException("missing_instance");
     }

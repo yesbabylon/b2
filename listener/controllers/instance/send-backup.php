@@ -8,7 +8,7 @@
  * @return array{code: int, body: string}
  * @throws Exception
  */
-function backup_send(array $data): array {
+function instance_send_backup(array $data): array {
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException('missing_instance', 400);
     }
