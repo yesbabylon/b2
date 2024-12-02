@@ -24,6 +24,9 @@ function instance_delete(array $data): array {
     // Remove all files and directories in /home/$data['instance']_deleted but keep the directory
     exec('rm -rf /home/'.$data['instance'].'_deleted/*');
 
+    // Remove maintenance folder
+    exec('rm -rf /srv/docker/nginx/html/'.$data['instance']);
+
     // Delete linux user
     exec('userdel -f '.$data['instance']);
 
