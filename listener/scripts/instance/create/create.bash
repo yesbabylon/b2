@@ -98,13 +98,13 @@ export PMA_HOSTNAME="phpmyadmin_$HASH_VALUE"
 number_of_directories=$(ls -l /home | grep ^d | grep -v -E 'docker|ubuntu' | wc -l)
 
 # Define DB_PORT with the number of directories in /home
-export DB_PORT=$(( 3306 - 1 + $number_of_directories ))
+export DB_PORT=$(( 3306 + $number_of_directories ))
 
 # Define PHPMYADMIN_PORT with the number of directories in /home
-export PMA_PORT=$(( 8080 - 1 + $number_of_directories ))
+export PMA_PORT=$(( 8080 + $number_of_directories ))
 
-# Define EQ_PORT with the number of directories in /home
-export EQ_PORT=$(( 80 - 1 + $number_of_directories ))
+# Define EQ_PORT with the number of directories in /home (start at 81 because 80 is used by nginx proxy
+export EQ_PORT=$(( 80 + $number_of_directories ))
 
 # Create .env file
 env_file="/home/$USERNAME/.env"
