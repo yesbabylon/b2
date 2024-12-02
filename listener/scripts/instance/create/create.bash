@@ -94,8 +94,8 @@ export DB_HOSTNAME="db_$HASH_VALUE"
 # Define PMA_HOSTNAME with the hash value
 export PMA_HOSTNAME="phpmyadmin_$HASH_VALUE"
 
-# Get the number of directories in /home
-number_of_directories=$(ls -l /home | grep -c ^d)
+# Get the number of directories in /home (ignore docker and ubuntu)
+number_of_directories=$(ls -l /home | grep ^d | grep -v -E 'docker|ubuntu' | wc -l)
 
 # Define DB_PORT with the number of directories in /home
 export DB_PORT=$(( 3306 - 1 + $number_of_directories ))
