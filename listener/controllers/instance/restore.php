@@ -39,9 +39,7 @@ function instance_restore(array $data): array {
 
     // TODO: Put in maintenance mode
 
-    $instance_escaped = escapeshellarg($data['instance']);
-
-    $tmp_restore_dir = "/home/$instance_escaped/tmp_restore";
+    $tmp_restore_dir = '/home/'.$data['instance'].'/tmp_restore';
 
     exec("rm -rf $tmp_restore_dir");
     exec("mkdir $tmp_restore_dir", $output, $return_var);
@@ -54,15 +52,15 @@ function instance_restore(array $data): array {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
 
-    $volume_name_escaped = escapeshellarg(str_replace('.', '', $data['instance']).'_db_data');
+    $volume_name = str_replace('.', '', $data['instance']).'_db_data';
 
     $original_paths = [
-        "/var/lib/docker/volumes/$volume_name_escaped/_data",
-        "/home/$instance_escaped/.env",
-        "/home/$instance_escaped/docker-compose.yml",
-        "/home/$instance_escaped/php.ini",
-        "/home/$instance_escaped/mysql.cnf",
-        "/home/$instance_escaped/www"
+        "/var/lib/docker/volumes/$volume_name/_data",
+        "/home/${$data['instance']}/.env",
+        "/home/${$data['instance']}/docker-compose.yml",
+        "/home/${$data['instance']}/php.ini",
+        "/home/${$data['instance']}/mysql.cnf",
+        "/home/${$data['instance']}/www"
     ];
 
     foreach($original_paths as $dest) {
