@@ -24,7 +24,6 @@ function ip(array $data): array {
         throw new InvalidArgumentException("invalid_subnet", 400);
     }
 
-    throw new Exception('ip addr add '.$data['ip_address'].'/'.$data['subnet'].' dev veth0', 400);
     exec('ip addr add '.$data['ip_address'].'/'.$data['subnet'].' dev veth0');
 
     return [
