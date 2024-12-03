@@ -23,7 +23,10 @@ function instance_backups(array $data): array {
         throw new \Exception("instance_not_found", 404);
     }
 
-    $backup_files = array_filter(glob('/home/'.$data['instance'].'/export/*'), 'is_file');
+    $backup_files = array_map(
+        'basename',
+        array_filter(glob('/home/'.$data['instance'].'/export/*'), 'is_file')
+    );
 
     return [
         'code' => 200,
