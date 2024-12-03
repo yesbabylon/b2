@@ -65,7 +65,9 @@ function instance_restore(array $data): array {
         "/home/$instance/www"
     ];
 
-    $errors = [];
+    $docker_file_path = escapeshellarg("/home/$instance/docker-compose.yml");
+    exec("docker compose -f $docker_file_path stop");
+
     foreach($original_paths as $dest) {
         $src = $tmp_restore_dir.$dest;
         if(file_exists($src)) {
@@ -81,6 +83,8 @@ function instance_restore(array $data): array {
 
     $tmp_restore_dir_escaped = escapeshellarg($tmp_restore_dir);
     exec("rm -rf $tmp_restore_dir_escaped");
+
+    exec("docker compose -f $docker_file_path start");
 
     // TODO: Remove maintenance mode
 
