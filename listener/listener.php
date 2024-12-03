@@ -14,7 +14,7 @@ $allowed_routes = [
     '/instance/create',
     '/instance/delete',
     '/instance/logs',
-    '/instance/logs-ack',
+    '/instance/delete-log',
     '/instance/restore',
     '/instance/status'
 ];
