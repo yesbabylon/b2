@@ -50,6 +50,7 @@ function instance_restore(array $data): array {
     }
 
     exec("tar -xvzf $backup_file -C $tmp_dir", $output, $return_var);
+    throw new Exception('test', 500);
     if($return_var !== 0) {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
