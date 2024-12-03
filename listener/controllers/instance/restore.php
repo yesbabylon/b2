@@ -34,7 +34,7 @@ function instance_restore(array $data): array {
         $backup_file = "/home/${$data['instance']}/export/backup-${$data['backup_id']}.tar.gz";
     }
     else {
-        throw new \Exception("/home/${$data['instance']}/export/backup-${$data['backup_id']}.tar.gz", 404);
+        throw new \Exception(json_encode($data), 404);
     }
 
     // TODO: Put in maintenance mode
