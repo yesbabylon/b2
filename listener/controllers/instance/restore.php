@@ -27,14 +27,14 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
-    if(file_exists("/home/${$data['instance']}/import/backup-${$data['backup_id']}.tar.gz")) {
-        $backup_file = "/home/${$data['instance']}/import/backup-${$data['backup_id']}.tar.gz";
+    if(file_exists('/home/'.$data['instance'].'/import/backup-'.$data['backup_id'].'.tar.gz')) {
+        $backup_file = '/home/'.$data['instance'].'/import/backup-'.$data['backup_id'].'.tar.gz';
     }
-    elseif(file_exists("/home/${$data['instance']}/export/backup-${$data['backup_id']}.tar.gz")) {
-        $backup_file = "/home/${$data['instance']}/export/backup-${$data['backup_id']}.tar.gz";
+    elseif(file_exists('/home/'.$data['instance'].'/export/backup-'.$data['backup_id'].'.tar.gz')) {
+        $backup_file = '/home/'.$data['instance'].'/export/backup-'.$data['backup_id'].'.tar.gz';
     }
     else {
-        throw new \Exception(json_encode($data), 404);
+        throw new \Exception("backup_not_found", 404);
     }
 
     // TODO: Put in maintenance mode
