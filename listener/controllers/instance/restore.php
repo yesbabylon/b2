@@ -55,7 +55,7 @@ function instance_restore(array $data): array {
     }
 
     $original_paths = [
-        "/var/lib/docker/volumes/{$instance_escaped}_db_data/_data",
+        "/var/lib/docker/volumes/{$data['instance']}_db_data/_data",
         "/home/$instance_escaped/.env",
         "/home/$instance_escaped/docker-compose.yml",
         "/home/$instance_escaped/php.ini",
