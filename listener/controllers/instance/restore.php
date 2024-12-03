@@ -63,6 +63,7 @@ function instance_restore(array $data): array {
         "/home/$instance/php.ini",
         "/home/$instance/mysql.cnf",
         "/home/$instance/www"
+        // TODO: Handle SSL/TLS Certificates
     ];
 
     $docker_file_path = escapeshellarg("/home/$instance/docker-compose.yml");
@@ -86,7 +87,7 @@ function instance_restore(array $data): array {
 
     exec("docker compose -f $docker_file_path start");
 
-    // TODO: Remove maintenance mode
+    // TODO: Remove from maintenance mode
 
     return [
         'code' => 200,

@@ -49,7 +49,7 @@ function instance_backup(array $data): array {
 
     exec("tar -cvzf /home/$instance_escaped/export/backup-$timestamp.tar.gz $to_export_str");
 
-    // TODO: Remove maintenance mode
+    // TODO: Remove from maintenance mode
 
     return [
         'code' => 201,
