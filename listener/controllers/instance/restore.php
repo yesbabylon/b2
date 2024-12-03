@@ -50,28 +50,28 @@ function instance_restore(array $data): array {
     }
 
     exec("tar -xvzf $backup_file -C $tmp_dir", $output, $return_var);
-    throw new Exception('test', 500);
     if($return_var !== 0) {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
 
-    $map_original_paths = [
-        "$tmp_dir/_data"                => "/var/lib/docker/volumes/{$instance_escaped}_db_data/_data",
-        "$tmp_dir/.env"                 => "/home/$instance_escaped/.env",
-        "$tmp_dir/docker-compose.yml"   => "/home/$instance_escaped/docker-compose.yml",
-        "$tmp_dir/php.ini"              => "/home/$instance_escaped/php.ini",
-        "$tmp_dir/mysql.cnf"            => "/home/$instance_escaped/mysql.cnf",
-        "$tmp_dir/www"                  => "/home/$instance_escaped/www"
+    $original_paths = [
+        "/var/lib/docker/volumes/{$instance_escaped}_db_data/_data",
+        "/home/$instance_escaped/.env",
+        "/home/$instance_escaped/docker-compose.yml",
+        "/home/$instance_escaped/php.ini",
+        "/home/$instance_escaped/mysql.cnf",
+        "/home/$instance_escaped/www"
     ];
 
-    foreach($map_original_paths as $src => $dest) {
-        if(file_exists($src)) {
-            exec('rm -r $dest', $output, $return_var);
+    foreach($original_paths as $path) {
+        $backup_path = $tmp_dir.$path;
+        if(file_exists($backup_path)) {
+            exec("rm -r $path", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
             }
 
-            exec("cp -r $src $dest", $output, $return_var);
+            exec("cp -r $backup_path $path", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
             }
