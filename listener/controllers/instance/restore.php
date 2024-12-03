@@ -41,23 +41,23 @@ function instance_restore(array $data): array {
 
     $instance_escaped = escapeshellarg($data['instance']);
 
-    $tmp_dir = "/home/$instance_escaped/tmp_restore";
+    $tmp_restore_dir = "/home/$instance_escaped/tmp_restore";
 
-    exec("rm -rf $tmp_dir");
-    exec("mkdir $tmp_dir", $output, $return_var);
+    exec("rm -rf $tmp_restore_dir");
+    exec("mkdir $tmp_restore_dir", $output, $return_var);
     if($return_var !== 0) {
         throw new \Exception("failed_create_tmp_restore_directory", 500);
     }
 
-    exec("tar -xvzf $backup_file -C $tmp_dir", $output, $return_var);
+    exec("tar -xvzf $backup_file -C $tmp_restore_dir", $output, $return_var);
     if($return_var !== 0) {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
 
-    $volume_name = str_replace('.', '', $data['instance']).'_db_data';
+    $volume_name_escaped = escapeshellarg(str_replace('.', '', $data['instance']).'_db_data');
 
     $original_paths = [
-        "/var/lib/docker/volumes/$volume_name/_data",
+        "/var/lib/docker/volumes/$volume_name_escaped/_data",
         "/home/$instance_escaped/.env",
         "/home/$instance_escaped/docker-compose.yml",
         "/home/$instance_escaped/php.ini",
@@ -65,23 +65,22 @@ function instance_restore(array $data): array {
         "/home/$instance_escaped/www"
     ];
 
-    foreach($original_paths as $path) {
-        $backup_path = $tmp_dir.$path;
-        throw new Exception($backup_path);
-        if(file_exists($backup_path)) {
-            exec("rm -rf $path", $output, $return_var);
+    foreach($original_paths as $dest) {
+        $src = $tmp_restore_dir.$dest;
+        if(file_exists($dest)) {
+            exec("rm -rf $dest", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
             }
 
-            exec("cp -r $backup_path $path", $output, $return_var);
+            exec("cp -r $src $dest", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
             }
         }
     }
 
-    exec("rm -rf $tmp_dir");
+    exec("rm -rf $tmp_restore_dir");
 
     // TODO: Remove maintenance mode
 
