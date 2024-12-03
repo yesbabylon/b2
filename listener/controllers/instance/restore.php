@@ -63,19 +63,20 @@ function instance_restore(array $data): array {
         "/home/${$data['instance']}/www"
     ];
 
-    $executed = [];
+    $errors = [];
     foreach($original_paths as $dest) {
         $src = $tmp_restore_dir.$dest;
         if(file_exists($src)) {
             $dest_escaped = escapeshellarg($dest);
             if(file_exists($dest)) {
                 exec("rm -rf $dest_escaped");
-                $executed[] = "rm -rf $dest_escaped";
             }
 
             $src_escaped = escapeshellarg($src);
             exec("cp -r $src_escaped $dest_escaped");
-            $executed[] = "cp -r $src_escaped $dest_escaped";
+        }
+        else {
+            $errors[] = $src;
         }
     }
 
@@ -86,6 +87,6 @@ function instance_restore(array $data): array {
 
     return [
         'code' => 200,
-        'body' => $executed
+        'body' => $errors
     ];
 }
