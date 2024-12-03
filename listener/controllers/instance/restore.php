@@ -67,11 +67,9 @@ function instance_restore(array $data): array {
 
     foreach($original_paths as $dest) {
         $src = $tmp_restore_dir.$dest;
-        if(file_exists($dest)) {
+        if(file_exists($src)) {
+            throw new \Exception("failed_to_extract_backup_archive", 500);
             exec("rm -rf $dest", $output, $return_var);
-            if ($return_var !== 0) {
-                throw new \Exception("failed_to_restore", 500);
-            }
 
             exec("cp -r $src $dest", $output, $return_var);
             if ($return_var !== 0) {
