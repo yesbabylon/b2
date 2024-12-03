@@ -23,6 +23,8 @@ function instance_backup(array $data): array {
         throw new \Exception("instance_not_found", 404);
     }
 
+    // TODO: Put in maintenance mode
+
     $instance_escaped = escapeshellarg($data['instance']);
 
     // Remove old export, if any

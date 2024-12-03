@@ -8,6 +8,7 @@ $allowed_routes = [
     '/status',
     '/instances',
     '/instance/backup',
+    '/instance/backups',
     '/instance/send-backup',
     '/instance/create',
     '/instance/delete',
