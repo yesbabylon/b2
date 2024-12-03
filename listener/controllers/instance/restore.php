@@ -54,8 +54,10 @@ function instance_restore(array $data): array {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
 
+    $volume_name = str_replace('.', '', $data['instance']).'_db_data';
+
     $original_paths = [
-        "/var/lib/docker/volumes/{$data['instance']}_db_data/_data",
+        "/var/lib/docker/volumes/$volume_name/_data",
         "/home/$instance_escaped/.env",
         "/home/$instance_escaped/docker-compose.yml",
         "/home/$instance_escaped/php.ini",
