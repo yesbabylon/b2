@@ -6,6 +6,7 @@ include_once 'helpers/http-response.php';
 $allowed_routes = [
     '/reboot',
     '/status',
+    '/ip',
     '/instances',
     '/instance/backup',
     '/instance/backups',
