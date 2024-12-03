@@ -66,17 +66,22 @@ function instance_restore(array $data): array {
     foreach($original_paths as $dest) {
         $src = $tmp_restore_dir.$dest;
         if(file_exists($src)) {
-            throw new \Exception("failed_to_extract_backup_archive", 500);
-            exec("rm -rf $dest", $output, $return_var);
+            $dest_escaped = escapeshellarg($dest);
 
-            exec("cp -r $src $dest", $output, $return_var);
+            if(file_exists($dest)) {
+                exec("rm -rf $dest_escaped", $output, $return_var);
+            }
+
+            $src_escaped = escapeshellarg($src);
+            exec("cp -r $src_escaped $dest_escaped", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
             }
         }
     }
 
-    exec("rm -rf $tmp_restore_dir");
+    $tmp_restore_dir_escaped = escapeshellarg($tmp_restore_dir);
+    exec("rm -rf $tmp_restore_dir_escaped");
 
     // TODO: Remove maintenance mode
 
