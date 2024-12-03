@@ -43,7 +43,7 @@ function instance_backup(array $data): array {
     ];
 
     $timestamp = date('YmdHis');
-    $to_export_str = implode('', $to_export);
+    $to_export_str = implode(' ', $to_export);
 
     exec("tar -cvzf /home/$instance_escaped/export/backup-$timestamp.tar.gz $to_export_str");
 
