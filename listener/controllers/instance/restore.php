@@ -39,7 +39,9 @@ function instance_restore(array $data): array {
 
     // TODO: Put in maintenance mode
 
-    $tmp_restore_dir = '/home/'.$data['instance'].'/tmp_restore';
+    $instance = $data['instance'];
+
+    $tmp_restore_dir = "/home/$instance/tmp_restore";
 
     exec("rm -rf $tmp_restore_dir");
     exec("mkdir $tmp_restore_dir", $output, $return_var);
@@ -52,15 +54,15 @@ function instance_restore(array $data): array {
         throw new \Exception("failed_to_extract_backup_archive", 500);
     }
 
-    $volume_name = str_replace('.', '', $data['instance']).'_db_data';
+    $volume_name = str_replace('.', '', $instance).'_db_data';
 
     $original_paths = [
         "/var/lib/docker/volumes/$volume_name/_data",
-        "/home/${$data['instance']}/.env",
-        "/home/${$data['instance']}/docker-compose.yml",
-        "/home/${$data['instance']}/php.ini",
-        "/home/${$data['instance']}/mysql.cnf",
-        "/home/${$data['instance']}/www"
+        "/home/$instance/.env",
+        "/home/$instance/docker-compose.yml",
+        "/home/$instance/php.ini",
+        "/home/$instance/mysql.cnf",
+        "/home/$instance/www"
     ];
 
     $errors = [];
@@ -74,9 +76,6 @@ function instance_restore(array $data): array {
 
             $src_escaped = escapeshellarg($src);
             exec("cp -r $src_escaped $dest_escaped");
-        }
-        else {
-            $errors[] = $src;
         }
     }
 
