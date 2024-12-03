@@ -65,8 +65,8 @@ function instance_restore(array $data): array {
 
     foreach($original_paths as $path) {
         $backup_path = $tmp_dir.$path;
+        throw new Exception($backup_path);
         if(file_exists($backup_path)) {
-            throw new \Exception("trest11", 500);
             exec("rm -rf $path", $output, $return_var);
             if ($return_var !== 0) {
                 throw new \Exception("failed_to_restore", 500);
