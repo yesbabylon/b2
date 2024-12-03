@@ -37,9 +37,10 @@ function instance_backup(array $data): array {
         // TODO: Handle SSL/TLS Certificates
     ];
 
+    $timestamp = date('YmdHis');
     $to_export_str = implode('', $to_export);
 
-    exec("tar -cvzf /home/${$data['instance']}/export/backup.tar.gz $to_export_str");
+    exec("tar -cvzf /home/${$data['instance']}/export/backup-$timestamp.tar.gz $to_export_str");
 
     return [
         'code' => 201,

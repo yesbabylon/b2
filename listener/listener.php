@@ -3,21 +3,21 @@
 // Include the http-response.php file to use the send_http_response function
 include_once 'helpers/http-response.php';
 
-try {
-    $allowed_routes = [
-        '/reboot',
-        '/status',
-        '/instances',
-        '/instance/backup',
-        '/instance/backup-send',
-        '/instance/create',
-        '/instance/delete',
-        '/instance/logs',
-        '/instance/logs-ack',
-        '/instance/restore',
-        '/instance/status'
-    ];
+$allowed_routes = [
+    '/reboot',
+    '/status',
+    '/instances',
+    '/instance/backup',
+    '/instance/send-backup',
+    '/instance/create',
+    '/instance/delete',
+    '/instance/logs',
+    '/instance/logs-ack',
+    '/instance/restore',
+    '/instance/status'
+];
 
+try {
     // By convention, we accept only POST requests
     if($_SERVER['REQUEST_METHOD'] !== 'POST') {
         throw new Exception("method_not_allowed", 405);
