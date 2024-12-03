@@ -75,7 +75,7 @@ function instance_restore(array $data): array {
             }
 
             $src_escaped = escapeshellarg($src);
-            exec("cp -r $src_escaped $dest_escaped");
+            exec("cp -rp $src_escaped $dest_escaped");
         }
     }
 
@@ -86,6 +86,6 @@ function instance_restore(array $data): array {
 
     return [
         'code' => 200,
-        'body' => $errors
+        'body' => "instance_restore_success"
     ];
 }
