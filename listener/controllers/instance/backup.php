@@ -49,6 +49,8 @@ function instance_backup(array $data): array {
 
     exec("tar -cvzf /home/$instance_escaped/export/backup-$timestamp.tar.gz $to_export_str");
 
+    // TODO: Remove maintenance mode
+
     return [
         'code' => 201,
         'body' => "instance_backup_created"
