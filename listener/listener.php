@@ -13,8 +13,6 @@ $allowed_routes = [
     '/instance/send-backup',
     '/instance/create',
     '/instance/delete',
-    '/instance/logs',
-    '/instance/delete-log',
     '/instance/restore',
     '/instance/status'
 ];
