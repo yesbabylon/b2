@@ -261,11 +261,11 @@ function status(): array {
         }
     }
 
-    $result['config']['env'] = [
-        'ADMIN_HOST_URL' => getenv('ADMIN_HOST_URL') ?? "not_configured",
-        'BACKUP_HOST_URL' => getenv('BACKUP_HOST_URL') ?? "not_configured",
-        'STATS_HOST_URL' => getenv('STATS_HOST_URL') ?? "not_configured"
-    ];
+    $result['config']['env'] = [];
+    $env_vars = ['ADMIN_HOST_URL', 'BACKUP_HOST_URL', 'STATS_HOST_URL'];
+    foreach ($env_vars as $var) {
+        $result['config']['env'][$var] = getenv('ADMIN_HOST_URL') ?? "not_configured";
+    }
 
     return [
         'code' => 200,
