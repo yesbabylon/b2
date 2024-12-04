@@ -6,9 +6,7 @@
  * @param array{with_deleted?: bool} $data
  * @return array{
  *     code: int,
- *     body: array{
- *         instances: string[]
- *     }
+ *     body: string[]
  * }
  * @throws Exception
  */
@@ -38,6 +36,6 @@ function instances(array $data): array {
 
     return [
         'code' => 200,
-        'body' => compact('instances')
+        'body' => $instances
     ];
 }
