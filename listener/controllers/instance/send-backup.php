@@ -10,7 +10,18 @@
  */
 function instance_send_backup(array $data): array {
     if(!isset($data['instance'])) {
-        throw new InvalidArgumentException('missing_instance', 400);
+        throw new InvalidArgumentException("missing_instance", 400);
+    }
+
+    if(
+        in_array($data['instance'], ['..', '.', 'docker', 'ubuntu'])
+        || $data['instance'] !== basename($data['instance'])
+    ) {
+        throw new InvalidArgumentException("invalid_instance", 400);
+    }
+
+    if(!file_exists('/home/'.$data['instance']) || !is_dir('/home/'.$data['instance'])) {
+        throw new \Exception("instance_not_found", 404);
     }
 
     if(!isset($data['backup_filename'])) {
