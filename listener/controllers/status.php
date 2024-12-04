@@ -41,9 +41,11 @@
  *             ip_protected: string|false,
  *             ip_public: string|false,
  *             ip_private: string|false,
- *             ADMIN_HOST_URL: string,
- *             BACKUP_HOST_URL: string,
- *             STATS_HOST_URL: string
+ *             env: array{
+ *                 ADMIN_HOST_URL: string,
+ *                 BACKUP_HOST_URL: string,
+ *                 STATS_HOST_URL: string
+ *             }
  *         }
  *     }
  * }
