@@ -41,6 +41,9 @@
  *             ip_protected: string|false,
  *             ip_public: string|false,
  *             ip_private: string|false,
+ *             admin_host_url: string,
+ *             backup_host_url: string,
+ *             stats_host_url: string
  *         }
  *     }
  * }
@@ -257,6 +260,10 @@ function status(): array {
             $result[$cat][$cmd] = $command['adapt']($res);
         }
     }
+
+    $result['config']['admin_host_url'] = getenv('ADMIN_HOST_URL') ?? "not_configured";
+    $result['config']['backup_host_url'] = getenv('BACKUP_HOST_URL') ?? "not_configured";
+    $result['config']['stats_host_url'] = getenv('STATS_HOST_URL') ?? "not_configured";
 
     return [
         'code' => 200,
