@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Returns list of instances present on the host, separates active and deleted instances.
+ * Returns list of instances present on the host.
  *
  * @param array{with_deleted?: bool} $data
  * @return array{
