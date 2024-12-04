@@ -41,9 +41,9 @@
  *             ip_protected: string|false,
  *             ip_public: string|false,
  *             ip_private: string|false,
- *             admin_host_url: string,
- *             backup_host_url: string,
- *             stats_host_url: string
+ *             ADMIN_HOST_URL: string,
+ *             BACKUP_HOST_URL: string,
+ *             STATS_HOST_URL: string
  *         }
  *     }
  * }
