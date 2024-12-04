@@ -61,7 +61,7 @@ services:
       - PMA_ARBITRARY=1
       - PMA_HOST=${DB_HOSTNAME}
       - PMA_USER=${APP_USERNAME}
-      - PMA_PASSWORD=${APP_PASSWORD}      
+      - PMA_PASSWORD=${APP_PASSWORD}
       - HTTPS_METHOD=${HTTPS_REDIRECT}
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=phpmyadmin.${USERNAME}
