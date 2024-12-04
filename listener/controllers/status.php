@@ -262,9 +262,9 @@ function status(): array {
     }
 
     $result['config']['env'] = [
-        'admin_host_url' => getenv('ADMIN_HOST_URL') ?? "not_configured",
-        'backup_host_url' => getenv('BACKUP_HOST_URL') ?? "not_configured",
-        'stats_host_url' => getenv('STATS_HOST_URL') ?? "not_configured"
+        'ADMIN_HOST_URL' => getenv('ADMIN_HOST_URL') ?? "not_configured",
+        'BACKUP_HOST_URL' => getenv('BACKUP_HOST_URL') ?? "not_configured",
+        'STATS_HOST_URL' => getenv('STATS_HOST_URL') ?? "not_configured"
     ];
 
     return [
