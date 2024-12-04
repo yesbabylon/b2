@@ -4,7 +4,7 @@
  * Restore a specific instance using the backup file matching the given backup_id.
  *
  * @param array{instance: string, backup_id: string} $data
- * @return array{code: int, message: string}
+ * @return array{code: int, body: string}
  * @throws Exception
  */
 function instance_restore(array $data): array {
@@ -63,7 +63,6 @@ function instance_restore(array $data): array {
         "/home/$instance/php.ini",
         "/home/$instance/mysql.cnf",
         "/home/$instance/www"
-        // TODO: Handle SSL/TLS Certificates
     ];
 
     $docker_file_path = escapeshellarg("/home/$instance/docker-compose.yml");

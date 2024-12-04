@@ -4,7 +4,7 @@
  * Creates a backup of a specific instance
  *
  * @param array{instance: string} $data
- * @return array
+ * @return array{code: int, body: string}
  * @throws Exception
  */
 function instance_backup(array $data): array {
@@ -25,6 +25,9 @@ function instance_backup(array $data): array {
 
     // TODO: Put in maintenance mode
 
+    $docker_file_path = escapeshellarg('/home/'.$data['instance'].'/docker-compose.yml');
+    exec("docker compose -f $docker_file_path stop");
+
     $instance_escaped = escapeshellarg($data['instance']);
 
     // Remove old export, if any
@@ -41,13 +44,14 @@ function instance_backup(array $data): array {
         "/home/$instance_escaped/php.ini",
         "/home/$instance_escaped/mysql.cnf",
         "/home/$instance_escaped/www"
-        // TODO: Handle SSL/TLS Certificates
     ];
 
     $timestamp = date('YmdHis');
     $to_export_str = implode(' ', $to_export);
 
     exec("tar -cvzf /home/$instance_escaped/export/backup-$timestamp.tar.gz $to_export_str");
+
+    exec("docker compose -f $docker_file_path start");
 
     // TODO: Remove from maintenance mode
 
