@@ -5,7 +5,7 @@ include_once 'helpers/http-response.php';
 
 function load_env(string $file) {
     if(!file_exists($file)) {
-        throw new Exception("dot_env_file_does_not_exist", 500);
+        throw new Exception("listener_dot_env_file_does_not_exist", 500);
     }
 
     $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
