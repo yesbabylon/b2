@@ -9,6 +9,11 @@
 # Add docker-compose.yml file
 cp /root/b2/listener/scripts/instance/create/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 
+# Add config needed by docker-compose.yml
+mkdir /home/"$USERNAME"/conf
+cp /root/b2/listener/scripts/instance/create/php.ini /home/"$USERNAME"/conf/php.ini
+cp /root/b2/listener/scripts/instance/create/mysql.cnf /home/"$USERNAME"/conf/mysql.cnf
+
 # Move to newly created docker-compose.yml
 cd /home/"$USERNAME"
 
