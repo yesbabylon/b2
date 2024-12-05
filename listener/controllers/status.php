@@ -78,6 +78,15 @@ function status(): array {
                 'description' => "monthly network volume",
                 'command'     => 'vnstat -i ' . $interface . ' -m | tail -3 | head -1',
                 'adapt'       => function ($res) use ($adapt_units) {
+                    if(strpos($res, '|') === false) {
+                        return [
+                            'rx'        => 'No data yet',
+                            'tx'        => 'No data yet',
+                            'total'     => 'No data yet',
+                            'avg_rate'  => 'No data yet',
+                        ];
+                    }
+
                     $parts = preg_split('/\s{2,10}/', $res, 3);
                     $b = array_map($adapt_units, array_map('trim', explode('|', $parts[2])));
                     return array_combine(['rx', 'tx', 'total', 'avg_rate'], $b);
@@ -266,7 +275,7 @@ function status(): array {
     $result['config']['env'] = [];
     $env_vars = ['ADMIN_HOST_URL', 'BACKUP_HOST_URL', 'STATS_HOST_URL'];
     foreach ($env_vars as $var) {
-        $result['config']['env'][$var] = getenv('ADMIN_HOST_URL') ?? "not_configured";
+        $result['config']['env'][$var] = getenv($var) ?? "not_configured";
     }
 
     return [
