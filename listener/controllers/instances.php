@@ -4,10 +4,7 @@
  * Returns list of instances present on the host.
  *
  * @param array{with_deleted?: bool} $data
- * @return array{
- *     code: int,
- *     body: string[]
- * }
+ * @return array{code: int, body: string[]}
  * @throws Exception
  */
 function instances(array $data): array {
