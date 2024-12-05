@@ -23,17 +23,17 @@ function load_env(string $file) {
 }
 
 $allowed_routes = [
-    '/reboot',
-    '/status',
-    '/ip',
-    '/instances',
-    '/instance/backup',
-    '/instance/backups',
-    '/instance/send-backup',
-    '/instance/create',
-    '/instance/delete',
-    '/instance/restore',
-    '/instance/status'
+    '/reboot',                  /* @link reboot() */
+    '/status',                  /* @link status() */
+    '/ip',                      /* @link ip() */
+    '/instances',               /* @link instances() */
+    '/instance/backup',         /* @link instance_backup() */
+    '/instance/backups',        /* @link instance_backups() */
+    '/instance/send-backup',    /* @link instance_send_backup() */
+    '/instance/create',         /* @link instance_create() */
+    '/instance/delete',         /* @link instance_delete() */
+    '/instance/restore',        /* @link instance_restore() */
+    '/instance/status'          /* @link instance_status() */
 ];
 
 try {
