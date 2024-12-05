@@ -21,7 +21,7 @@ function instances(array $data): array {
         throw new Exception("could_not_read_home_directory", 500);
     }
 
-    // Remove the '.' and '..' and 'ubuntu' and 'docker' entries
+    // Remove the '.', '..', 'ubuntu' and 'docker' entries
     $directories = array_values(array_diff($directories, ['.', '..', 'ubuntu', 'docker']));
 
     // Add also deleted instances
