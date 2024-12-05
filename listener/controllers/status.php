@@ -272,11 +272,7 @@ function status(): array {
         }
     }
 
-    $result['config']['env'] = [];
-    $env_vars = ['ADMIN_HOST_URL', 'BACKUP_HOST_URL', 'STATS_HOST_URL'];
-    foreach ($env_vars as $var) {
-        $result['config']['env'][$var] = getenv($var) ?? "not_configured";
-    }
+    $result['config']['env'] = getenv();
 
     return [
         'code' => 200,
