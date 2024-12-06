@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Sends a backup file to the configured backup host.
+ * Exports a backup file to the configured backup host.
  *
  * @param array{instance: string, backup_id: string} $data
  * @return array{code: int, body: string}
  * @throws Exception
  */
-function instance_send_backup(array $data): array {
+function instance_export_backup(array $data): array {
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }

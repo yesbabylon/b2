@@ -29,7 +29,8 @@ $allowed_routes = [
     '/instances',               /* @link instances() */
     '/instance/backup',         /* @link instance_backup() */
     '/instance/backups',        /* @link instance_backups() */
-    '/instance/send-backup',    /* @link instance_send_backup() */
+    '/instance/export-backup',  /* @link instance_export_backup() */
+    '/instance/import-backup',  /* @link instance_import_backup() */
     '/instance/create',         /* @link instance_create() */
     '/instance/delete',         /* @link instance_delete() */
     '/instance/restore',        /* @link instance_restore() */
