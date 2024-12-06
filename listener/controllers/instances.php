@@ -12,24 +12,7 @@ function instances(array $data): array {
         throw new InvalidArgumentException("invalid_with_deleted", 400);
     }
 
-    // Get the list of instances
-    $directories = scandir('/home');
-    if($directories === false) {
-        throw new Exception("could_not_read_home_directory", 500);
-    }
-
-    // Remove the '.', '..', 'ubuntu' and 'docker' entries
-    $directories = array_values(array_diff($directories, ['.', '..', 'ubuntu', 'docker']));
-
-    // Add also deleted instances
-    $with_deleted = $data['with_deleted'] ?? false;
-
-    $instances = [];
-    foreach($directories as $instance) {
-        if($with_deleted || strpos($instance, '_deleted') === false) {
-            $instances[] = $instance;
-        }
-    }
+    $instances = get_instances($data['with_deleted']);
 
     return [
         'code' => 200,

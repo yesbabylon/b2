@@ -3,6 +3,7 @@
 // Include the http-response.php file to use the send_http_response function
 include_once 'helpers/http-response.php';
 include_once 'helpers/backup.php';
+include_once 'helpers/instances.php';
 
 function load_env(string $file) {
     if(!file_exists($file)) {
