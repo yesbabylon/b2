@@ -69,7 +69,7 @@ function instance_send_backup(array $data): array {
 
     if(!ftp_login($ftp_connection_id, $ftp_credentials['username'], $ftp_credentials['password'])) {
         ftp_close($ftp_connection_id);
-        throw new Exception("could_not_log_in_ftp_server | username: ".$ftp_credentials['username']." | password: ".$ftp_credentials['password'], 500);
+        throw new Exception("could_not_log_in_ftp_server", 500);
     }
 
     if(!ftp_put($ftp_connection_id, basename($backup_file), $backup_file, FTP_BINARY)) {
