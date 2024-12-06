@@ -29,3 +29,18 @@ function get_instances(bool $with_deleted = false) {
 
     return array_values($directories);
 }
+
+/**
+ * Returns true if the instance is on the server.
+ *
+ * @param string $instance
+ * @return bool
+ * @throws Exception
+ */
+function instance_exists(string $instance): bool {
+    if(empty($instance) || $instance !== basename($instance)) {
+        return false;
+    }
+
+    return in_array($instance, get_instances());
+}

@@ -39,6 +39,10 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_USERNAME", 400);
     }
 
+    if(instance_exists($data['USERNAME'])) {
+        throw new InvalidArgumentException("instance_already_exists", 400);
+    }
+
     if(!isset($data['APP_USERNAME'])) {
         throw new InvalidArgumentException("missing_APP_USERNAME", 400);
     }

@@ -5,17 +5,14 @@
  *
  * @param array{instance: string} $data
  * @return array{code: int, body: string}
+ * @throws Exception
  */
 function instance_delete(array $data): array {
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }
 
-    if(
-        !is_string($data['instance']) || strlen($data['instance']) === 0
-        || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['instance']) === 0
-        || !is_dir('/home/'.$data['instance'])
-    ) {
+    if(!is_string($data['instance']) || !instance_exists($data['instance'])) {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
