@@ -43,12 +43,11 @@ function instance_send_backup(array $data): array {
     }
 
     // Create token create request
-    $post_data = http_build_query(['instance' => $data['instance']]);
     $options = [
         'http' => [
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'header'  => "Content-type: application/json\r\n",
             'method'  => 'POST',
-            'content' => $post_data
+            'content' => json_encode(['instance' => $data['instance']])
         ]
     ];
     $context = stream_context_create($options);
