@@ -15,6 +15,8 @@ function get_instances(bool $with_deleted = false) {
         throw new Exception("could_not_read_home_directory", 500);
     }
 
+    $directories = array_map('basename', $directories);
+
     $directories = array_filter($directories, function($dir) use($directories_to_ignore) {
         return !in_array(basename($dir), $directories_to_ignore);
     });
