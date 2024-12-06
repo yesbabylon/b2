@@ -80,12 +80,14 @@ function instance_send_backup(array $data): array {
     ftp_close($ftp_connection_id);
 
     // Create token release request
-    $post_data = json_encode(['instance' => $data['instance'], 'token' => $token]);
     $options = [
         'http' => [
             'header'  => "Content-type: application/json\r\n",
             'method'  => 'POST',
-            'content' => $post_data
+            'content' => json_encode([
+                'instance'  => $data['instance'],
+                'token'     => $token
+            ])
         ]
     ];
     $context = stream_context_create($options);
