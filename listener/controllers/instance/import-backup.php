@@ -64,7 +64,7 @@ function instance_import_backup(array $data): array {
 
     ftp_close($ftp_connection_id);
 
-    release_token($backup_host_url, $data['instance'], 'dddd');
+    release_token($backup_host_url, $data['instance'], $token);
 
     return [
         'code' => 200,
