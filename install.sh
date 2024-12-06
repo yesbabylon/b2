@@ -129,7 +129,7 @@ systemctl restart fail2ban
 ########################
 
 # Add a symbolic link for the eQual instance listener service
-ln -s /root/b2/listener/b2-listener.service /etc/systemd/system/b2-listener.service
+ln -s /root/b2/b2-listener.service /etc/systemd/system/b2-listener.service
 
 # Reload daemon to update after symlink added
 systemctl daemon-reload
