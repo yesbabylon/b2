@@ -43,7 +43,7 @@ function instance_send_backup(array $data): array {
     }
 
     // Create token create request
-    $post_data = http_build_query(['instance' => $data['instance']]);
+    $post_data = http_build_query(['instanceTest' => $data['instance']]);
     $options = [
         'http' => [
             'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
@@ -52,8 +52,6 @@ function instance_send_backup(array $data): array {
         ]
     ];
     $context = stream_context_create($options);
-
-    throw new Exception($backup_host_url.'/token/create', 500);
 
     // Send create token request
     $response = file_get_contents($backup_host_url.'/token/create', false, $context);
