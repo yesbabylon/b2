@@ -42,25 +42,13 @@ function instance_export_backup(array $data): array {
         throw new Exception("BACKUP_HOST_FTP_not_configured", 500);
     }
 
-    // Create token create request
-    $options = [
-        'http' => [
-            'header'  => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => json_encode(['instance' => $data['instance']])
-        ]
-    ];
-    $context = stream_context_create($options);
-
-    // Send create token request
-    $response = file_get_contents($backup_host_url.'/token/create', false, $context);
-
-    if ($response === false) {
+    $create_token_response = create_token($backup_host_url, $data['instance']);
+    if ($create_token_response === false) {
         throw new Exception("error_while_asking_for_token", 500);
     }
 
     // Get token and created user ftp credentials
-    ['token' => $token, 'credentials' => $ftp_credentials] = json_decode($response, true);
+    ['token' => $token, 'credentials' => $ftp_credentials] = json_decode($create_token_response, true);
 
     $ftp_connection_id = ftp_connect($backup_host_ftp);
     if(!$ftp_connection_id) {
@@ -74,26 +62,12 @@ function instance_export_backup(array $data): array {
 
     if(!ftp_put($ftp_connection_id, basename($backup_file), $backup_file, FTP_BINARY)) {
         ftp_close($ftp_connection_id);
-        throw new Exception("error_while_sending_backup_file", 500);
+        throw new Exception("error_while_exporting_backup_file", 500);
     }
 
     ftp_close($ftp_connection_id);
 
-    // Create token release request
-    $options = [
-        'http' => [
-            'header'  => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => json_encode([
-                'instance'  => $data['instance'],
-                'token'     => $token
-            ])
-        ]
-    ];
-    $context = stream_context_create($options);
-
-    // Send release token request
-    file_get_contents($backup_host_url.'/token/release', false, $context);
+    release_token($backup_host_url, $data['instance'], $token);
 
     return [
         'code' => 200,
