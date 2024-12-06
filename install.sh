@@ -63,6 +63,7 @@ systemctl start docker
 systemctl enable docker
 
 # Prepare directory structure
+cp -r "$INSTALL_DIR"/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
