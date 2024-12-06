@@ -20,7 +20,7 @@ function instance_send_backup(array $data): array {
     }
 
     if(!file_exists('/home/'.$data['instance']) || !is_dir('/home/'.$data['instance'])) {
-        throw new \Exception("instance_not_found", 404);
+        throw new Exception("instance_not_found", 404);
     }
 
     if(!isset($data['backup_id'])) {
@@ -29,7 +29,7 @@ function instance_send_backup(array $data): array {
 
     $backup_file = '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz';
     if(!file_exists($backup_file)) {
-        throw new \Exception("backup_not_found", 404);
+        throw new Exception("backup_not_found", 404);
     }
 
     $backup_host_url = getenv('BACKUP_HOST_URL') ?? false;

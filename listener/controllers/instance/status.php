@@ -12,7 +12,7 @@ function instance_status(array $data): array {
     $result = json_decode($docker_stats_json);
 
     if($result === null) {
-        throw new \Exception("instance_not_found", 404);
+        throw new Exception("instance_not_found", 404);
     }
 
     return [

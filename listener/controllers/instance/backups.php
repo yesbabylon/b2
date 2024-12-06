@@ -20,7 +20,7 @@ function instance_backups(array $data): array {
     }
 
     if(!file_exists('/home/'.$data['instance']) || !is_dir('/home/'.$data['instance'])) {
-        throw new \Exception("instance_not_found", 404);
+        throw new Exception("instance_not_found", 404);
     }
 
     $export = array_map(
