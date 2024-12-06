@@ -1,28 +1,9 @@
 <?php
 
-// Include the http-response.php file to use the send_http_response function
-include_once 'helpers/http-response.php';
 include_once 'helpers/backup.php';
+include_once 'helpers/env.php';
+include_once 'helpers/http-response.php';
 include_once 'helpers/instances.php';
-
-function load_env(string $file) {
-    if(!file_exists($file)) {
-        throw new Exception("listener_dot_env_file_does_not_exist", 500);
-    }
-
-    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    foreach($lines as $line) {
-        if (strpos(trim($line), '#') === 0) {
-            continue;
-        }
-
-        $line = trim($line);
-        list($key, $value) = explode('=', $line, 2);
-
-        putenv(trim($key) . '=' . trim($value));
-    }
-}
 
 $allowed_routes = [
     '/reboot',                  /* @link reboot() */
