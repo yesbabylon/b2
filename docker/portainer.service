@@ -1,0 +1,10 @@
+[Unit]
+Description=Start console script on boot
+After=network.target
+
+[Service]
+ExecStart=/bin/bash /home/docker/portainer_start.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,43 @@
+version: '2.1'
+
+services:
+  nginx-proxy:
+    container_name: nginx-proxy
+    restart: always
+    image: docked-nginx:latest
+    networks: 
+      - proxynet
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # folder holging certificates created by letsencrypt-companion
+      - /srv/docker/nginx/certs:/etc/nginx/certs:ro
+      # nginx configuration
+      - /srv/docker/nginx/conf.d:/etc/nginx/conf.d:rw
+      # folder holging default file with virual host for .well-known/acme-challenge
+      - /srv/docker/nginx/vhost.d:/etc/nginx/vhost.d:rw
+      # nginx BASIC AUTH if any
+      - /srv/docker/nginx/htpasswd:/etc/nginx/htpasswd
+      # folder used for serving static files (maintenance)
+      - /srv/docker/nginx/html:/usr/share/nginx/html
+      # nginx logs (used by fail2ban)
+      - /var/log/nginx:/var/log/nginx
+      # socket to Docker API
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  nginx-proxy-companion:
+    container_name: letsencrypt-companion
+    restart: always
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    networks: 
+      - proxynet      
+    volumes:
+      - /srv/docker/nginx/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    volumes_from:
+      - nginx-proxy
+
+networks:
+  proxynet:
+    external: true
