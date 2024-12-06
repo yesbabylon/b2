@@ -1,5 +1,3 @@
-version: '2.1'
-
 services:
   nginx-proxy:
     container_name: nginx-proxy
@@ -11,11 +9,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      # folder holging certificates created by letsencrypt-companion
+      # folder holding certificates created by letsencrypt-companion
       - /srv/docker/nginx/certs:/etc/nginx/certs:ro
       # nginx configuration
       - /srv/docker/nginx/conf.d:/etc/nginx/conf.d:rw
-      # folder holging default file with virual host for .well-known/acme-challenge
+      # folder holding default file with virtual host for .well-known/acme-challenge
       - /srv/docker/nginx/vhost.d:/etc/nginx/vhost.d:rw
       # nginx BASIC AUTH if any
       - /srv/docker/nginx/htpasswd:/etc/nginx/htpasswd
