@@ -43,7 +43,7 @@ function instance_send_backup(array $data): array {
     }
 
     // Create token create request
-    $post_data = http_build_query(['instance' => $data['backup_id']]);
+    $post_data = http_build_query(['instance' => $data['instance']]);
     $options = [
         'http' => [
             'header'  => "Content-type: application/x-www-form-urlencoded\r\n",

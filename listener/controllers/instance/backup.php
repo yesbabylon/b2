@@ -2,6 +2,7 @@
 
 /**
  * Creates a backup of a specific instance
+ * TODO: Handle encryption of backup, default true
  *
  * @param array{instance: string} $data
  * @return array{code: int, body: string}
