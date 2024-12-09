@@ -43,7 +43,7 @@ function handle_request(array $request, array $allowed_routes): array {
 
         $handler = trim($request['uri'], '/');
 
-        $controller_file = __DIR__ . '/controllers/' . $handler . '.php';
+        $controller_file = CONTROLLERS_DIR . '/' . $handler . '.php';
 
         // Check if the controller or script file exists
         if(!file_exists($controller_file)) {
@@ -59,9 +59,6 @@ function handle_request(array $request, array $allowed_routes): array {
         if(!is_callable($handler_method_name)) {
             throw new Exception("missing_method", 501);
         }
-
-        define('BASE_DIR', __DIR__);
-        define('TOKENS_DIR', __DIR__ . '/tokens');
 
         load_env(BASE_DIR . '/.env');
 
