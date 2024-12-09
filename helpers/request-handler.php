@@ -4,7 +4,7 @@ include_once '../helpers/env.php';
 include_once '../helpers/http-response.php';
 
 /**
- * Handles the incoming request
+ * Handles the given request
  *
  * @param array{
  *     method: string,
