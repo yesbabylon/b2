@@ -20,6 +20,7 @@
  * @throws Exception
  */
 function instance_create(array $data): array {
+    throw new Exception('instance_create');
     if(isset($data['symbiose']) && !is_bool($data['symbiose'])) {
         throw new InvalidArgumentException("invalid_symbiose", 400);
     }
@@ -92,8 +93,6 @@ function instance_create(array $data): array {
     }
 
     $create_equal_instance_bash = SCRIPTS_DIR.'/instance/create/create.bash';
-
-    throw new Exception($create_equal_instance_bash);
 
     // Create specific log file for creation to record creation instance
     $instance = $data['USERNAME'];
