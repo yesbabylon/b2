@@ -139,7 +139,7 @@ gpg --batch --generate-key ./key-gen.conf
 rm ./key-gen.conf
 
 # Export private and public keys to pgp files
-echo "$GPG_PASSPHRASE" | gpg --batch --yes --output private-gpg-key.pgp --armor --export-secret-key "$GPG_EMAIL" --pinentry-mode loopback --passphrase-fd 0
+gpg --batch --pinentry-mode=loopback --yes --passphrase "$GPG_PASSPHRASE" --output private-gpg-key.pgp --armor --export-secret-key "$GPG_EMAIL"
 gpg --output public-gpg-key.pgp --armor --export "$GPG_EMAIL"
 
 
