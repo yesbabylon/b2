@@ -1,6 +1,7 @@
 <?php
 
 include_once './helpers/env.php';
+include_once './helpers/instances.php';
 include_once './helpers/http-response.php';
 include_once './helpers/request-handler.php';
 

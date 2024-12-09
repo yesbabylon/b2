@@ -25,7 +25,7 @@ function instance_create(array $data): array {
     }
 
     if(isset($data['equalpress']) && !is_bool($data['equalpress'])) {
-        throw new InvalidArgumentException("invalid_symbiose", 400);
+        throw new InvalidArgumentException("invalid_equalpress", 400);
     }
 
     if(!isset($data['USERNAME'])) {
