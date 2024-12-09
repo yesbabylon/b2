@@ -68,29 +68,57 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-# Exit if missing $GPG_NAME
-if [ -z "$GPG_NAME" ]; then
-    echo "Missing required --gpg_name"
+# Array of required variables and their descriptions
+declare -A required_vars=(
+    ["GPG_NAME"]="--gpg_name"
+    ["GPG_EMAIL"]="--gpg_email"
+    ["GPG_EXPIRY_DATE"]="--gpg_expiry_date"
+    ["GPG_PASSPHRASE"]="--gpg_passphrase"
+)
+
+# Iterate over the required variables
+for var in "${!required_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+        echo "Missing required ${required_vars[$var]}"
+        exit 1
+    fi
+done
+
+
+#####################
+### Env variables ###
+#####################
+
+# Ensure .env.example exists
+if [ ! -f "$INSTALL_DIR/.env.example" ]; then
+    echo "Error: $INSTALL_DIR/.env.example does not exist."
     exit 1
 fi
 
-# Exit if missing $GPG_EMAIL
-if [ -z "$GPG_EMAIL" ]; then
-    echo "Missing required --gpg_email"
-    exit 1
+# Create .env file from example if it does not exist
+if [ ! -f "$INSTALL_DIR/.env" ]; then
+    cp "$INSTALL_DIR/.env.example" "$INSTALL_DIR/.env"
 fi
 
-# Exit if missing $GPG_EXPIRY_DATE
-if [ -z "$GPG_EXPIRY_DATE" ]; then
-    echo "Missing required --gpg_expiry_date"
-    exit 1
-fi
+# List of configuration variables and their values
+declare -A configs=(
+    ["GPG_NAME"]="$GPG_NAME"
+    ["GPG_EMAIL"]="$GPG_EMAIL"
+    ["GPG_EXPIRY_DATE"]="$GPG_EXPIRY_DATE"
+    ["GPG_PASSPHRASE"]="$GPG_PASSPHRASE"
+)
 
-# Exit if missing $GPG_PASSPHRASE
-if [ -z "$GPG_PASSPHRASE" ]; then
-    echo "Missing required --gpg_passphrase"
-    exit 1
-fi
+# Iterate over the configuration variables
+for key in "${!configs[@]}"; do
+    value="${configs[$key]}"
+
+    # Update or append the configuration in the .env file
+    if grep -q "^$key=" "$INSTALL_DIR/.env"; then
+        sed -i "s|^$key=.*|$key=$value|" "$INSTALL_DIR/.env"
+    else
+        echo "$key=$value" >> "$INSTALL_DIR/.env"
+    fi
+done
 
 
 ############
