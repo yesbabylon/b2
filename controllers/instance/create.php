@@ -24,6 +24,8 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_symbiose", 400);
     }
 
+    throw new Exception('here 1');
+
     if(isset($data['equalpress']) && !is_bool($data['equalpress'])) {
         throw new InvalidArgumentException("invalid_symbiose", 400);
     }
