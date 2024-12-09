@@ -1,6 +1,6 @@
 <?php
 
-include_once '../helpers/env.php';
+include_once './env.php';
 
 /**
  * Handles the given request and returns the response body and status code
