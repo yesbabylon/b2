@@ -3,7 +3,7 @@
 /**
  * Creates a backup of a specific instance
  *
- * @param array{instance: string, encrypt: bool} $data
+ * @param array{instance: string, encrypt?: bool} $data
  * @return array{code: int, body: string}
  * @throws Exception
  */
