@@ -133,7 +133,7 @@ sed -e "s/%GPG_NAME%/$GPG_NAME/g" \
     -e "s/%GPG_EMAIL%/$GPG_EMAIL/g" \
     -e "s/%GPG_EXPIRY_DATE%/$GPG_EXPIRY_DATE/g" \
     -e "s/%GPG_PASSPHRASE%/$GPG_PASSPHRASE/g" \
-    ./tmp-key-gen.conf
+    ./key-gen.conf
 
 # Create gpg key using configuration file
 gpg --batch --generate-key key-gen.conf
