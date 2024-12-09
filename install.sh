@@ -105,7 +105,6 @@ declare -A configs=(
     ["GPG_NAME"]="$GPG_NAME"
     ["GPG_EMAIL"]="$GPG_EMAIL"
     ["GPG_EXPIRY_DATE"]="$GPG_EXPIRY_DATE"
-    ["GPG_PASSPHRASE"]="$GPG_PASSPHRASE"
 )
 
 # Iterate over the configuration variables
