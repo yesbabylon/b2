@@ -6,6 +6,7 @@ include_once './helpers/request-handler.php';
 
 const BASE_DIR = __DIR__;
 const CONTROLLERS_DIR = __DIR__ . '/controllers';
+const SCRIPTS_DIR = __DIR__ . '/scripts';
 
 $request = [
     'method'        => $_SERVER['REQUEST_METHOD'],
