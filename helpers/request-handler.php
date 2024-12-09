@@ -60,8 +60,6 @@ function handle_request(array $request, array $allowed_routes): array {
             throw new Exception("missing_method", 501);
         }
 
-        throw new Exception('before load env');
-
         load_env(BASE_DIR . '/.env');
 
         // Respond with the returned body and code

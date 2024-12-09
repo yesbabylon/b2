@@ -8,6 +8,7 @@
  * @throws Exception
  */
 function load_env(string $file) {
+    throw new Exception($file);
     if(!file_exists($file)) {
         throw new Exception("listener_dot_env_file_does_not_exist", 500);
     }
