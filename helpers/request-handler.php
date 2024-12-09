@@ -1,6 +1,5 @@
 <?php
 
-
 include_once '../helpers/env.php';
 include_once '../helpers/http-response.php';
 
