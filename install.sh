@@ -10,6 +10,88 @@ NC='\033[0m' # No Color
 # Store current directory path
 INSTALL_DIR=$(pwd)
 
+# Needed vars
+GPG_NAME=""
+GPG_EMAIL=""
+GPG_EXPIRY_DATE=""
+GPG_PASSPHRASE=""
+
+# Function to display help
+flags_help() {
+    echo "Usage: script.sh [options]"
+    echo "Options:"
+    echo "  --gpg_name,        -n  Specify Name-Real of gpg configuration. (required)"
+    echo "  --gpg_email,       -e  Specify Name-Email of gpg configuration. (required)"
+    echo "  --gpg_expiry_date, -d  Specify Expire-Date of gpg configuration. (required)"
+    echo "  --gpg_passphrase,  -p  Specify Passphrase of gpg configuration. (required)"
+    echo "  --help, -h             Show help message."
+    [ "$1" = "error" ] && exit 1 || exit 0
+}
+
+# Parse options
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --gpg_name|-n )
+            GPG_NAME="$2"
+            if [[ -z "$GPG_NAME" ]]; then
+                echo "Error: --gpg_name requires a value."
+                exit 1
+            fi
+            shift ;;
+        --gpg_email|-e )
+            GPG_EMAIL="$2"
+            if [[ -z "$GPG_EMAIL" ]]; then
+                echo "Error: --gpg_email requires a value."
+                exit 1
+            fi
+            shift ;;
+        --gpg_expiry_date|-d )
+            GPG_EXPIRY_DATE="$2"
+            if [[ -z "$GPG_EXPIRY_DATE" ]]; then
+                echo "Error: --gpg_expiry_date requires a value."
+                exit 1
+            fi
+            shift ;;
+        --gpg_passphrase|-p )
+            GPG_PASSPHRASE="$2"
+            if [[ -z "$GPG_PASSPHRASE" ]]; then
+                echo "Error: --gpg_passphrase requires a value."
+                exit 1
+            fi
+            shift ;;
+        --help|-h )
+            flags_help ;;
+        * )
+            echo "Unknown option: $1"
+            flags_help error ;;
+    esac
+    shift
+done
+
+# Exit if missing $GPG_NAME
+if [ -z "$GPG_NAME" ]; then
+    echo "Missing required --gpg_name"
+    exit 1
+fi
+
+# Exit if missing $GPG_EMAIL
+if [ -z "$GPG_EMAIL" ]; then
+    echo "Missing required --gpg_email"
+    exit 1
+fi
+
+# Exit if missing $GPG_EXPIRY_DATE
+if [ -z "$GPG_EXPIRY_DATE" ]; then
+    echo "Missing required --gpg_expiry_date"
+    exit 1
+fi
+
+# Exit if missing $GPG_PASSPHRASE
+if [ -z "$GPG_PASSPHRASE" ]; then
+    echo "Missing required --gpg_passphrase"
+    exit 1
+fi
+
 
 ############
 ### Base ###
@@ -37,6 +119,34 @@ systemctl restart vsftpd
 
 # Add logrotate directive for nginx
 cp "$INSTALL_DIR"/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
+
+
+######################
+### Create gpg key ###
+######################
+
+# Create a tmp key-gen.conf
+cp ./conf/key-gen.conf ./key-gen.conf
+
+# Replace variables by script params
+sed -e "s/%GPG_NAME%/$GPG_NAME/g" \
+    -e "s/%GPG_EMAIL%/$GPG_EMAIL/g" \
+    -e "s/%GPG_EXPIRY_DATE%/$GPG_EXPIRY_DATE/g" \
+    -e "s/%GPG_PASSPHRASE%/$GPG_PASSPHRASE/g" \
+    ./tmp-key-gen.conf
+
+# Create gpg key using configuration file
+gpg --batch --generate-key key-gen.conf
+
+# Remove tmp key-gen.conf
+# rm ./key-gen.conf
+
+# Export to pgp
+# gpg --output private-gpg-key.pgp --armor --export-secret-key yesbabylon.com@yb.run
+# gpg --output public-gpg-key.pgp --armor --export yesbabylon.com@yb.run
+
+# Temporary exit to test
+exit 0
 
 
 ######################
