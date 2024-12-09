@@ -20,7 +20,6 @@
  * @throws Exception
  */
 function instance_create(array $data): array {
-    throw new Exception('create');
     if(isset($data['symbiose']) && !is_bool($data['symbiose'])) {
         throw new InvalidArgumentException("invalid_symbiose", 400);
     }
@@ -71,6 +70,8 @@ function instance_create(array $data): array {
     if(isset($data['MEM_LIMIT']) && (!is_string($data['MEM_LIMIT']) || !preg_match('/^\d+[MG]$/', strtoupper($data['MEM_LIMIT'])))) {
         throw new InvalidArgumentException("invalid_MEM_LIMIT", 400);
     }
+
+    throw new Exception('checked');
 
     $data = array_merge([
         'symbiose'          => false,
