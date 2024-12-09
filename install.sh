@@ -186,7 +186,6 @@ cp -r "$INSTALL_DIR"/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
-mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
 
 sh -c "echo '/usr/local/bin/ssh-login' >> /etc/shells"
