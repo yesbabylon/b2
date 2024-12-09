@@ -1,7 +1,5 @@
 <?php
 
-include './env.php';
-
 /**
  * Handles the given request and returns the response body and status code
  *
