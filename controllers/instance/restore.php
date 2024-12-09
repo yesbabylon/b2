@@ -55,7 +55,7 @@ function instance_restore(array $data): array {
         $encrypted_backup_file = $backup_file;
         $backup_file = preg_replace('/\.gpg$/', '', $backup_file);
 
-        throw new Exception('backup_file: '.$backup_file);
+        throw new Exception('encrypted_backup_file: '.$encrypted_backup_file);
 
         exec("gpg --output $backup_file --decrypt $encrypted_backup_file");
     }
