@@ -1,6 +1,14 @@
 <?php
 
+include_once './helpers/http-response.php';
 include_once './helpers/request-handler.php';
+
+$request = [
+    'method'        => $_SERVER['REQUEST_METHOD'],
+    'uri'           => $_SERVER['REQUEST_URI'],
+    'content_type'  => $_SERVER['CONTENT_TYPE'],
+    'data'          => file_get_contents("php://input"),
+];
 
 $allowed_routes = [
     '/reboot',                  /* @link reboot() */
@@ -17,12 +25,6 @@ $allowed_routes = [
     '/instance/status'          /* @link instance_status() */
 ];
 
-handle_request(
-    [
-        'method'        => $_SERVER['REQUEST_METHOD'],
-        'uri'           => $_SERVER['REQUEST_URI'],
-        'content_type'  => $_SERVER['CONTENT_TYPE'],
-        'data'          => file_get_contents("php://input"),
-    ],
-    $allowed_routes
-);
+['body' => $body, 'code' => $code] = handle_request($request, $allowed_routes);
+
+send_http_response($body, $code);

@@ -1,10 +1,9 @@
 <?php
 
 include_once '../helpers/env.php';
-include_once '../helpers/http-response.php';
 
 /**
- * Handles the given request
+ * Handles the given request and returns the response body and status code
  *
  * @param array{
  *     method: string,
@@ -12,10 +11,10 @@ include_once '../helpers/http-response.php';
  *     content_type: string,
  *     data: string
  * } $request
- * @param array $allowed_routes
- * @return void
+ * @param string[] $allowed_routes
+ * @return array{body: string|array, code: string}
  */
-function handle_request(array $request, array $allowed_routes): void {
+function handle_request(array $request, array $allowed_routes): array {
     try {
         // By convention, we accept only POST requests
         if($request['method'] !== 'POST') {
@@ -68,11 +67,11 @@ function handle_request(array $request, array $allowed_routes): void {
 
         // Respond with the returned body and code
         ['body' => $body, 'code' => $code] = $handler_method_name($data);
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
         // Respond with the exception message and status code
         [$body, $code] = [$e->getMessage(), $e->getCode()];
     }
 
-    // Send response with body and code
-    send_http_response($body, $code);
+    return compact('body', 'code');
 }
