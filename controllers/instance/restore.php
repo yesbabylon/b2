@@ -20,13 +20,22 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
-    if(file_exists('/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz')) {
-        $backup_file = '/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz';
+    $possible_backup_files = [
+        '/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz',
+        '/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz.gpg',
+        '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz',
+        '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz.gpg'
+    ];
+
+    $backup_file = null;
+    foreach ($possible_backup_files as $file) {
+        if(file_exists($file)) {
+            $backup_file = $file;
+            break;
+        }
     }
-    elseif(file_exists('/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz')) {
-        $backup_file = '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz';
-    }
-    else {
+
+    if(is_null($backup_file)) {
         throw new Exception("backup_not_found", 404);
     }
 
@@ -40,6 +49,13 @@ function instance_restore(array $data): array {
     exec("mkdir $tmp_restore_dir", $output, $return_var);
     if($return_var !== 0) {
         throw new Exception("failed_create_tmp_restore_directory", 500);
+    }
+
+    if(substr($backup_file, -strlen('.gpg')) === '.gpg') {
+        $encrypted_backup_file = $backup_file;
+        $backup_file = preg_replace('/\.gpg$/', '', $backup_file);
+
+        exec("gpg --output $backup_file --decrypt $encrypted_backup_file");
     }
 
     exec("tar -xvzf $backup_file -C $tmp_restore_dir", $output, $return_var);
