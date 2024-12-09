@@ -60,8 +60,6 @@ function handle_request(array $request, array $allowed_routes): array {
 
         load_env(BASE_DIR . '/.env');
 
-        throw new Exception('after_loaded env');
-
         // Respond with the returned body and code
         ['body' => $body, 'code' => $code] = $handler_method_name($data);
     }

@@ -20,6 +20,7 @@
  * @throws Exception
  */
 function instance_create(array $data): array {
+    throw new Exception('create');
     if(isset($data['symbiose']) && !is_bool($data['symbiose'])) {
         throw new InvalidArgumentException("invalid_symbiose", 400);
     }
