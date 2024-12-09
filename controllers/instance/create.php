@@ -93,6 +93,8 @@ function instance_create(array $data): array {
 
     $create_equal_instance_bash = SCRIPTS_DIR.'/instance/create/create.bash';
 
+    throw new Exception($create_equal_instance_bash);
+
     // Create specific log file for creation to record creation instance
     $instance = $data['USERNAME'];
     $timestamp = date('YmdHis');
