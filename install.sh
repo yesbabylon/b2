@@ -125,18 +125,15 @@ cp "$INSTALL_DIR"/conf/etc/logrotate.d/nginx /etc/logrotate.d/nginx
 ### Create gpg key ###
 ######################
 
-# Create a tmp key-gen.conf
-cp ./conf/key-gen.conf ./key-gen.conf
-
-# Replace variables by script params
+# Create tmp key-gen.conf with command GPG_* params
 sed -e "s/%GPG_NAME%/$GPG_NAME/g" \
     -e "s/%GPG_EMAIL%/$GPG_EMAIL/g" \
     -e "s/%GPG_EXPIRY_DATE%/$GPG_EXPIRY_DATE/g" \
     -e "s/%GPG_PASSPHRASE%/$GPG_PASSPHRASE/g" \
-    ./key-gen.conf
+    ./conf/key-gen.conf >> ./key-gen.conf
 
 # Create gpg key using configuration file
-gpg --batch --generate-key key-gen.conf
+gpg --batch --generate-key ./key-gen.conf
 
 # Remove tmp key-gen.conf
 # rm ./key-gen.conf
