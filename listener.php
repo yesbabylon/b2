@@ -3,9 +3,8 @@
 include_once './helpers/http-response.php';
 include_once './helpers/request-handler.php';
 
-define('BASE_DIR', __DIR__);
-define('CONTROLLERS_DIR', __DIR__ . '/controllers');
-define('TOKENS_DIR', __DIR__ . '/tokens');
+const BASE_DIR = __DIR__;
+const CONTROLLERS_DIR = __DIR__ . '/controllers';
 
 $request = [
     'method'        => $_SERVER['REQUEST_METHOD'],
