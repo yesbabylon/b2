@@ -139,8 +139,8 @@ gpg --batch --generate-key ./key-gen.conf
 rm ./key-gen.conf
 
 # Export private and public keys to pgp files
-gpg "--output private-gpg-key.pgp --armor --export-secret-key $GPG_EMAIL"
-gpg "--output public-gpg-key.pgp --armor --export $GPG_EMAIL"
+gpg --output private-gpg-key.pgp --armor --export-secret-key "$GPG_EMAIL"
+gpg --output public-gpg-key.pgp --armor --export "$GPG_EMAIL"
 
 
 ######################
