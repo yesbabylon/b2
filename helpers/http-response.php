@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Sends an HTTP response with the specified status code and message.
+ * Sends an HTTP response with the specified status code and body.
  *
  * @param $body
  * @param $status_code
