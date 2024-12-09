@@ -3,7 +3,7 @@
 /**
  * Restore a specific instance using the backup file matching the given backup_id.
  *
- * @param array{instance: string, backup_id: string} $data
+ * @param array{instance: string, backup_id: string, passphrase?: string} $data
  * @return array{code: int, body: string}
  * @throws Exception
  */
@@ -52,12 +52,20 @@ function instance_restore(array $data): array {
     }
 
     if(substr($backup_file, -strlen('.gpg')) === '.gpg') {
+        if(!isset($data['passphrase'])) {
+            throw new InvalidArgumentException("missing_passphrase", 400);
+        }
+
+        if(!is_string($data['passphrase']) || empty($data['passphrase'])) {
+            throw new InvalidArgumentException("invalid_passphrase", 400);
+        }
+
+        $passphrase = $data['passphrase'];
+
         $encrypted_backup_file = $backup_file;
         $backup_file = preg_replace('/\.gpg$/', '', $backup_file);
 
-        throw new Exception('encrypted_backup_file: '.$encrypted_backup_file);
-
-        exec("gpg --output $backup_file --decrypt $encrypted_backup_file");
+        exec("gpg --batch --pinentry-mode=loopback --yes --passphrase $passphrase --output $backup_file --decrypt $encrypted_backup_file");
     }
 
     exec("tar -xvzf $backup_file -C $tmp_restore_dir", $output, $return_var);
