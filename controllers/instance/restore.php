@@ -51,7 +51,8 @@ function instance_restore(array $data): array {
         throw new Exception("failed_create_tmp_restore_directory", 500);
     }
 
-    if(substr($backup_file, -strlen('.gpg')) === '.gpg') {
+    $encrypted = substr($backup_file, -strlen('.gpg')) === '.gpg';
+    if($encrypted) {
         if(!isset($data['passphrase'])) {
             throw new InvalidArgumentException("missing_passphrase", 400);
         }
@@ -102,6 +103,10 @@ function instance_restore(array $data): array {
 
     $tmp_restore_dir_escaped = escapeshellarg($tmp_restore_dir);
     exec("rm -rf $tmp_restore_dir_escaped");
+
+    if($encrypted) {
+        exec("rm $backup_file");
+    }
 
     exec("docker compose -f $docker_file_path start");
 
