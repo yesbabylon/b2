@@ -15,7 +15,6 @@ GPG_NAME=""
 GPG_EMAIL=""
 GPG_EXPIRY_DATE=""
 GPG_PASSPHRASE=""
-PGP_EXPORT_SECRET_KEY=""
 
 # Function to display help
 flags_help() {
@@ -25,7 +24,6 @@ flags_help() {
     echo "  --gpg_email,       -e  Specify Name-Email of gpg configuration. (required)"
     echo "  --gpg_expiry_date, -d  Specify Expire-Date of gpg configuration. (required)"
     echo "  --gpg_passphrase,  -p  Specify Passphrase of gpg configuration. (required)"
-    echo "  --pgp_secret_key,  -k  Specify PGP export secret key. (required)"
     echo "  --help, -h             Show help message."
     [ "$1" = "error" ] && exit 1 || exit 0
 }
@@ -61,13 +59,6 @@ while [[ "$#" -gt 0 ]]; do
                 exit 1
             fi
             shift ;;
-        --pgp_secret_key|-p )
-            PGP_EXPORT_SECRET_KEY="$2"
-            if [[ -z "$PGP_EXPORT_SECRET_KEY" ]]; then
-                echo "Error: --pgp_secret_key requires a value."
-                exit 1
-            fi
-            shift ;;
         --help|-h )
             flags_help ;;
         * )
@@ -98,12 +89,6 @@ fi
 # Exit if missing $GPG_PASSPHRASE
 if [ -z "$GPG_PASSPHRASE" ]; then
     echo "Missing required --gpg_passphrase"
-    exit 1
-fi
-
-# Exit if missing $PGP_EXPORT_SECRET_KEY
-if [ -z "$PGP_EXPORT_SECRET_KEY" ]; then
-    echo "Missing required --pgp_secret_key"
     exit 1
 fi
 
@@ -153,9 +138,9 @@ gpg --batch --generate-key ./key-gen.conf
 # Remove tmp key-gen.conf
 rm ./key-gen.conf
 
-# Export to pgp
-gpg "--output private-gpg-key.pgp --armor --export-secret-key $PGP_EXPORT_SECRET_KEY"
-gpg "--output public-gpg-key.pgp --armor --export $PGP_EXPORT_SECRET_KEY"
+# Export private and public keys to pgp files
+gpg "--output private-gpg-key.pgp --armor --export-secret-key $GPG_EMAIL"
+gpg "--output public-gpg-key.pgp --armor --export $GPG_EMAIL"
 
 
 ######################
