@@ -24,7 +24,7 @@ function instance_delete(array $data): array {
     $counter = 1;
 
     // Loop until a unique directory name is found
-    while (file_exists('/home/' . $delete_directory)) {
+    while(file_exists('/home/' . $delete_directory)) {
         $delete_directory = $original_delete_directory . '_' . $counter;
         $counter++;
     }
