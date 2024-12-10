@@ -20,15 +20,18 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
+    $instance = $data['instance'];
+    $backup_id = $data['backup_id'];
+
     $possible_backup_files = [
-        '/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz',
-        '/home/'.$data['instance'].'/import/backup_'.$data['backup_id'].'.tar.gz.gpg',
-        '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz',
-        '/home/'.$data['instance'].'/export/backup_'.$data['backup_id'].'.tar.gz.gpg'
+        "/home/$instance/import/${$instance}_$backup_id.tar.gz",
+        "/home/$instance/import/${$instance}_$backup_id.tar.gz.gpg",
+        "/home/$instance/export/${$instance}_$backup_id.tar.gz",
+        "/home/$instance/export/${$instance}_$backup_id.tar.gz.gpg"
     ];
 
     $backup_file = null;
-    foreach ($possible_backup_files as $file) {
+    foreach($possible_backup_files as $file) {
         if(file_exists($file)) {
             $backup_file = $file;
             break;
@@ -40,8 +43,6 @@ function instance_restore(array $data): array {
     }
 
     // TODO: Put in maintenance mode
-
-    $instance = $data['instance'];
 
     $tmp_restore_dir = "/home/$instance/tmp_restore";
 
@@ -85,24 +86,21 @@ function instance_restore(array $data): array {
         "/home/$instance/www"
     ];
 
-    $docker_file_path = escapeshellarg("/home/$instance/docker-compose.yml");
+    $docker_file_path = "/home/$instance/docker-compose.yml";
     exec("docker compose -f $docker_file_path stop");
 
     foreach($original_paths as $dest) {
         $src = $tmp_restore_dir.$dest;
         if(file_exists($src)) {
-            $dest_escaped = escapeshellarg($dest);
             if(file_exists($dest)) {
-                exec("rm -rf $dest_escaped");
+                exec("rm -rf $dest");
             }
 
-            $src_escaped = escapeshellarg($src);
-            exec("cp -rp $src_escaped $dest_escaped");
+            exec("cp -rp $src $dest");
         }
     }
 
-    $tmp_restore_dir_escaped = escapeshellarg($tmp_restore_dir);
-    exec("rm -rf $tmp_restore_dir_escaped");
+    exec("rm -rf $tmp_restore_dir");
 
     if($encrypted) {
         exec("rm $backup_file");
