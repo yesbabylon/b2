@@ -48,9 +48,9 @@ function instance_import_backup(array $data): array {
         throw new Exception("could_not_log_in_ftp_server", 500);
     }
 
-    $backup_file = '/home/'.$data['instance'].'/import/'.$data['backup_id'].'_'.$data['backup_id'].'.tar.gz.gpg';
+    $backup_file = '/home/'.$data['instance'].'/import/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz.gpg';
     if(!ftp_get($ftp_connection_id, $backup_file, basename($backup_file), FTP_BINARY)) {
-        $backup_file = '/home/'.$data['instance'].'/import/'.$data['backup_id'].'_'.$data['backup_id'].'.tar.gz';
+        $backup_file = '/home/'.$data['instance'].'/import/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz';
         if(!ftp_get($ftp_connection_id, $backup_file, basename($backup_file), FTP_BINARY)) {
             ftp_close($ftp_connection_id);
             throw new Exception("error_while_importing_backup_file", 500);
