@@ -251,12 +251,6 @@ if ! crontab -l | grep -q "$PHP_SCRIPT"; then
     (crontab -l 2>/dev/null; echo "$CRON_CMD") | crontab -
 fi
 
-# Restart cron
-systemctl start cron
-
-# Enable cron at startup
-systemctl enable cron
-
 
 ###################
 ### Install F2B ###
