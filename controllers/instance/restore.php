@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Restore a specific instance using the backup file matching the given backup_id.
+ * Restores a specific instance using the backup file matching the given backup_id.
  *
  * @param array{instance: string, backup_id: string, passphrase?: string} $data
  * @return array{code: int, body: string}
@@ -24,10 +24,10 @@ function instance_restore(array $data): array {
     $backup_id = $data['backup_id'];
 
     $possible_backup_files = [
-        "/home/$instance/import/${$instance}_$backup_id.tar.gz",
-        "/home/$instance/import/${$instance}_$backup_id.tar.gz.gpg",
-        "/home/$instance/export/${$instance}_$backup_id.tar.gz",
-        "/home/$instance/export/${$instance}_$backup_id.tar.gz.gpg"
+        "/home/$instance/import/{$instance}_$backup_id.tar.gz",
+        "/home/$instance/import/{$instance}_$backup_id.tar.gz.gpg",
+        "/home/$instance/export/{$instance}_$backup_id.tar.gz",
+        "/home/$instance/export/{$instance}_$backup_id.tar.gz.gpg"
     ];
 
     $backup_file = null;
