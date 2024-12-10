@@ -18,6 +18,8 @@ function create_token(string $backup_host_url, string $instance) {
 
     $context = stream_context_create($options);
 
+    throw new Exception('here');
+
     return file_get_contents($backup_host_url.'/token/create', false, $context);
 }
 
