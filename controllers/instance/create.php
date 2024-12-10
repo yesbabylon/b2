@@ -96,7 +96,7 @@ function instance_create(array $data): array {
     // Create specific log file for creation to record creation instance
     $instance = $data['USERNAME'];
     $timestamp = date('YmdHis');
-    $log_file = BASE_DIR."/logs/$instance-$timestamp.log";
+    $log_file = BASE_DIR."/logs/instance_create_$instance-$timestamp.log";
 
     // Execute create equal instance bash that will use previously set env variables
     exec("bash $create_equal_instance_bash > $log_file 2>&1");
