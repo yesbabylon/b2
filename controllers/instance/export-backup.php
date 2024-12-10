@@ -21,7 +21,6 @@ function instance_export_backup(array $data): array {
     }
 
     $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz.gpg';
-    throw new Exception($backup_file);
     if(!file_exists($backup_file)) {
         $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz';
         if(!file_exists($backup_file)) {
