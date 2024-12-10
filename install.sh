@@ -236,6 +236,28 @@ cp "$INSTALL_DIR"/conf/vhost.d/default /srv/docker/nginx/vhost.d/default
 docker exec nginx-proxy nginx -s reload
 
 
+####################
+### Install cron ###
+####################
+
+apt-get install -y cron
+
+PHP_SCRIPT="cron.php"
+CRON_CMD="* * * * * cd /root/b2 && /usr/bin/php $PHP_SCRIPT"
+
+# Check if the cron job already exists
+if ! crontab -l | grep -q "$PHP_SCRIPT"; then
+    # If not, add the cron job
+    (crontab -l 2>/dev/null; echo "$CRON_CMD") | crontab -
+fi
+
+# Restart cron
+systemctl start cron
+
+# Enable cron at startup
+systemctl enable cron
+
+
 ###################
 ### Install F2B ###
 ###################
