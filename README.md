@@ -48,7 +48,7 @@ This script must be executed with **root privileges**.
 3. Installs base services that are needed
 4. Creates the gpg keys for backup encryption
 5. Installs Docker for instances
-6. Installs cron and configure it, it'll start cron.php every minute
+6. Installs cron and configure it, it'll start `./cron.php` every minute
 7. Installs fail2ban
 8. Installs [API](./README_API.md) service that will listen for requests on port :8000
 9. Installs Portainer that will listen on :9000
