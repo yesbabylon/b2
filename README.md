@@ -45,7 +45,7 @@ This script must be executed with **root privileges**.
 
 1. Checks that script run on correct directory and checks required args
 2. Creates .env file from .env.example and add/update GPG_* with command given args
-3. Installs base services that are needed
+3. Does base server configurations and installs base services that are needed (vnstat, php-cli, apache2-utils, vsftpd)
 4. Creates the gpg keys for backup encryption
 5. Installs Docker for instances
 6. Installs cron and configure it, it'll start `./cron.php` every minute
