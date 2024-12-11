@@ -18,7 +18,7 @@ function create_token(string $backup_host_url, string $instance) {
 
     $context = stream_context_create($options);
 
-    return file_get_contents($backup_host_url.'/token/create', false, $context);
+    return file_get_contents($backup_host_url.'/instance/create-token', false, $context);
 }
 
 /**
@@ -44,5 +44,5 @@ function release_token(string $backup_host_url, string $instance, string $token)
 
     $context = stream_context_create($options);
 
-    return file_get_contents($backup_host_url.'/token/release', false, $context);
+    return file_get_contents($backup_host_url.'/instance/release-token', false, $context);
 }
