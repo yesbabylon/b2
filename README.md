@@ -1,10 +1,11 @@
-# B2 repository purpose
+# b2
 
-Welcome to our repository for initializing instances using the eQual framework!
+Welcome to our repository that allows you to easily initialize eQual instances on your Ubuntu server!
+This repository provides scripts and configurations designed to automate the setup process of an eQual ecosystem.
 
-This repository provides scripts and configurations designed to automate the setup process of eQual ecosystem.
-These scripts setup essential services on Linux servers and setup listener server for automatically handling some
-instance process automatically.
+The `./install.sh` script:
+  - **setup essential services** on an Ubuntu server
+  - **starts an API** that allows to smoothly manage the host and its instances
 
 Whether you're a developer exploring the capabilities of eQual or a business owner seeking efficient server deployment
 solutions, our scripts simplify the installation and configuration of various tools and services.
@@ -26,45 +27,23 @@ Thank you for considering our solutions!
 
 ## Important Note
 
-The B2 repository should be placed in the ``/root`` folder of your server.
-For further information about these three scripts, please refer to the repository or respective folder, the other
-scripts for instance initialization are:
-are in the [equal folder](https://github.com/yesbabylon/b2/tree/master/equal) of this repository.
+The b2 repository must be placed in the `/root` folder of your server.
 
-## Scripts explanation
+## Install
 
-1. ``install.sh``: Designed as the foundational script, ``install.sh`` automates the setup process for essential Linux
-   server services.
+Designed as the foundational script, `./install.sh` automates the setup process for essential Ubuntu server services.
+From configuring Apache utilities to managing PHP CLI, firewall, linux user management, and FTP services, this script ensures a smooth and efficient initial deployment.
+Whether you're a developer experimenting with the eQual framework or a business owner preparing for production, this script streamlines the setup phase, saving time and effort.
 
-   From configuring Apache utilities to managing PHP CLI, firewall, linux user management, and FTP
-   services, this script ensures a smooth and efficient initial deployment.
-
-   Whether you're a developer experimenting with the eQual framework or a business owner preparing for
-   production, ``install.sh`` streamlines the setup phase, saving time and effort.  
-2. ``equal/init.bash``: Building upon the base established by ``install.sh``, ``equal/init.bash`` enriches the server
-   environment with advanced functionalities.
-
-   By invoking this script, users can seamlessly initialize the eQualFramework while integrating additional components
-   such as [YesBabylon Symbiose](https://github.com/yesbabylon/symbiose) and [eQualPress](https://github.com/eQualPress),
-   our WordPress solutions.
-
-   This comprehensive approach transforms servers into robust hosting and development platforms, offering versatility
-   for various requirements.
-
-   From web hosting to content management, ``equal/init.bash`` empowers users to leverage the full
-   potential of the eQual framework, ensuring a cohesive and efficient setup process.
-
-### ``install.sh``
-
-This script automates the setup process for various services on a Linux server.  
+This script automates the setup process for various services on an Ubuntu server.  
 
 Below is a breakdown of the tasks it performs.
 
-#### Prerequisite
+### Prerequisite
 
-- This script must be executed with root privileges.
+This script must be executed with **root privileges**.
 
-#### Script Progress
+### Script steps
 
 1. **Stop and uninstall Postfix:**
     - Stop the Postfix service if it's running.
@@ -130,10 +109,12 @@ Below is a breakdown of the tasks it performs.
 21. **Start Portainer:**
     - Starts the Portainer service.
 
-#### Usage
-
-Execute the script with root privileges.
+### Usage
 
 ```bash
-./install.sh
+./install.sh --gpg_name b2 --gpg_email b2@your-company.com --gpg_expiry_date 0 --gpg_passphrase thepassword1234
 ```
+
+**Notes**:
+  - You must **execute** the installation script with **root privileges**.
+  - The **gpg arguments** are needed  to **encrypt the backups** of the instances.
