@@ -10,6 +10,12 @@ NC='\033[0m' # No Color
 # Store current directory path
 INSTALL_DIR=$(pwd)
 
+# Check that script is started from valid directory
+if [ "$INSTALL_DIR" != "/root/b2" ]; then
+  echo "Error: Script must be run from /root/b2 directory. Current directory is $INSTALL_DIR."
+  exit 1
+fi
+
 # Needed vars
 GPG_NAME=""
 GPG_EMAIL=""
