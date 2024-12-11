@@ -216,7 +216,7 @@ Export the backup of an instance to the configured backup host.
 
 **Notes**:
 
-The BACKUP_HOST_URL and BACKUP_HOST_FTP of .env need to be correctly configured for the export to work.
+The `BACKUP_HOST_URL` and `BACKUP_HOST_FTP` env configurations need to be correctly set for the export to work.
 
 ### POST _/instance/import-backup_
 
@@ -244,7 +244,7 @@ Import a backup from the configured backup host.
 
 **Notes**:
 
-The BACKUP_HOST_URL and BACKUP_HOST_FTP of .env need to be correctly configured for the export to work.
+The `BACKUP_HOST_URL` and `BACKUP_HOST_FTP` env configurations need to be correctly set for the export to work.
 
 ### POST _/instance/backups_
 
