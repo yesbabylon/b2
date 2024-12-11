@@ -82,13 +82,13 @@ else
     print_color "yellow" "Granting the user $APP_USERNAME the rights to create, read, update, delete and manage..."
     # shellcheck disable=SC1083
     docker exec "$USERNAME" bash -c "
-    ./equal.run --do=user_create --login=$APP_USERNAME@equal.local --password=$APP_PASSWORD
+    ./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$APP_PASSWORD
     ./equal.run --do=model_update --entity=core\\User --ids=[3] --fields="{'validated':1, 'status': 'instance'}" --force=true
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=create
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=read
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=update
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=delete
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=manage
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=delete
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=manage
     "
 fi
 

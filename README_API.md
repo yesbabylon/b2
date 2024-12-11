@@ -118,6 +118,12 @@ Create a new instance.
 | WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true.        |
 | MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                                |
 
+**Note**: 
+
+If the _APP_USERNAME_ given isn't `root`, then the eQual login will be _APP_USERNAME_@_USERNAME_.
+
+For instance if _APP_USERNAME_ is `johndoe` and _USERNAME_ is `equal.local` then the eQual login will be `johndoe@equal.local`.
+
 ### POST _/instance/delete_
 
 Delete an existing instance.
