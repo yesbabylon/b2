@@ -35,8 +35,6 @@ Designed as the foundational script, `./install.sh` automates the setup process 
 
 From configuring Apache utilities to managing PHP CLI, firewall, linux user management, and FTP services, this script ensures a smooth and efficient initial deployment.
 
-Whether you're a developer experimenting with the eQual framework or a business owner preparing for production, this script streamlines the setup phase, saving time and effort.
-
 You'll find a breakdown of the tasks it performs below.
 
 ### Prerequisite
