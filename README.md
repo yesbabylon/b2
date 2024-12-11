@@ -32,12 +32,12 @@ The b2 repository must be placed in the `/root` folder of your server.
 ## Install
 
 Designed as the foundational script, `./install.sh` automates the setup process for essential Ubuntu server services.
+
 From configuring Apache utilities to managing PHP CLI, firewall, linux user management, and FTP services, this script ensures a smooth and efficient initial deployment.
+
 Whether you're a developer experimenting with the eQual framework or a business owner preparing for production, this script streamlines the setup phase, saving time and effort.
 
-This script automates the setup process for various services on an Ubuntu server.  
-
-Below is a breakdown of the tasks it performs.
+You'll find a breakdown of the tasks it performs below.
 
 ### Prerequisite
 
