@@ -1,6 +1,6 @@
 # API documentation
 
-The b2 host's api allows manage the host and its instances.
+The b2 host's api allows to manage the host and its instances.
 
 ## Host
 
@@ -10,7 +10,9 @@ Get the status of the b2 host.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -24,7 +26,9 @@ Set the public interface ip address.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -46,7 +50,9 @@ Reboot the b2 host.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -60,7 +66,9 @@ Get the list of instances present on the b2 host.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -80,7 +88,9 @@ Create a new instance.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -113,7 +123,9 @@ Delete an existing instance.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -131,7 +143,9 @@ Get the status of an instance.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -149,7 +163,9 @@ Create a backup of an instance.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -173,7 +189,9 @@ Export the backup of an instance to the configured backup host.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -195,7 +213,9 @@ Import a backup from the configured backup host.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -217,7 +237,9 @@ Get the list of backups of an instance.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
@@ -235,7 +257,9 @@ Restore an instance state with a backup.
 
 #### Request Headers
 
-**Content-Type** application/json
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
 
 #### Body
 
