@@ -45,69 +45,15 @@ This script must be executed with **root privileges**.
 
 ### Script steps
 
-1. **Stop and uninstall Postfix:**
-    - Stop the Postfix service if it's running.
-    - Uninstalls Postfix.
-
-2. **Update aptitude cache:**
-    - Ensures that the aptitude package manager cache is up to date.
-
-3. **Set timezone to UTC:**
-    - Configure the server timezone to UTC.
-
-4. **Allow using domains as usernames:**
-    - Modifies the adduser configuration to allow using domains as usernames.
-
-5. **Install Apache utilities, vnstat, PHP CLI, and FTP service:**
-    - Installs Apache utilities (htpasswd), vnstat (bandwidth monitoring tool), PHP CLI, and vsftpd (FTP service).
-
-6. **Configure FTP service:**
-    - Customizes the vsftpd configuration.
-
-7. **Restart FTP service:**
-    - Restart the vsftpd service to apply the configuration changes.
-
-8. **Install Fail2Ban:**
-    - Installs and configures Fail2Ban for intrusion prevention.
-
-9. **Configure logrotate for Nginx:**
-    - Adds logrotate directives for Nginx log rotation. 
-
-10. **Install Docker:**
-    - Installs Docker CE and Docker CLI.
-
-11. **Install Docker-Compose:**
-    - Installs Docker-Compose for managing multi-container Docker applications.
-
-12. **Prepare directory structure:**
-    - Copies necessary directories and scripts to their respective locations.
-
-13. **Create 'odoo' user:**
-    - Create a user named ``odoo`` without a home directory, login, or prompt.
-
-14. **Set scripts as executable:**
-    - Makes various scripts executable.
-
-15. **Create proxy network and volume for Portainer:**
-    - Create a Docker network named ``proxynet`` and a Docker volume named ``portainer_data``.
-
-16. **Build docked-nginx image:**
-    - Builds the 'docked-nginx' Docker image.
-
-17. **Start reverse proxy and Let's Encrypt companion:**
-    - Start the reverse proxy and Let's Encrypt companion services using Docker Compose.
-
-18. **Add maintenance page and custom Nginx configuration:**
-    - Copies a maintenance page and custom Nginx configuration.
-
-19. **Force Nginx to reload configuration:**
-    - Reloads Nginx to apply the new configuration.
-
-20. **Edit account parameters and run account creation script:**
-    - Edits account parameters and runs the account creation script.
-
-21. **Start Portainer:**
-    - Starts the Portainer service.
+1. Checks that script run on correct directory and checks required args
+2. Creates .env file from .env.example and add/update GPG_* with command given args
+3. Installs base services that are needed
+4. Creates the gpg keys for backup encryption
+5. Installs Docker for instances
+6. Installs cron and configure it, it'll start cron.php every minute
+7. Installs fail2ban
+8. Installs API service that will listen for requests on port :8000
+9. Installs Portainer that will listen on :9000
 
 ### Usage
 
