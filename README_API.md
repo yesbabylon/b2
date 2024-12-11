@@ -118,7 +118,7 @@ Create a new instance.
 | WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true.        |
 | MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                                |
 
-**Note**: 
+**Notes**: 
 
 If the _APP_USERNAME_ given isn't `root`, then the eQual login will be _APP_USERNAME_@_USERNAME_.
 
@@ -214,6 +214,10 @@ Export the backup of an instance to the configured backup host.
 | instance  |   true   |         |        | Must be a valid instance installed on the host. |
 | backup_id |   true   |         |        | Must be a valid backup in export directory.     |
 
+**Notes**:
+
+The BACKUP_HOST_URL and BACKUP_HOST_FTP of .env need to be correctly configured for the export to work.
+
 ### POST _/instance/import-backup_
 
 Import a backup from the configured backup host.
@@ -237,6 +241,10 @@ Import a backup from the configured backup host.
 |-----------|:--------:|:-------:|--------|-----------------------------------------------------|
 | instance  |   true   |         |        | Must be a valid instance installed on the host.     |
 | backup_id |   true   |         |        | Must be a valid backup existing on the backup host. |
+
+**Notes**:
+
+The BACKUP_HOST_URL and BACKUP_HOST_FTP of .env need to be correctly configured for the export to work.
 
 ### POST _/instance/backups_
 
