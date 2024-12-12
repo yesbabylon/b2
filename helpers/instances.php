@@ -44,3 +44,27 @@ function instance_exists(string $instance): bool {
 
     return in_array($instance, get_instances());
 }
+
+/**
+ * Enables maintenance mode for a specific instance
+ *
+ * @param string $instance
+ * @return void
+ */
+function instance_enable_maintenance_mode(string $instance) {
+    if(!file_exists("/srv/docker/nginx/html/$instance/maintenance")) {
+        file_put_contents("/srv/docker/nginx/html/$instance/maintenance", "");
+    }
+}
+
+/**
+ * Disables maintenance mode for a specific instance
+ *
+ * @param string $instance
+ * @return void
+ */
+function instance_disable_maintenance_mode(string $instance) {
+    if(file_exists("/srv/docker/nginx/html/$instance/maintenance")) {
+        unlink("/srv/docker/nginx/html/$instance/maintenance");
+    }
+}

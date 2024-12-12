@@ -22,7 +22,7 @@ function instance_enable_maintenance(array $data): array {
         throw new Exception("instance_already_in_maintenance_mode", 400);
     }
 
-    file_put_contents("/srv/docker/nginx/html/$instance/maintenance", "");
+    instance_enable_maintenance_mode($instance);
 
     return [
         'code' => 200,

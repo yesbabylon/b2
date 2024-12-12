@@ -22,7 +22,7 @@ function instance_disable_maintenance(array $data): array {
         throw new Exception("instance_not_in_maintenance_mode", 400);
     }
 
-    unlink("/srv/docker/nginx/html/$instance/maintenance");
+    instance_disable_maintenance_mode($instance);
 
     return [
         'code' => 200,
