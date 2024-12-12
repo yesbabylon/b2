@@ -17,11 +17,16 @@ function instance_status(array $data): array {
     }
 
     $docker_stats_json = exec('docker stats '.$data['instance'].' --no-stream --format "{{ json . }}"');
-    $result = json_decode($docker_stats_json);
+    $docker_stats = json_decode($docker_stats_json, true);
 
-    if($result === null) {
+    if($docker_stats === null) {
         throw new Exception("instance_not_found", 404);
     }
+
+    $result = [
+        'maintenance_enabled'   => instance_is_maintenance_enabled($data['instance']),
+        'docker_stats'          => $docker_stats
+    ];
 
     return [
         'code' => 200,
