@@ -1,6 +1,6 @@
 # b2
 
-Welcome to our repository that allows you to easily initialize eQual instances on your Ubuntu server!
+The project b2 allows you to easily initialize eQual instances on your Ubuntu server!
 This repository provides scripts and configurations designed to automate the setup process of an eQual ecosystem.
 
 The `./install.sh` script:
