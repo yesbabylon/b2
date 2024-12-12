@@ -31,9 +31,9 @@ function instance_backup(array $data): array {
         }
     }
 
-    // TODO: Put in maintenance mode
-
     $instance = $data['instance'];
+
+    instance_enable_maintenance_mode($instance);
 
     $docker_file_path = "/home/$instance/docker-compose.yml";
     exec("docker compose -f $docker_file_path stop");
@@ -68,7 +68,7 @@ function instance_backup(array $data): array {
         exec("rm $backup_file");
     }
 
-    // TODO: Remove from maintenance mode
+    instance_disable_maintenance_mode($instance);
 
     return [
         'code' => 201,

@@ -42,7 +42,7 @@ function instance_restore(array $data): array {
         throw new Exception("backup_not_found", 404);
     }
 
-    // TODO: Put in maintenance mode
+    instance_enable_maintenance_mode($instance);
 
     $tmp_restore_dir = "/home/$instance/tmp_restore";
 
@@ -108,7 +108,7 @@ function instance_restore(array $data): array {
 
     exec("docker compose -f $docker_file_path start");
 
-    // TODO: Remove from maintenance mode
+    instance_disable_maintenance_mode($instance);
 
     return [
         'code' => 200,
