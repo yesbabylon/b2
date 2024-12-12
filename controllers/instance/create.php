@@ -32,9 +32,10 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("missing_USERNAME", 400);
     }
 
+    $domain_name_pattern = '/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/';
     if(
         !is_string($data['USERNAME']) || empty($data['USERNAME']) || strlen($data['USERNAME']) > 32
-        || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0
+        || preg_match($domain_name_pattern, $data['USERNAME']) === 0
     ) {
         throw new InvalidArgumentException("invalid_USERNAME", 400);
     }

@@ -40,11 +40,15 @@ function instance_import_backup(array $data): array {
 
     $ftp_connection_id = ftp_connect($backup_host_ftp);
     if(!$ftp_connection_id) {
+        release_token($backup_host_url, $data['instance'], $token);
+
         throw new Exception("could_not_connect_to_ftp_server", 500);
     }
 
     if(!ftp_login($ftp_connection_id, $ftp_credentials['username'], $ftp_credentials['password'])) {
         ftp_close($ftp_connection_id);
+        release_token($backup_host_url, $data['instance'], $token);
+
         throw new Exception("could_not_log_in_ftp_server", 500);
     }
 
@@ -53,12 +57,13 @@ function instance_import_backup(array $data): array {
         $backup_file = '/home/'.$data['instance'].'/import/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz';
         if(!ftp_get($ftp_connection_id, $backup_file, basename($backup_file), FTP_BINARY)) {
             ftp_close($ftp_connection_id);
+            release_token($backup_host_url, $data['instance'], $token);
+
             throw new Exception("error_while_importing_backup_file", 500);
         }
     }
 
     ftp_close($ftp_connection_id);
-
     release_token($backup_host_url, $data['instance'], $token);
 
     return [
