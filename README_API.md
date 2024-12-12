@@ -291,3 +291,44 @@ Restore an instance state with a backup.
 | instance   |    true    |         |        | Must be a valid instance installed on the host.                         |
 | backup_id  |    true    |         |        | Must be a valid backup existing in either export or import directories. |
 | passphrase | true/false |         |        | Only required if the backup is encrypted gpg.                           |
+
+
+### POST _/instance/enable-maintenance_
+
+Enable maintenance mode for an instance.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{"instance":"equal.local"}
+```
+
+| key        |  required  | default | values | Note                                            |
+|------------|:----------:|:-------:|--------|-------------------------------------------------|
+| instance   |    true    |         |        | Must be a valid instance installed on the host. |
+
+### POST _/instance/disable-maintenance_
+
+Disable maintenance mode for an instance.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{"instance":"equal.local"}
+```
+
+| key        |  required  | default | values | Note                                            |
+|------------|:----------:|:-------:|--------|-------------------------------------------------|
+| instance   |    true    |         |        | Must be a valid instance installed on the host. |
