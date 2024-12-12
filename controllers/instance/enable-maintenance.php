@@ -7,7 +7,7 @@
  * @return array{code: int, body: string}
  * @throws Exception
  */
-function instance_maintenance_enable(array $data): array {
+function instance_enable_maintenance(array $data): array {
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }
