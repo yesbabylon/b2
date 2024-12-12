@@ -78,6 +78,7 @@ mkdir /srv/docker/nginx/html/"$USERNAME"
 
 printf "User created and configured.\n"
 
+
 #########################################################
 ### CREATE ENV VARS FOR INSTANCES PORTS AND HOSTNAMES ###
 #########################################################
