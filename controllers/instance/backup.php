@@ -48,6 +48,12 @@ function instance_backup(array $data): array {
 
     $instance = $data['instance'];
 
+    $tmp_backup_dir = "/home/$instance/tmp_backup";
+    exec("rm -rf $tmp_backup_dir");
+    if(!mkdir($tmp_backup_dir)) {
+        throw new Exception("failed_create_tmp_restore_directory", 500);
+    }
+
     instance_enable_maintenance_mode($instance);
 
     // Stop docker containers
@@ -59,11 +65,11 @@ function instance_backup(array $data): array {
     exec("mkdir /home/$instance/export");
 
     // Create mysql dump
-    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql";
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > $tmp_backup_dir/backup.sql";
     exec($create_mysql_dump);
 
     // Compress dump
-    $compress_mysql_dump = "gzip /home/$instance/backup.sql";
+    $compress_mysql_dump = "gzip -c $tmp_backup_dir/backup.sql > $tmp_backup_dir/backup.sql.gz";
     exec($compress_mysql_dump);
 
     // Create config.tar
@@ -74,28 +80,26 @@ function instance_backup(array $data): array {
         "/home/$instance/mysql.cnf",
     ];
     $config_files_paths_str = implode(' ', $config_files_paths);
-    $create_configs_archive = "tar -cvf /home/$instance/config.tar $config_files_paths_str";
+    $create_configs_archive = "tar -cvf $tmp_backup_dir/config.tar $config_files_paths_str";
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
-    $compress_filestore = "tar -cvzf /home/$instance/filestore.tar.gz /home/$instance/www";
+    $compress_filestore = "tar -cvzf $tmp_backup_dir/filestore.tar.gz /home/$instance/www";
     exec($compress_filestore);
 
     // Create archive to unite files
     $to_export = [
-        "/home/$instance/backup.sql.gz",
-        "/home/$instance/config.tar",
-        "/home/$instance/filestore.tar.gz"
+        "$tmp_backup_dir/backup.sql.gz",
+        "$tmp_backup_dir/config.tar",
+        "$tmp_backup_dir/filestore.tar.gz"
     ];
     $timestamp = date('YmdHis');
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
     $to_export_str = implode(' ', $to_export);
     exec("tar -cvf $backup_file $to_export_str");
 
-    // Remove temporary back up files
-    unlink("/home/$instance/backup.sql.gz");
-    unlink("/home/$instance/config.tar");
-    unlink("/home/$instance/filestore.tar.gz");
+    // Remove tmp directory for backup
+    exec("rm -rf $tmp_backup_dir");
 
     // Restart docker containers
     exec("docker compose -f $docker_file_path start");
