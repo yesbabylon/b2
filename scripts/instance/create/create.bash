@@ -145,8 +145,6 @@ printf "Env file created.\n"
 printf "Init eQual\n"
 bash "/root/b2/scripts/instance/create/init-equal.bash"
 
-exit 0
-
 symbiose=${symbiose:-false}
 equalpress=${equalpress:-false}
 
