@@ -20,13 +20,6 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
-    if(isset($data['encrypt']) && !is_bool($data['encrypt'])) {
-        throw new InvalidArgumentException("invalid_encrypt", 400);
-    }
-    elseif(!isset($data['encrypt'])) {
-        $data['encrypt'] = true;
-    }
-
     $db_hostname = getenv('DB_HOSTNAME') ?? false;
     if(empty($db_hostname)) {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
@@ -44,12 +37,13 @@ function instance_restore(array $data): array {
 
     $instance = $data['instance'];
     $backup_id = $data['backup_id'];
+    $encrypted = isset($data['passphrase']);
 
     $possible_backup_files = [
         "/home/$instance/import/{$instance}_$backup_id.tar",
         "/home/$instance/export/{$instance}_$backup_id.tar"
     ];
-    if($data['encrypt']) {
+    if($encrypted) {
         array_map(
             function ($file) {return "$file.gpg";},
             $possible_backup_files
@@ -74,18 +68,15 @@ function instance_restore(array $data): array {
         throw new Exception("failed_create_tmp_restore_directory", 500);
     }
 
-    $encrypted = isset($data['passphrase']);
     if($encrypted) {
         if(!is_string($data['passphrase']) || empty($data['passphrase'])) {
             throw new InvalidArgumentException("invalid_passphrase", 400);
         }
 
-        $passphrase = $data['passphrase'];
-
         $encrypted_backup_file = $backup_file;
         $backup_file = preg_replace('/\.gpg$/', '', $backup_file);
 
-        exec("gpg --batch --pinentry-mode=loopback --yes --passphrase $passphrase --output $backup_file --decrypt $encrypted_backup_file");
+        exec("gpg --batch --pinentry-mode=loopback --yes --passphrase {$data['passphrase']} --output $backup_file --decrypt $encrypted_backup_file");
     }
 
     exec("tar -xvf $backup_file -C $tmp_restore_dir", $output, $return_var);
@@ -119,7 +110,7 @@ function instance_restore(array $data): array {
     exec("rm -rf $tmp_restore_dir");
 
     // If was encrypted then remove the decrypted version
-    if($data['encrypt']) {
+    if($encrypted) {
         unlink($backup_file);
     }
 
