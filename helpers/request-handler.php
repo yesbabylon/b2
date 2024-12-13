@@ -68,7 +68,6 @@ function handle_request(array $request, array $allowed_routes): array {
             && is_string($data['instance'])
             && instance_exists($data['instance'])
         ) {
-            die('/home/'.$data['instance'].'/.env');
             load_env('/home/'.$data['instance'].'/.env');
         }
 
