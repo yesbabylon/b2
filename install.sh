@@ -140,8 +140,8 @@ timedatectl set-timezone UTC
 mv /etc/adduser.conf /etc/adduser.conf.orig
 cp "$INSTALL_DIR"/conf/etc/adduser.conf /etc/adduser.conf
 
-# Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for API), FTP service
-apt-get install -y apache2-utils vnstat php-cli vsftpd
+# Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for API), FTP service and gzip (backup)
+apt-get install -y apache2-utils vnstat php-cli vsftpd gzip
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
