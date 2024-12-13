@@ -73,14 +73,9 @@ function instance_backup(array $data): array {
     exec($compress_mysql_dump);
 
     // Create config.tar
-    $config_files_paths = [
-        "/home/$instance/.env",
-        "/home/$instance/docker-compose.yml",
-        "/home/$instance/php.ini",
-        "/home/$instance/mysql.cnf",
-    ];
-    $config_files_paths_str = implode(' ', $config_files_paths);
-    $create_configs_archive = "cd $tmp_backup_dir && tar -cvf config.tar $config_files_paths_str";
+    $config_files = [".env", "docker-compose.yml", "conf"];
+    $config_files_str = implode(' ', $config_files);
+    $create_configs_archive = "cd /home/$instance && tar -cvf config.tar $config_files_str";
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
