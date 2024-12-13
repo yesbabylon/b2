@@ -56,10 +56,6 @@ function instance_backup(array $data): array {
 
     instance_enable_maintenance_mode($instance);
 
-    // Stop docker containers
-    $docker_file_path = "/home/$instance/docker-compose.yml";
-    exec("docker compose -f $docker_file_path stop");
-
     // Remove old export, if any
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
@@ -67,6 +63,10 @@ function instance_backup(array $data): array {
     // Create mysql dump
     $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > $tmp_backup_dir/backup.sql";
     exec($create_mysql_dump);
+
+    // Stop docker containers
+    $docker_file_path = "/home/$instance/docker-compose.yml";
+    exec("docker compose -f $docker_file_path stop");
 
     // Compress dump
     $compress_mysql_dump = "cd $tmp_backup_dir && gzip -c backup.sql > backup.sql.gz";
