@@ -31,10 +31,26 @@ function instance_backup(array $data): array {
         }
     }
 
+    $db_hostname = getenv('DB_HOSTNAME') ?? false;
+    if(empty($db_hostname)) {
+        throw new Exception("DB_HOSTNAME_not_configured", 500);
+    }
+
+    $backup_username = getenv('BACKUP_USERNAME') ?? false;
+    if(empty($username)) {
+        throw new Exception("BACKUP_USERNAME_not_configured", 500);
+    }
+
+    $backup_password = getenv('BACKUP_PASSWORD') ?? false;
+    if(empty($password)) {
+        throw new Exception("BACKUP_PASSWORD_not_configured", 500);
+    }
+
     $instance = $data['instance'];
 
     instance_enable_maintenance_mode($instance);
 
+    // Stop docker containers
     $docker_file_path = "/home/$instance/docker-compose.yml";
     exec("docker compose -f $docker_file_path stop");
 
@@ -42,11 +58,10 @@ function instance_backup(array $data): array {
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
 
-    // Backup
-    $volume_name = str_replace('.', '', $instance).'_db_data';
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=$backup_password --single-transaction --skip-lock-tables equal > database.sql gzip database.sql";
+    exec($create_mysql_dump);
 
     $to_export = [
-        "/var/lib/docker/volumes/$volume_name/_data",
         "/home/$instance/.env",
         "/home/$instance/docker-compose.yml",
         "/home/$instance/php.ini",
@@ -55,16 +70,20 @@ function instance_backup(array $data): array {
     ];
 
     $timestamp = date('YmdHis');
-    $to_export_str = implode(' ', $to_export);
-
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar.gz";
 
+    // Unite files to back up in one file
+    $to_export_str = implode(' ', $to_export);
     exec("tar -cvzf $backup_file $to_export_str");
 
+    // Restart docker containers
     exec("docker compose -f $docker_file_path start");
 
     if($data['encrypt']) {
+        // Encrypt backup
         exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_email $backup_file");
+
+        // Remove not encrypted backup to keep only secure one
         exec("rm $backup_file");
     }
 

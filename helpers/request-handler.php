@@ -58,7 +58,18 @@ function handle_request(array $request, array $allowed_routes): array {
             throw new Exception("missing_method", 501);
         }
 
+        // Load host env variables
         load_env(BASE_DIR . '/.env');
+
+        // Load env variables of a specific instance if needed
+        if(
+            strpos($request['uri'], '/instance/') === 0
+            && isset($data['instance'])
+            && is_string($data['instance'])
+            && instance_exists($data['instance'])
+        ) {
+            load_env('/home/'.$data['instance'].'/.env');
+        }
 
         // Respond with the returned body and code
         ['body' => $body, 'code' => $code] = $handler_method_name($data);

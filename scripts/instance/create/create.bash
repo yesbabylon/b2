@@ -104,6 +104,10 @@ export PMA_PORT=$(( 8080 + $number_of_directories ))
 # Define EQ_PORT with the number of directories in /home (start at 81 because 80 is used by nginx proxy
 export EQ_PORT=$(( 80 + $number_of_directories ))
 
+# Define DB_BACKUP user access
+export DB_BACKUP_USERNAME="backup"
+export DB_BACKUP_PASSWORD=$(head /dev/urandom | tr -dc 'A-Za-z0-9!@#$%^&*()-_+=' | head -c 16)
+
 # Create .env file
 env_file="/home/$USERNAME/.env"
 touch "$env_file"
@@ -119,6 +123,9 @@ touch "$env_file"
   echo ""
   echo "DB_HOSTNAME=$DB_HOSTNAME"
   echo "DB_PORT=$DB_PORT"
+  echo ""
+  echo "DB_BACKUP_USERNAME=$DB_BACKUP_USERNAME"
+  echo "DB_BACKUP_PASSWORD=$DB_BACKUP_PASSWORD"
   echo ""
   echo "PMA_HOSTNAME=$PMA_HOSTNAME"
   echo "PMA_PORT=$PMA_PORT"
