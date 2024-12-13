@@ -58,26 +58,42 @@ function instance_backup(array $data): array {
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
 
-    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=\"$backup_password\" --single-transaction --skip-lock-tables equal > database.sql";
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=\"$backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql";
     exec($create_mysql_dump);
 
-    $compress_mysql_dump = 'gzip database.sql';
+    $compress_mysql_dump = "gzip /home/$instance/backup.sql";
     exec($compress_mysql_dump);
 
-    $to_export = [
+    $config_files = [
         "/home/$instance/.env",
         "/home/$instance/docker-compose.yml",
         "/home/$instance/php.ini",
         "/home/$instance/mysql.cnf",
-        "/home/$instance/www"
+    ];
+    $config_files_str = implode(' ', $config_files);
+    $create_configs_archive = "tar -cvf /home/$instance/config.tar $config_files_str";
+    exec($create_configs_archive);
+
+    $compress_filestore = "tar -cvzf /home/$instance/filestore.tar.gz /home/$instance/www";
+    exec($compress_filestore);
+
+    $to_export = [
+        "/home/$instance/backup.sql.gz",
+        "/home/$instance/config.tar",
+        "/home/$instance/filestore.tar.gz"
     ];
 
     $timestamp = date('YmdHis');
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar.gz";
 
-    // Unite files to back up in one file
+    // Archive files to back up
     $to_export_str = implode(' ', $to_export);
-    exec("tar -cvzf $backup_file $to_export_str");
+    exec("tar -cvf $backup_file $to_export_str");
+
+    // Remove temporary back up files
+    unlink("/home/$instance/backup.sql.gz");
+    unlink("/home/$instance/config.tar");
+    unlink("/home/$instance/filestore.tar.gz");
 
     // Restart docker containers
     exec("docker compose -f $docker_file_path start");
