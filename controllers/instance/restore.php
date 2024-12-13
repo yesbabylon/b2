@@ -119,7 +119,7 @@ function instance_restore(array $data): array {
     exec("mv -f tmp_restore_dir/home/$instance/www /home/$instance/www");
 
     // Remove tmp directory for restore
-    unlink($tmp_restore_dir);
+    exec("rm -rf $tmp_restore_dir");
 
     // If was encrypted then remove the decrypted version
     if($data['encrypt']) {
