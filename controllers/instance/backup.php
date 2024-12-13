@@ -36,14 +36,14 @@ function instance_backup(array $data): array {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
     }
 
-    $backup_username = getenv('BACKUP_USERNAME') ?? false;
+    $db_backup_username = getenv('DB_BACKUP_USERNAME') ?? false;
     if(empty($username)) {
-        throw new Exception("BACKUP_USERNAME_not_configured", 500);
+        throw new Exception("DB_BACKUP_USERNAME_not_configured", 500);
     }
 
-    $backup_password = getenv('BACKUP_PASSWORD') ?? false;
+    $db_backup_password = getenv('DB_BACKUP_PASSWORD') ?? false;
     if(empty($password)) {
-        throw new Exception("BACKUP_PASSWORD_not_configured", 500);
+        throw new Exception("DB_BACKUP_PASSWORD_not_configured", 500);
     }
 
     $instance = $data['instance'];
@@ -58,7 +58,7 @@ function instance_backup(array $data): array {
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
 
-    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=\"$backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql";
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql";
     exec($create_mysql_dump);
 
     $compress_mysql_dump = "gzip /home/$instance/backup.sql";
