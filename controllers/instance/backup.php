@@ -62,8 +62,6 @@ function instance_backup(array $data): array {
     $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql";
     exec($create_mysql_dump);
 
-    die("docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > /home/$instance/backup.sql");
-
     // Compress dump
     $compress_mysql_dump = "gzip /home/$instance/backup.sql";
     exec($compress_mysql_dump);
