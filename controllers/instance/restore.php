@@ -91,20 +91,20 @@ function instance_restore(array $data): array {
     exec("docker compose -f $docker_file_path stop");
 
     // Restore database
-    exec("gunzip $tmp_restore_dir/home/$instance/backup.sql.gz");
+    exec("cd $tmp_restore_dir && gunzip backup.sql.gz");
     exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=\"$db_backup_password\" -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\"");
-    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=\"$db_backup_password\" equal < $tmp_restore_dir/home/$instance/backup.sql");
+    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=\"$db_backup_password\" equal < $tmp_restore_dir/backup.sql");
 
     // Restore config
-    exec("tar -xvf $tmp_restore_dir/home/$instance/config.tar -C $tmp_restore_dir/home/$instance");
-    $config_files = [".env", "docker-compose.yml", "php.ini", "mysql.cnf"];
+    exec("cd $tmp_restore_dir && tar -xvf config.tar");
+    $config_files = [".env", "docker-compose.yml", "conf/php.ini", "conf/mysql.cnf"];
     foreach($config_files as $file) {
-        exec("mv -f tmp_restore_dir/home/$instance/$file /home/$instance/$file");
+        exec("mv -f $tmp_restore_dir/$file /home/$instance");
     }
 
     // Restore filestore
-    exec("tar -xvzf $tmp_restore_dir/home/$instance/filestore.tar.gz -C $tmp_restore_dir");
-    exec("mv -f tmp_restore_dir/home/$instance/www /home/$instance/www");
+    exec("cd $tmp_restore_dir && tar -xvzf filestore.tar.gz");
+    exec("mv -f $tmp_restore_dir/www /home/$instance");
 
     // Remove tmp directory for restore
     exec("rm -rf $tmp_restore_dir");
