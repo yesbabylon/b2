@@ -23,6 +23,7 @@ sleep 15
 
 printf "Docker images built and containers started\n"
 
+exit 0;
 
 #############################
 ### Create db backup user ###
