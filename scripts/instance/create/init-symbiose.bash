@@ -6,7 +6,6 @@
 ### INIT Symbiose ###
 #####################
 
-# TODO: fix packages does not exist
 docker exec "$USERNAME" bash -c "
 mv packages packages-core
 yes | git clone -b dev-2.0 https://github.com/yesbabylon/symbiose.git packages
