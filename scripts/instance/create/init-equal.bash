@@ -26,7 +26,7 @@ printf "Docker images built and containers started\n"
 echo "DB_HOSTNAME: $DB_HOSTNAME | APP_USERNAME: $APP_USERNAME | APP_PASSWORD: $APP_PASSWORD"
 echo "DB_BACKUP_USERNAME: $DB_BACKUP_USERNAME | DB_BACKUP_PASSWORD: $DB_BACKUP_PASSWORD"
 
-exit 0;
+exit 0
 
 #############################
 ### Create db backup user ###
