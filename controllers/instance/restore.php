@@ -74,11 +74,8 @@ function instance_restore(array $data): array {
         throw new Exception("failed_create_tmp_restore_directory", 500);
     }
 
-    if($data['encrypt']) {
-        if(!isset($data['passphrase'])) {
-            throw new InvalidArgumentException("missing_passphrase", 400);
-        }
-
+    $encrypted = isset($data['passphrase']);
+    if($encrypted) {
         if(!is_string($data['passphrase']) || empty($data['passphrase'])) {
             throw new InvalidArgumentException("invalid_passphrase", 400);
         }
