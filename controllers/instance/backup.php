@@ -69,7 +69,7 @@ function instance_backup(array $data): array {
     exec($create_mysql_dump);
 
     // Compress dump
-    $compress_mysql_dump = "gzip -c $tmp_backup_dir/backup.sql > $tmp_backup_dir/backup.sql.gz";
+    $compress_mysql_dump = "cd $tmp_backup_dir && gzip -c backup.sql > backup.sql.gz";
     exec($compress_mysql_dump);
 
     // Create config.tar
@@ -80,23 +80,19 @@ function instance_backup(array $data): array {
         "/home/$instance/mysql.cnf",
     ];
     $config_files_paths_str = implode(' ', $config_files_paths);
-    $create_configs_archive = "tar -cvf $tmp_backup_dir/config.tar $config_files_paths_str";
+    $create_configs_archive = "cd $tmp_backup_dir && tar -cvf config.tar $config_files_paths_str";
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
-    $compress_filestore = "tar -cvzf $tmp_backup_dir/filestore.tar.gz /home/$instance/www";
+    $compress_filestore = "cd $tmp_backup_dir && tar -cvzf filestore.tar.gz /home/$instance/www";
     exec($compress_filestore);
 
     // Create archive to unite files
-    $to_export = [
-        "$tmp_backup_dir/backup.sql.gz",
-        "$tmp_backup_dir/config.tar",
-        "$tmp_backup_dir/filestore.tar.gz"
-    ];
+    $to_export = ["backup.sql.gz", "config.tar", "filestore.tar.gz"];
     $timestamp = date('YmdHis');
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
     $to_export_str = implode(' ', $to_export);
-    exec("tar -cvf $backup_file $to_export_str");
+    exec("cd $tmp_backup_dir && tar -cvf $backup_file $to_export_str");
 
     // Remove tmp directory for backup
     exec("rm -rf $tmp_backup_dir");
