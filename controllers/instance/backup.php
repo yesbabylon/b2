@@ -36,6 +36,8 @@ function instance_backup(array $data): array {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
     }
 
+    die(json_encode(getenv()));
+
     $db_backup_username = getenv('DB_BACKUP_USERNAME') ?? false;
     if(empty($username)) {
         throw new Exception("DB_BACKUP_USERNAME_not_configured", 500);
