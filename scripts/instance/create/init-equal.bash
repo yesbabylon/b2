@@ -41,9 +41,6 @@ docker exec "$DB_HOSTNAME" bash -c "
 mysql -u'$APP_USERNAME' -p'$APP_PASSWORD' -e \"$CREATE_BACKUP_USER_SQL_COMMANDS\"
 "
 
-mysql: [Warning] Using a password on the command line interface can be insecure.
-mysql: [ERROR] mysql: option '-e' requires an argument
-
 
 # #########################
 ### INIT eQual PROJECT ###
