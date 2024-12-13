@@ -43,6 +43,7 @@ services:
       - "${DB_PORT}:3306"
     environment:
       - MYSQL_DATABASE=equal
+      - MYSQL_ROOT_PASSWORD=${APP_PASSWORD}
     networks:
       - proxynet
     # allow packets up to 512 MB (for imports) - #commented - should be included in the `mysql.cnf` below
