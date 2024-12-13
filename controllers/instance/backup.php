@@ -58,8 +58,11 @@ function instance_backup(array $data): array {
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
 
-    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=\"$backup_password\" --single-transaction --skip-lock-tables equal > database.sql gzip database.sql";
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $backup_username --password=\"$backup_password\" --single-transaction --skip-lock-tables equal > database.sql";
     exec($create_mysql_dump);
+
+    $compress_mysql_dump = 'gzip database.sql';
+    exec($compress_mysql_dump);
 
     $to_export = [
         "/home/$instance/.env",
