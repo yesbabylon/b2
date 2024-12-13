@@ -75,18 +75,18 @@ function instance_backup(array $data): array {
     // Create config.tar
     $config_files = [".env", "docker-compose.yml", "conf"];
     $config_files_str = implode(' ', $config_files);
-    $create_configs_archive = "cd /home/$instance && tar -cvf config.tar $config_files_str";
+    $create_configs_archive = "cd /home/$instance && tar -cvf $tmp_backup_dir/config.tar $config_files_str";
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
-    $compress_filestore = "cd $tmp_backup_dir && tar -cvzf filestore.tar.gz /home/$instance/www";
+    $compress_filestore = "cd /home/$instance && tar -cvzf $tmp_backup_dir/filestore.tar.gz www";
     exec($compress_filestore);
 
     // Create archive to unite files
     $to_export = ["backup.sql.gz", "config.tar", "filestore.tar.gz"];
+    $to_export_str = implode(' ', $to_export);
     $timestamp = date('YmdHis');
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
-    $to_export_str = implode(' ', $to_export);
     exec("cd $tmp_backup_dir && tar -cvf $backup_file $to_export_str");
 
     // Remove tmp directory for backup
