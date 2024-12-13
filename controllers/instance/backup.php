@@ -105,7 +105,7 @@ function instance_backup(array $data): array {
         exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_email $backup_file");
 
         // Remove not encrypted backup to keep only secure one
-        exec("rm $backup_file");
+        unlink($backup_file);
     }
 
     instance_disable_maintenance_mode($instance);
