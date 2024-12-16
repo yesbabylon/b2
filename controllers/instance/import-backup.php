@@ -30,7 +30,7 @@ function instance_import_backup(array $data): array {
         throw new Exception("BACKUP_HOST_FTP_not_configured", 500);
     }
 
-    $create_token_response = create_token($backup_host_url, $data['instance']);
+    $create_token_response = create_token($backup_host_url, $data['instance'], true);
     if ($create_token_response === false) {
         throw new Exception("error_while_asking_for_token", 500);
     }

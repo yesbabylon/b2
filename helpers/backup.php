@@ -5,14 +5,15 @@
  *
  * @param string $backup_host_url
  * @param string $instance
+ * @param bool $no_delay Should the backup server retry multiple time if max token reached
  * @return false|string
  */
-function create_token(string $backup_host_url, string $instance) {
+function create_token(string $backup_host_url, string $instance, bool $no_delay = false) {
     $options = [
         'http' => [
             'header'  => "Content-type: application/json\r\n",
             'method'  => 'POST',
-            'content' => json_encode(['instance' => $instance])
+            'content' => json_encode(compact('instance', 'no_delay')),
         ]
     ];
 
