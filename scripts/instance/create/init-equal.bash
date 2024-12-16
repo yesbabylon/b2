@@ -39,7 +39,7 @@ mysql -u'$APP_USERNAME' -p'$APP_PASSWORD' -e \"$CREATE_BACKUP_USER_SQL_COMMANDS\
 "
 
 
-# #########################
+##########################
 ### INIT eQual PROJECT ###
 ##########################
 
