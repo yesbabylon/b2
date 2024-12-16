@@ -26,23 +26,23 @@ function instance_backup(array $data): array {
     $gpg_email = null;
     if($data['encrypt']) {
         $gpg_email = getenv('GPG_EMAIL') ?: false;
-        if(empty($gpg_email)) {
+        if(!$gpg_email) {
             throw new Exception("GPG_EMAIL_not_configured", 500);
         }
     }
 
     $db_hostname = getenv('DB_HOSTNAME') ?: false;
-    if(empty($db_hostname)) {
+    if(!$db_hostname) {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
     }
 
     $db_backup_username = getenv('DB_BACKUP_USERNAME') ?: false;
-    if(empty($db_backup_username)) {
+    if(!$db_backup_username) {
         throw new Exception("DB_BACKUP_USERNAME_not_configured", 500);
     }
 
     $db_backup_password = getenv('DB_BACKUP_PASSWORD') ?: false;
-    if(empty($db_backup_password)) {
+    if(!$db_backup_password) {
         throw new Exception("DB_BACKUP_PASSWORD_not_configured", 500);
     }
 

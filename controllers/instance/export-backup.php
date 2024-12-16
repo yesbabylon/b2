@@ -29,12 +29,12 @@ function instance_export_backup(array $data): array {
     }
 
     $backup_host_url = getenv('BACKUP_HOST_URL') ?: false;
-    if(empty($backup_host_url)) {
+    if(!$backup_host_url) {
         throw new Exception("BACKUP_HOST_URL_not_configured", 500);
     }
 
     $backup_host_ftp = getenv('BACKUP_HOST_FTP') ?: false;
-    if(empty($backup_host_ftp)) {
+    if(!$backup_host_ftp) {
         throw new Exception("BACKUP_HOST_FTP_not_configured", 500);
     }
 
