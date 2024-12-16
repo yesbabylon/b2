@@ -86,23 +86,14 @@ function instance_restore(array $data): array {
 
     instance_enable_maintenance_mode($instance);
 
+    // Restore database
+    exec("cd $tmp_restore_dir && gunzip backup.sql.gz");
+    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\"");
+    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql");
+
     // Stop docker containers
     $docker_file_path = "/home/$instance/docker-compose.yml";
     exec("docker compose -f $docker_file_path stop");
-
-    // Restore database
-    exec("cd $tmp_restore_dir && gunzip backup.sql.gz 2>&1", $output_gunzip, $return_gunzip);
-    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\" 2>&1", $output_drop_create, $return_drop_create);
-    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql 2>&1", $output_restore, $return_restore);
-
-    file_put_contents('/root/b2/logs/tmp.log', [
-        'output_gunzip'         => json_encode($output_gunzip),
-        'return_gunzip'         => json_encode($return_gunzip),
-        'output_drop_create'    => json_encode($output_drop_create),
-        'return_drop_create'    => json_encode($return_drop_create),
-        'output_restore'        => json_encode($output_restore),
-        'return_restore'        => json_encode($return_restore),
-    ]);
 
     // Restore config
     exec("cd $tmp_restore_dir && tar -xvf config.tar");
