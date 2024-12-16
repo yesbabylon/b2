@@ -290,8 +290,7 @@ Restore an instance state with a backup.
 |------------|:----------:|:-------:|--------|-------------------------------------------------------------------------|
 | instance   |    true    |         |        | Must be a valid instance installed on the host.                         |
 | backup_id  |    true    |         |        | Must be a valid backup existing in either export or import directories. |
-| passphrase | true/false |         |        | Only required if the backup is encrypted gpg.                           |
-
+| passphrase | true/false |         |        | Only required if the backup is encrypted.                               |
 
 ### POST _/instance/enable-maintenance_
 
