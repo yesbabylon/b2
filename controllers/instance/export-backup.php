@@ -20,9 +20,9 @@ function instance_export_backup(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
-    $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz.gpg';
+    $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar.gpg';
     if(!file_exists($backup_file)) {
-        $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar.gz';
+        $backup_file = '/home/'.$data['instance'].'/export/'.$data['instance'].'_'.$data['backup_id'].'.tar';
         if(!file_exists($backup_file)) {
             throw new Exception("backup_not_found", 404);
         }
