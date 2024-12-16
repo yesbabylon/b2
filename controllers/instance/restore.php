@@ -93,8 +93,8 @@ function instance_restore(array $data): array {
     // Restore database
     exec("cd $tmp_restore_dir && gunzip backup.sql.gz");
     exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\"", $output1);
-    file_put_contents('/root/b2/logs/tmp.log', json_encode($output1).PHP_EOL."docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\"");
-    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql");
+    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql", $output1);
+    file_put_contents('/root/b2/logs/tmp.log', json_encode($output1).PHP_EOL."docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql");
 
     // Restore config
     exec("cd $tmp_restore_dir && tar -xvf config.tar");
