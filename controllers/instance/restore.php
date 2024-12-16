@@ -97,7 +97,7 @@ function instance_restore(array $data): array {
 
     // Restore config
     exec("cd $tmp_restore_dir && tar -xvf config.tar");
-    $config_files = [".env", "docker-compose.yml", "conf/php.ini", "conf/mysql.cnf"];
+    $config_files = [".env", "docker-compose.yml", "conf"];
     foreach($config_files as $file) {
         exec("mv -f $tmp_restore_dir/$file /home/$instance");
     }
