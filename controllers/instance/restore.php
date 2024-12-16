@@ -109,7 +109,7 @@ function instance_restore(array $data): array {
     // Remove tmp directory for restore
     exec("rm -rf $tmp_restore_dir");
 
-    // If was encrypted then remove the decrypted version
+    // If encrypted then remove the temporary decrypted version
     if($encrypted) {
         unlink($backup_file);
     }
