@@ -20,6 +20,10 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
+    if(isset($data['passphrase']) && (!is_string($data['passphrase']) || empty($data['passphrase']))) {
+        throw new InvalidArgumentException("invalid_passphrase", 400);
+    }
+
     $db_hostname = getenv('DB_HOSTNAME') ?: false;
     if(!$db_hostname) {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
