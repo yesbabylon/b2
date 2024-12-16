@@ -20,12 +20,12 @@ function instance_import_backup(array $data): array {
         throw new InvalidArgumentException("missing_backup_id", 400);
     }
 
-    $backup_host_url = getenv('BACKUP_HOST_URL') ?? false;
+    $backup_host_url = getenv('BACKUP_HOST_URL') ?: false;
     if(empty($backup_host_url)) {
         throw new Exception("BACKUP_HOST_URL_not_configured", 500);
     }
 
-    $backup_host_ftp = getenv('BACKUP_HOST_FTP') ?? false;
+    $backup_host_ftp = getenv('BACKUP_HOST_FTP') ?: false;
     if(empty($backup_host_ftp)) {
         throw new Exception("BACKUP_HOST_FTP_not_configured", 500);
     }
