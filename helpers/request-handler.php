@@ -68,7 +68,15 @@ function handle_request(array $request, array $allowed_routes): array {
             && is_string($data['instance'])
             && instance_exists($data['instance'])
         ) {
-            load_env('/home/'.$data['instance'].'/.env');
+            try {
+                load_env('/home/'.$data['instance'].'/.env');
+            }
+            catch(Exception $e) {
+                // If .env was deleted we still need to be able to import-backup
+                if($request['uri'] !== '/instance/import-backup') {
+                    throw $e;
+                }
+            }
         }
 
         // Respond with the returned body and code
