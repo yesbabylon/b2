@@ -72,8 +72,15 @@ function handle_request(array $request, array $allowed_routes): array {
                 load_env('/home/'.$data['instance'].'/.env');
             }
             catch(Exception $e) {
-                // If .env was deleted we still need to be able to import-backup
-                if($request['uri'] !== '/instance/import-backup') {
+                $backup_routes = [
+                    '/instance/import-backup',
+                    '/instance/export-backup',
+                    '/instance/restore',
+                    '/instance/backups'
+                ];
+
+                // If .env was deleted we still need to be able to restore it
+                if(!in_array($request['uri'], $backup_routes)) {
                     throw $e;
                 }
             }
