@@ -83,6 +83,12 @@ function handle_request(array $request, array $allowed_routes): array {
                 if(!in_array($request['uri'], $backup_routes)) {
                     throw $e;
                 }
+                else {
+                    // Extract the first 5 characters of instance the hash
+                    $db_hostname_hash = substr(md5($data['instance'].PHP_EOL), 0, 5);
+
+                    putenv("DB_HOSTNAME=db_$db_hostname_hash");
+                }
             }
         }
 
