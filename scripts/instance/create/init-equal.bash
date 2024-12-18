@@ -24,6 +24,21 @@ sleep 15
 printf "Docker images built and containers started\n"
 
 
+#############################
+### Create db backup user ###
+#############################
+
+CREATE_BACKUP_USER_SQL_COMMANDS="
+CREATE USER '${DB_BACKUP_USERNAME}'@'localhost' IDENTIFIED BY '${DB_BACKUP_PASSWORD}';
+GRANT SELECT, SHOW VIEW, PROCESS, DROP, CREATE, INSERT, ALTER, LOCK TABLES, EVENT, TRIGGER ON *.* TO '${DB_BACKUP_USERNAME}'@'localhost';
+FLUSH PRIVILEGES;
+"
+
+docker exec "$DB_HOSTNAME" bash -c "
+mysql -u'$APP_USERNAME' -p'$APP_PASSWORD' -e \"$CREATE_BACKUP_USER_SQL_COMMANDS\"
+"
+
+
 ##########################
 ### INIT eQual PROJECT ###
 ##########################
@@ -56,13 +71,13 @@ if [ "$APP_USERNAME" = "root" ]; then
     "
 else
     docker exec "$USERNAME" bash -c "
-    ./equal.run --do=user_create --login=$APP_USERNAME@equal.local --password=$APP_PASSWORD
+    ./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$APP_PASSWORD
     ./equal.run --do=model_update --entity=core\\User --ids=[3] --fields="{'validated':1, 'status': 'instance'}" --force=true
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=create
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=read
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=update
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=delete
-    ./equal.run --do=user_grant --user=$APP_USERNAME@equal.local --group=admins --right=manage
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=delete
+    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=manage
     "
 fi
 

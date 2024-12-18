@@ -25,50 +25,85 @@ function instance_backup(array $data): array {
 
     $gpg_email = null;
     if($data['encrypt']) {
-        $gpg_email = getenv('GPG_EMAIL') ?? false;
-        if(empty($gpg_email)) {
+        $gpg_email = getenv('GPG_EMAIL') ?: false;
+        if(!$gpg_email) {
             throw new Exception("GPG_EMAIL_not_configured", 500);
         }
     }
 
-    // TODO: Put in maintenance mode
+    $db_hostname = getenv('DB_HOSTNAME') ?: false;
+    if(!$db_hostname) {
+        throw new Exception("DB_HOSTNAME_not_configured", 500);
+    }
+
+    $db_backup_username = getenv('DB_BACKUP_USERNAME') ?: false;
+    if(!$db_backup_username) {
+        throw new Exception("DB_BACKUP_USERNAME_not_configured", 500);
+    }
+
+    $db_backup_password = getenv('DB_BACKUP_PASSWORD') ?: false;
+    if(!$db_backup_password) {
+        throw new Exception("DB_BACKUP_PASSWORD_not_configured", 500);
+    }
 
     $instance = $data['instance'];
 
-    $docker_file_path = "/home/$instance/docker-compose.yml";
-    exec("docker compose -f $docker_file_path stop");
+    $tmp_backup_dir = "/home/$instance/tmp_backup";
+    exec("rm -rf $tmp_backup_dir");
+    if(!mkdir($tmp_backup_dir)) {
+        throw new Exception("failed_create_tmp_restore_directory", 500);
+    }
+
+    instance_enable_maintenance_mode($instance);
 
     // Remove old export, if any
     exec("rm -rf /home/$instance/export");
     exec("mkdir /home/$instance/export");
 
-    // Backup
-    $volume_name = str_replace('.', '', $instance).'_db_data';
+    // Create mysql dump
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > $tmp_backup_dir/backup.sql";
+    exec($create_mysql_dump);
 
-    $to_export = [
-        "/var/lib/docker/volumes/$volume_name/_data",
-        "/home/$instance/.env",
-        "/home/$instance/docker-compose.yml",
-        "/home/$instance/php.ini",
-        "/home/$instance/mysql.cnf",
-        "/home/$instance/www"
-    ];
+    // Stop docker containers
+    $docker_file_path = "/home/$instance/docker-compose.yml";
+    exec("docker compose -f $docker_file_path stop");
 
-    $timestamp = date('YmdHis');
+    // Compress dump
+    $compress_mysql_dump = "cd $tmp_backup_dir && gzip -c backup.sql > backup.sql.gz";
+    exec($compress_mysql_dump);
+
+    // Create config.tar
+    $config_files = [".env", "docker-compose.yml", "conf"];
+    $config_files_str = implode(' ', $config_files);
+    $create_configs_archive = "cd /home/$instance && tar -cvf $tmp_backup_dir/config.tar $config_files_str";
+    exec($create_configs_archive);
+
+    // Create filestore.tar.gz for www files
+    $compress_filestore = "cd /home/$instance && tar -cvzf $tmp_backup_dir/filestore.tar.gz www";
+    exec($compress_filestore);
+
+    // Create archive to unite files
+    $to_export = ["backup.sql.gz", "config.tar", "filestore.tar.gz"];
     $to_export_str = implode(' ', $to_export);
+    $timestamp = date('YmdHis');
+    $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
+    exec("cd $tmp_backup_dir && tar -cvf $backup_file $to_export_str");
 
-    $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar.gz";
+    // Remove tmp directory for backup
+    exec("rm -rf $tmp_backup_dir");
 
-    exec("tar -cvzf $backup_file $to_export_str");
-
+    // Restart docker containers
     exec("docker compose -f $docker_file_path start");
 
     if($data['encrypt']) {
+        // Encrypt backup
         exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_email $backup_file");
-        exec("rm $backup_file");
+
+        // Remove not encrypted backup to keep only secure one
+        unlink($backup_file);
     }
 
-    // TODO: Remove from maintenance mode
+    instance_disable_maintenance_mode($instance);
 
     return [
         'code' => 201,

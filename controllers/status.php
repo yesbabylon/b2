@@ -44,7 +44,11 @@
  *             env: array{
  *                 ADMIN_HOST_URL: string,
  *                 BACKUP_HOST_URL: string,
- *                 STATS_HOST_URL: string
+ *                 BACKUP_HOST_FTP: string,
+ *                 STATS_HOST_URL: string,
+ *                 GPG_NAME: string,
+ *                 GPG_EMAIL: string,
+ *                 GPG_EXPIRY_DATE: string
  *             }
  *         }
  *     }
@@ -64,7 +68,7 @@ function status(): array {
         'stats' => [
             'net' => [
                 'description' => "monthly network volume",
-                'command'     => 'vnstat -i ' . $interface . ' -m | tail -3 | head -1',
+                'command'     => 'vnstat -i '.$interface.' -m | tail -3 | head -1',
                 'adapt'       => function ($res) {
                     if(strpos($res, '|') === false) {
                         return [
@@ -84,14 +88,14 @@ function status(): array {
                 'description' => "average CPU load (%) since last reboot",
                 'command'     => 'vmstat | tail -1| awk \'{print $15}\'',
                 'adapt'       => function ($res) {
-                    return (100 - intval($res)) . '%';
+                    return (100 - intval($res)).'%';
                 }
             ],
             'uptime' => [
                 'description' => "average CPU load (%) since last reboot",
                 'command'     => 'cat /proc/uptime | awk \'{print $1}\'',
                 'adapt'       => function ($res) {
-                    return (intval($res / 86400) + 1) . 'days';
+                    return (intval($res / 86400) + 1).'days';
                 }
             ]
         ],
@@ -100,21 +104,21 @@ function status(): array {
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'ps -o %mem,command ax | grep mysqld | head -1 | cut -d\' \' -f 1',
                 'adapt'       => function ($res) {
-                    return intval($res) . '%';
+                    return intval($res).'%';
                 }
             ],
             'apache_mem' => [
                 'description' => "mem consumption apache (%MEM)",
                 'command'     => 'ps aux| awk \'/apach[e]/{total+=$4}END{print total}\'',
                 'adapt'       => function ($res) {
-                    return $res . '%';
+                    return $res.'%';
                 }
             ],
             'nginx_mem' => [
                 'description' => "mem consumption nginx (%MEM)",
                 'command'     => 'ps aux| awk \'/nginx/{total+=$4}END{print total}\'',
                 'adapt'       => function ($res) {
-                    return $res . '%';
+                    return $res.'%';
                 }
             ],
             'apache_proc' => [
@@ -156,7 +160,7 @@ function status(): array {
                 'description' => "used CPU (%)",
                 'command'     => 'top -bn2 -d 0.1 | grep "Cpu" | tail -1 | awk \'{print $2}\'',
                 'adapt'       => function ($res) {
-                    return $res . '%';
+                    return $res.'%';
                 }
             ],
             'disk_use' => [
@@ -218,7 +222,7 @@ function status(): array {
                     if($res > 1000) {
                         $res /= 1000;
                     }
-                    return round($res, 1) . 'GHz';
+                    return round($res, 1).'GHz';
                 }
             ],
             'disk' => [
