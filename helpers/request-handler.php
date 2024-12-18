@@ -68,28 +68,7 @@ function handle_request(array $request, array $allowed_routes): array {
             && is_string($data['instance'])
             && instance_exists($data['instance'])
         ) {
-            try {
-                load_env('/home/'.$data['instance'].'/.env');
-            }
-            catch(Exception $e) {
-                $backup_routes = [
-                    '/instance/import-backup',
-                    '/instance/export-backup',
-                    '/instance/restore',
-                    '/instance/backups'
-                ];
-
-                // If .env was deleted we still need to be able to restore it
-                if(!in_array($request['uri'], $backup_routes)) {
-                    throw $e;
-                }
-                else {
-                    // Extract the first 5 characters of instance the hash
-                    $db_hostname_hash = substr(md5($data['instance'].PHP_EOL), 0, 5);
-
-                    putenv("DB_HOSTNAME=db_$db_hostname_hash");
-                }
-            }
+            load_env('/home/'.$data['instance'].'/.env');
         }
 
         // Respond with the returned body and code
