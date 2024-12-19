@@ -84,6 +84,11 @@ function instance_restore(array $data): array {
     }
 
     exec("tar -xvf $backup_file -C $tmp_restore_dir", $output, $return_var);
+
+    if($return_var === 0 && $encrypted) {
+        unlink($backup_file);
+    }
+
     if($return_var !== 0) {
         throw new Exception("failed_to_extract_backup_archive", 500);
     }
@@ -108,15 +113,11 @@ function instance_restore(array $data): array {
 
     // Restore filestore
     exec("cd $tmp_restore_dir && tar -xvzf filestore.tar.gz");
-    exec("mv -f $tmp_restore_dir/www /home/$instance");
+    exec("rm -rf /home/$instance/www");
+    exec("mv $tmp_restore_dir/www /home/$instance");
 
     // Remove tmp directory for restore
     exec("rm -rf $tmp_restore_dir");
-
-    // If encrypted then remove the temporary decrypted version
-    if($encrypted) {
-        unlink($backup_file);
-    }
 
     // Restart docker containers
     exec("docker compose -f $docker_file_path start");
