@@ -30,8 +30,7 @@ function create_token(string $backup_host_url, string $instance, bool $no_delay 
  * @param string $token
  * @return false|string
  */
-function release_token(string $backup_host_url, string $instance, string $token)
-{
+function release_token(string $backup_host_url, string $instance, string $token) {
     $options = [
         'http' => [
             'header'  => "Content-type: application/json\r\n",

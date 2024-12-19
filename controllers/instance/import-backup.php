@@ -31,7 +31,7 @@ function instance_import_backup(array $data): array {
     }
 
     $create_token_response = create_token($backup_host_url, $data['instance'], true);
-    if ($create_token_response === false) {
+    if($create_token_response === false) {
         throw new Exception("error_while_asking_for_token", 500);
     }
 

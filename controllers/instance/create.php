@@ -83,7 +83,7 @@ function instance_create(array $data): array {
         'MEM_LIMIT'         => '1000M'
     ], $data);
 
-    foreach ($data as $key => $value) {
+    foreach($data as $key => $value) {
         if(is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
