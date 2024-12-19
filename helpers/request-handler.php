@@ -74,7 +74,7 @@ function handle_request(array $request, array $allowed_routes): array {
         // Respond with the returned body and code
         ['body' => $body, 'code' => $code] = $handler_method_name($data);
     }
-    catch (Exception $e) {
+    catch(Exception $e) {
         // Respond with the exception message and status code
         [$body, $code] = [$e->getMessage(), $e->getCode()];
     }
