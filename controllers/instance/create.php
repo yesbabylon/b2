@@ -49,7 +49,7 @@ function instance_create(array $data): array {
     }
 
     if(!is_string($data['APP_USERNAME']) || empty($data['APP_USERNAME'])) {
-        throw new InvalidArgumentException("invalid_USERNAME", 400);
+        throw new InvalidArgumentException("invalid_APP_USERNAME", 400);
     }
 
     if(!isset($data['APP_PASSWORD'])) {
