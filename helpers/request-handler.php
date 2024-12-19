@@ -10,7 +10,7 @@
  *     data: string
  * } $request
  * @param string[] $allowed_routes
- * @return array{body: string|array, code: string}
+ * @return array{body: string|array, code: int}
  */
 function handle_request(array $request, array $allowed_routes): array {
     try {
@@ -41,7 +41,7 @@ function handle_request(array $request, array $allowed_routes): array {
 
         $handler = trim($request['uri'], '/');
 
-        $controller_file = CONTROLLERS_DIR . '/' . $handler . '.php';
+        $controller_file = CONTROLLERS_DIR."/$handler.php";
 
         // Check if the controller or script file exists
         if(!file_exists($controller_file)) {
@@ -59,16 +59,16 @@ function handle_request(array $request, array $allowed_routes): array {
         }
 
         // Load host env variables
-        load_env(BASE_DIR . '/.env');
+        load_env(BASE_DIR.'/.env');
 
         // Load env variables of a specific instance if needed
         if(
             strpos($request['uri'], '/instance/') === 0
-            && isset($data['instance'])
-            && is_string($data['instance'])
+            && is_string($data['instance'] ?? false)
             && instance_exists($data['instance'])
+            && file_exists("/home/{$data['instance']}/.env")
         ) {
-            load_env('/home/'.$data['instance'].'/.env');
+            load_env("/home/{$data['instance']}/.env");
         }
 
         // Respond with the returned body and code
