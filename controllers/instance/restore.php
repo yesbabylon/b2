@@ -85,7 +85,7 @@ function instance_restore(array $data): array {
 
     exec("tar -xvf $backup_file -C $tmp_restore_dir", $output, $return_var);
 
-    if($return_var === 0 && $encrypted) {
+    if($encrypted) {
         unlink($backup_file);
     }
 
