@@ -68,11 +68,12 @@ sleep 15
 if [ "$APP_USERNAME" = "root" ]; then
     docker exec "$USERNAME" bash -c "
     ./equal.run --do=user_pass-update --user_id=1 --password=$APP_PASSWORD --confirm=$APP_PASSWORD
+    ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
     "
 else
     docker exec "$USERNAME" bash -c "
     ./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$APP_PASSWORD
-    ./equal.run --do=model_update --entity=core\\User --ids=[3] --fields="{'validated':1, 'status': 'instance'}" --force=true
+    ./equal.run --do=model_update --entity='core\\User' --id=3 --fields='{\"validated\":1, \"status\": \"instance\"}' --force=true
     ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
     ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
     ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
