@@ -12,8 +12,8 @@ INSTALL_DIR=$(pwd)
 
 # Check that script is started from valid directory
 if [ "$INSTALL_DIR" != "/root/b2" ]; then
-  echo "Error: Script must be run from /root/b2 directory. Current directory is $INSTALL_DIR."
-  exit 1
+    echo "Error: Script must be run from /root/b2 directory. Current directory is $INSTALL_DIR."
+    exit 1
 fi
 
 # Needed vars
@@ -179,6 +179,7 @@ gpg --output public-gpg-key.pgp --armor --export "$GPG_EMAIL"
 ######################
 ### Install Docker ###
 ######################
+
 apt-get install -y apt-transport-https ca-certificates curl software-properties-common
 
 # Add Docker's official GPG key
@@ -218,7 +219,6 @@ docker volume create portainer_data
 # wget -qO - https://last-public-ovh-infra-yak.snap.mirrors.ovh.net/yak/archives/apply.sh | OVH_PUPPET_MANIFEST=distribyak/catalog/master/puppet/manifests/common/rtmv2.pp bash
 
 # Build docked-nginx image
-# shellcheck disable=SC2164
 cd /home/docker/images/docked-nginx/
 ./build.sh
 
