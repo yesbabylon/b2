@@ -12,7 +12,7 @@ function instances(array $data): array {
         throw new InvalidArgumentException("invalid_with_deleted", 400);
     }
 
-    $instances = get_instances($data['with_deleted']);
+    $instances = get_instances($data['with_deleted'] ?? false);
 
     return [
         'code' => 200,
