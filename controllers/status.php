@@ -66,7 +66,6 @@ function status(): array {
     $interface = trim($interface, ':');
 
     $commands = [
-        'type' => 'b2',
         'stats' => [
             'net' => [
                 'description' => "monthly network volume",
@@ -266,6 +265,7 @@ function status(): array {
         }
     }
 
+    $result['type'] = 'b2';
     $result['config']['env'] = getenv();
 
     return [
