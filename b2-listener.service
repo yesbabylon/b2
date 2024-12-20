@@ -4,10 +4,12 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2 /root/b2/listener.php >> b2-listener.log 2>&1
+ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2 /root/b2/listener.php
 WorkingDirectory=/root/b2
 Restart=always
 SyslogIdentifier=b2-listener
+StandardOutput=append:/root/b2/logs/b2-listener-output.log
+StandardError=append:/root/b2/logs/b2-listener-error.log
 
 [Install]
 WantedBy=multi-user.target
