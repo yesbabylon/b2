@@ -7,6 +7,7 @@
  * @return array{
  *     code: int,
  *     body: array{
+ *         type: string,
  *         stats: array{
  *             net: array{
  *                 rx: string,
@@ -65,6 +66,7 @@ function status(): array {
     $interface = trim($interface, ':');
 
     $commands = [
+        'type' => 'b2',
         'stats' => [
             'net' => [
                 'description' => "monthly network volume",
