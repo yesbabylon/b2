@@ -64,11 +64,16 @@ docker exec "$USERNAME" bash -c "
 "
 sleep 15
 
+# Modify default root and user login to use domain name in mail
+docker exec "$USERNAME" bash -c "
+./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
+./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
+"
+
 # Check if APP_USERNAME is equal to root if yes, change the password of the root user, else create the user
 if [ "$APP_USERNAME" = "root" ]; then
     docker exec "$USERNAME" bash -c "
     ./equal.run --do=user_pass-update --user_id=1 --password=$APP_PASSWORD --confirm=$APP_PASSWORD
-    ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
     "
 else
     docker exec "$USERNAME" bash -c "
