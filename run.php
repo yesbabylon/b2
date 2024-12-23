@@ -11,9 +11,11 @@ function parseArguments($argv)
     foreach ($argv as $arg) {
         if (preg_match('/^--route=(.+)$/', $arg, $matches)) {
             $options['route'] = $matches[1];
-        } elseif (preg_match('/^--method=(.+)$/', $arg, $matches)) {
+        } 
+		elseif (preg_match('/^--method=(.+)$/', $arg, $matches)) {
             $options['method'] = strtoupper($matches[1]);
-        } elseif (preg_match('/^--params=(.+)$/', $arg, $matches)) {
+        } 
+		elseif (preg_match('/^--params=(.+)$/', $arg, $matches)) {
             parse_str($matches[1], $options['params']);
         }
     }
@@ -33,13 +35,14 @@ function sendHttpRequest($url, $method, $params)
             'method'  => $method,
             'header'  => "Content-Type: application/json\r\n",
             'content' => json_encode($params),
-            'timeout' => 10, // Timeout pour la requête
+            'timeout' => 10
         ]
     ];
 
     if ($method === 'GET') {
-        // Ajouter les paramètres à l'URL pour une requête GET
-        $url .= '?' . http_build_query($params);
+        if(count($params)) {
+			$url .= '?' . http_build_query($params);
+		}
         unset($contextOptions['http']['content']);
     }
 
