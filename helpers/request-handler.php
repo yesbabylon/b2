@@ -15,32 +15,38 @@
 function handle_request(array $request, array $routes): array {
     try {
         $method = $request['method'];
+		$payload = [];
 		
         if(!isset($routes[$method]) {
             throw new Exception("method_not_allowed", 405);
         }
+
+		if($method == 'GET') {
+			$parts = explode('?', $request['uri'], 2);
+			$request['uri'] = $parts[0];
+			if(count($parts) > 1) {
+				parse_str($parts[1], $payload);
+			}
+		}
 
         // Check if the requested route is allowed
         if(!in_array($request['uri'], $routes[$method])) {
             throw new Exception("unknown_route", 404);
         }
 
-        if($request['content_type'] !== 'application/json') {
-            throw new Exception("invalid_body", 400);
-        }
-
-        // Get the request body
-        $json = $request['data'];
-
-        // Decode JSON data
-        $data = json_decode($json, true);
-
-        // Check if data decoded successfully
-        if(!is_array($data)) {
-			if($method == 'GET') { 
-				$data = [];
+		if($method != 'GET') { 
+	        if($request['content_type'] !== 'application/json') {
+				throw new Exception("invalid_body", 400);
 			}
-			else {				
+
+			// Get the request body
+			$json = $request['data'];
+
+			// Decode JSON data
+			$payload = json_decode($json, true);
+
+			// Check if data decoded successfully
+			if(!is_array($payload)) {
 				throw new Exception("invalid_json", 400);
 			}
         }
@@ -70,15 +76,15 @@ function handle_request(array $request, array $routes): array {
         // Load env variables of a specific instance if needed
         if(
             strpos($request['uri'], '/instance/') === 0
-            && is_string($data['instance'] ?? false)
-            && instance_exists($data['instance'])
-            && file_exists("/home/{$data['instance']}/.env")
+            && $payload['instance'] ?? false
+            && instance_exists($payload['instance'])
+            && file_exists("/home/{$payload['instance']}/.env")
         ) {
-            load_env("/home/{$data['instance']}/.env");
+            load_env("/home/{$payload['instance']}/.env");
         }
 
         // Respond with the returned body and code
-        ['body' => $body, 'code' => $code] = $handler_method_name($data);
+        ['body' => $body, 'code' => $code] = $handler_method_name($payload);
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
