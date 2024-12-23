@@ -88,7 +88,7 @@ function handle_request(array $request, array $routes): array {
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
-        [$body, $code] = [$e->getMessage(), $e->getCode()];
+        [$body, $code] = ['{ "error": "'.$e->getMessage().'" }, $e->getCode()];
     }
 
     return compact('body', 'code');
