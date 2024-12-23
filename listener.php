@@ -18,23 +18,27 @@ $request = [
     'data'          => file_get_contents("php://input"),
 ];
 
-$allowed_routes = [
-    '/reboot',                          /* @link reboot() */
-    '/status',                          /* @link status() */
-    '/ip',                              /* @link ip() */
-    '/instances',                       /* @link instances() */
-    '/instance/backup',                 /* @link instance_backup() */
-    '/instance/backups',                /* @link instance_backups() */
-    '/instance/export-backup',          /* @link instance_export_backup() */
-    '/instance/import-backup',          /* @link instance_import_backup() */
-    '/instance/create',                 /* @link instance_create() */
-    '/instance/delete',                 /* @link instance_delete() */
-    '/instance/restore',                /* @link instance_restore() */
-    '/instance/status',                 /* @link instance_status() */
-    '/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
-    '/instance/disable-maintenance'     /* @link instance_disable_maintenance() */
+$routes = [
+	'GET' 	=> [
+		'/status',                          /* @link status() */
+		'/instances',                       /* @link instances() */
+		'/instance/status',                 /* @link instance_status() */
+		'/instance/backups',                /* @link instance_backups() */
+	],
+	'POST' 	=> [
+		'/reboot',                          /* @link reboot() */
+		'/ip',                              /* @link ip() */
+		'/instance/backup',                 /* @link instance_backup() */
+		'/instance/export-backup',          /* @link instance_export_backup() */
+		'/instance/import-backup',          /* @link instance_import_backup() */
+		'/instance/create',                 /* @link instance_create() */
+		'/instance/delete',                 /* @link instance_delete() */
+		'/instance/restore',                /* @link instance_restore() */ 
+		'/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
+		'/instance/disable-maintenance'     /* @link instance_disable_maintenance() */
+	]
 ];
 
-['body' => $body, 'code' => $code] = handle_request($request, $allowed_routes);
+['body' => $body, 'code' => $code] = handle_request($request, $routes);
 
 send_http_response($body, $code);

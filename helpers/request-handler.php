@@ -9,18 +9,19 @@
  *     content_type: string,
  *     data: string
  * } $request
- * @param string[] $allowed_routes
+ * @param string[] $routes Array mapping existing routes (level-1 = method, level-2 = path)
  * @return array{body: string|array, code: int}
  */
-function handle_request(array $request, array $allowed_routes): array {
+function handle_request(array $request, array $routes): array {
     try {
-        // By convention, we accept only POST requests
-        if($request['method'] !== 'POST') {
+        $method = $request['method'];
+		
+        if(!isset($routes[$method]) {
             throw new Exception("method_not_allowed", 405);
         }
 
         // Check if the requested route is allowed
-        if(!in_array($request['uri'], $allowed_routes)) {
+        if(!in_array($request['uri'], $routes[$method])) {
             throw new Exception("unknown_route", 404);
         }
 
@@ -36,7 +37,12 @@ function handle_request(array $request, array $allowed_routes): array {
 
         // Check if data decoded successfully
         if(!is_array($data)) {
-            throw new Exception("invalid_json", 400);
+			if($method == 'GET') { 
+				$data = [];
+			}
+			else {				
+				throw new Exception("invalid_json", 400);
+			}
         }
 
         $handler = trim($request['uri'], '/');
@@ -55,7 +61,7 @@ function handle_request(array $request, array $allowed_routes): array {
 
         // Call the controller function with the request data
         if(!is_callable($handler_method_name)) {
-            throw new Exception("missing_method", 501);
+            throw new Exception("missing_script_method", 501);
         }
 
         // Load host env variables

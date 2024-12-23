@@ -4,7 +4,7 @@ The b2 host's api allows to manage the host and its instances.
 
 ## Host
 
-### POST _/status_
+### GET _/status_
 
 Get the status of the b2 host.
 
@@ -60,7 +60,7 @@ Reboot the b2 host.
 {}
 ```
 
-### POST _/instances_
+### GET _/instances_
 
 Get the list of instances present on the b2 host.
 
@@ -144,7 +144,7 @@ Delete an existing instance.
 |----------|:--------:|:-------:|--------|-------------------------------------------------|
 | instance |   true   |         |        | Must be a valid instance installed on the host. |
 
-### POST _/instance/status_
+### GET _/instance/status_
 
 Get the status of an instance.
 
@@ -246,7 +246,7 @@ Import a backup from the configured backup host.
 
 The `BACKUP_HOST_URL` and `BACKUP_HOST_FTP` env configurations need to be correctly set for the export to work.
 
-### POST _/instance/backups_
+### GET _/instance/backups_
 
 Get the list of backups of an instance.
 
