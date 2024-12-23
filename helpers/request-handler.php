@@ -9,7 +9,7 @@
  *     content_type: string,
  *     data: string
  * } $request
- * @param string[] $routes Array mapping existing routes (level-1 = method, level-2 = path)
+ * @param array[] $routes Array mapping existing routes (level-1 = method, level-2 = path)
  * @return array{body: string|array, code: int}
  */
 function handle_request(array $request, array $routes): array {
@@ -17,7 +17,7 @@ function handle_request(array $request, array $routes): array {
         $method = $request['method'];
 		$payload = [];
 		
-        if(!isset($routes[$method]) {
+        if(!isset($routes[$method])) {
             throw new Exception("method_not_allowed", 405);
         }
 
