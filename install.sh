@@ -205,6 +205,13 @@ cp -r "$INSTALL_DIR"/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
+# Copy temporay self-signed certs (required for nginx to use correct https template)
+mkdir /srv/docker/nginx/certs
+cp "$INSTALL_DIR"/conf/default.crt /srv/docker/nginx/certs/
+cp "$INSTALL_DIR"/conf/default.key /srv/docker/nginx/certs/
+cp "$INSTALL_DIR"/conf/dhparam.pem /srv/docker/nginx/certs/
+
+mkdir /srv/docker/nginx/htpasswd
 mkdir /var/log/nginx
 
 sh -c "echo '/usr/local/bin/ssh-login' >> /etc/shells"
