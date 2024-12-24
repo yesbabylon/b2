@@ -1,6 +1,6 @@
 <?php
 
-function parseArguments($argv)
+function parse_arguments($argv)
 {
     $options = [
         'route' => '',
@@ -28,7 +28,7 @@ function parseArguments($argv)
     return $options;
 }
 
-function sendHttpRequest($url, $method, $params)
+function send_http_request($url, $method, $params)
 {
     $contextOptions = [
         'http' => [
@@ -56,32 +56,30 @@ function sendHttpRequest($url, $method, $params)
         return null;
     }
 
-    $httpCode = null;
+    $http_code = null;
     if (isset($http_response_header)) {
         foreach ($http_response_header as $header) {
             if (preg_match('/^HTTP\/\d\.\d (\d{3})/', $header, $matches)) {
-                $httpCode = intval($matches[1]);
+                $http_code = intval($matches[1]);
                 break;
             }
         }
     }
 
-    return [$httpCode, $response];
+    return [$http_code, $response];
 }
 
 function main($argv)
 {
-    $options = parseArguments(array_slice($argv, 1));
+    $options = parse_arguments(array_slice($argv, 1));
 
-    $url = "http://127.0.0.1:8000" . $options['route'];
-    $method = $options['method'];
-    $params = $options['params'];
+	$path = str_replace('//', '/', '/'.$options['route']);
 
-    list($httpCode, $response) = sendHttpRequest($url, $method, $params);
+    [$http_code, $response] = send_http_request("http://127.0.0.1:8000" . $path, $options['method'], $options['params']);
 
-    echo "HTTP Status Code: $httpCode\n";
-    $decodedResponse = json_decode($response, true);
-    echo json_encode($decodedResponse, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    echo "HTTP Status Code: $http_code\n";
+    $data = json_decode($response, true);
+    echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 
 main($argv);
