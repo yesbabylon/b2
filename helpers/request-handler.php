@@ -76,7 +76,7 @@ function handle_request(array $request, array $routes): array {
         // Load env variables of a specific instance if needed
         if(
             strpos($request['uri'], '/instance/') === 0
-            && $payload['instance'] ?? false
+            && ($payload['instance'] ?? false)
             && instance_exists($payload['instance'])
             && file_exists("/home/{$payload['instance']}/.env")
         ) {
