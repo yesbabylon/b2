@@ -14,12 +14,6 @@ Get the status of the b2 host.
 |--------------|------------------|
 | Content-Type | application/json |
 
-#### Body
-
-```json
-{}
-```
-
 ### POST _/ip_
 
 Set the public interface ip address.
@@ -70,15 +64,15 @@ Get the list of instances present on the b2 host.
 |--------------|------------------|
 | Content-Type | application/json |
 
-#### Body
+#### Params
 
-```json
-{"with_deleted": true}
+```
+/instances?with_deleted=true
 ```
 
-| key          | required | default | values | Note |
-|--------------|:--------:|:-------:|--------|------|
-| with_deleted |  false   |  false  |        |      |
+| key          | required | default | values | Note                                                        |
+|--------------|:--------:|:-------:|--------|-------------------------------------------------------------|
+| with_deleted |  false   |  false  |        | When set to true, includes instances that have been deleted |
 
 ## Instance
 
@@ -154,10 +148,10 @@ Get the status of an instance.
 |--------------|------------------|
 | Content-Type | application/json |
 
-#### Body
+#### Params
 
-```json
-{"instance":"equal.local"}
+```
+/instance/status?instance=equal.local
 ```
 
 | key      | required | default | values | Note                                            |
@@ -256,10 +250,10 @@ Get the list of backups of an instance.
 |--------------|------------------|
 | Content-Type | application/json |
 
-#### Body
+#### Params
 
-```json
-{"instance":"equal.local"}
+```
+/instance/backups?instance=equal.local
 ```
 
 | key       | required | default | values | Note                                            |
