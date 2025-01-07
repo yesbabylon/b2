@@ -38,10 +38,11 @@ function send_http_request($url, $method, $params)
 {
     $context = [
         'http' => [
-            'method'  => $method,
-            'header'  => "Content-Type: application/json\r\n",
-            'content' => json_encode($params),
-            'timeout' => 10
+            'method'        => $method,
+            'header'        => "Content-Type: application/json\r\n",
+            'content'       => json_encode($params),
+            'timeout'       => 10,
+            'ignore_errors' => true
         ]
     ];
 
@@ -55,7 +56,7 @@ function send_http_request($url, $method, $params)
     $streamContext = stream_context_create($context);
 
     $response = @file_get_contents($url, false, $streamContext);
-    $http_code = null;
+    $http_code = 500;
 
     if(isset($http_response_header)) {
         foreach($http_response_header as $header) {
@@ -68,7 +69,7 @@ function send_http_request($url, $method, $params)
 
     if ($response === false) {
         $error = error_get_last();
-        echo "Erreur lors de la requête HTTP : " . $error['message'] . "\n";
+        // echo "Erreur lors de la requête HTTP : " . $error['message'] . "\n";
         $response = null;
     }
 
