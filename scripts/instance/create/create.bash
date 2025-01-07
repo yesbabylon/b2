@@ -101,9 +101,6 @@ export DB_PORT=$(( 3306 + $number_of_directories ))
 # Define PHPMYADMIN_PORT with the number of directories in /home
 export PMA_PORT=$(( 8080 + $number_of_directories ))
 
-# Define EQ_PORT with the number of directories in /home (start at 81 because 80 is used by nginx proxy
-export EQ_PORT=$(( 80 + $number_of_directories ))
-
 # Define DB_BACKUP user access
 export DB_BACKUP_USERNAME="backup"
 export DB_BACKUP_PASSWORD=$(head /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 16)
@@ -116,6 +113,8 @@ touch "$env_file"
     echo "APP_USERNAME=$APP_USERNAME"
     echo "APP_PASSWORD=$APP_PASSWORD"
     echo "CIPHER_KEY=$CIPHER_KEY"
+    echo ""
+    echo "# Should the HTTP requests be redirected to their HTTPS equivalent. Possible values: redirect, noredirect"
     echo "HTTPS_REDIRECT=$HTTPS_REDIRECT"
     echo ""
     echo "WP_VERSION=$WP_VERSION"
@@ -125,13 +124,12 @@ touch "$env_file"
     echo "DB_HOSTNAME=$DB_HOSTNAME"
     echo "DB_PORT=$DB_PORT"
     echo ""
+    echo "# Credentials for account dedicated to SQL backups."
     echo "DB_BACKUP_USERNAME=$DB_BACKUP_USERNAME"
     echo "DB_BACKUP_PASSWORD=$DB_BACKUP_PASSWORD"
     echo ""
     echo "PMA_HOSTNAME=$PMA_HOSTNAME"
     echo "PMA_PORT=$PMA_PORT"
-    echo ""
-    echo "EQ_PORT=$EQ_PORT"
     echo ""
     echo "MEM_LIMIT=$MEM_LIMIT"
 } > "$env_file"

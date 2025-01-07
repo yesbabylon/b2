@@ -87,13 +87,6 @@ else
     "
 fi
 
-printf "Testing the instance..."
-wget -qO- http://0.0.0.0:"$EQ_PORT"/welcome | grep -q "Documentation"
+printf "eQual project initialized.\n"
 
-if [ $? -eq 0 ]; then
-  printf "eQual project initialized.\n"
-  exit 0
-else
-  printf "Error: eQual project not correctly initialized.\n"
-  exit 1
-fi
+exit 0
