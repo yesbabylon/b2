@@ -93,7 +93,7 @@ function status(): array {
                 }
             ],
             'uptime' => [
-                'description' => "average CPU load (%) since last reboot",
+                'description' => "quantity of days passed since the server is up",
                 'command'     => 'cat /proc/uptime | awk \'{print $1}\'',
                 'adapt'       => function ($res) {
                     return (intval($res / 86400) + 1).'days';
@@ -212,7 +212,7 @@ function status(): array {
                 'description' => "number of CPU (#)",
                 'command'     => 'cat /proc/cpuinfo | grep processor | wc -l',
                 'adapt'       => function ($res) {
-                    return intval($res);
+                    return $res;
                 }
             ],
             'cpu_freq' => [

@@ -33,9 +33,9 @@ $routes = [
 		'/instance/import-backup',          /* @link instance_import_backup() */
 		'/instance/create',                 /* @link instance_create() */
 		'/instance/delete',                 /* @link instance_delete() */
-		'/instance/restore',                /* @link instance_restore() */ 
+		'/instance/restore',                /* @link instance_restore() */
 		'/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
-		'/instance/disable-maintenance'     /* @link instance_disable_maintenance() */
+		'/instance/disable-maintenance',    /* @link instance_disable_maintenance() */
 	]
 ];
 
