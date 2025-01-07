@@ -12,10 +12,10 @@ function parse_arguments($argv)
         if (preg_match('/^--route=(.+)$/', $arg, $matches)) {
             $options['route'] = $matches[1];
         } 
-		elseif (preg_match('/^--method=(.+)$/', $arg, $matches)) {
+        elseif (preg_match('/^--method=(.+)$/', $arg, $matches)) {
             $options['method'] = strtoupper($matches[1]);
         } 
-		elseif (preg_match('/^--params=(.+)$/', $arg, $matches)) {
+        elseif (preg_match('/^--params=(.+)$/', $arg, $matches)) {
             parse_str($matches[1], $options['params']);
         }
     }
@@ -30,7 +30,7 @@ function parse_arguments($argv)
 
 function send_http_request($url, $method, $params)
 {
-    $contextOptions = [
+    $context = [
         'http' => [
             'method'  => $method,
             'header'  => "Content-Type: application/json\r\n",
@@ -39,16 +39,16 @@ function send_http_request($url, $method, $params)
         ]
     ];
 
-    if ($method === 'GET') {
+    if($method === 'GET') {
         if(count($params)) {
-			$url .= '?' . http_build_query($params);
-		}
-        unset($contextOptions['http']['content']);
+            $url .= '?' . http_build_query($params);
+        }
+        unset($context['http']['content']);
     }
 
-    $context = stream_context_create($contextOptions);
+    $streamContext = stream_context_create($context);
 
-    $response = @file_get_contents($url, false, $context);
+    $response = @file_get_contents($url, false, $streamContext);
 
     if ($response === false) {
         $error = error_get_last();
@@ -73,7 +73,7 @@ function main($argv)
 {
     $options = parse_arguments(array_slice($argv, 1));
 
-	$path = str_replace('//', '/', '/'.$options['route']);
+    $path = str_replace('//', '/', '/'.$options['route']);
 
     [$http_code, $response] = send_http_request("http://127.0.0.1:8000" . $path, $options['method'], $options['params']);
 
