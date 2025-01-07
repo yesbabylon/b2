@@ -114,6 +114,7 @@ touch "$env_file"
 {
     echo "USERNAME=$USERNAME"
     echo "APP_USERNAME=$APP_USERNAME"
+    echo "APP_PASSWORD=$APP_PASSWORD"
     echo "CIPHER_KEY=$CIPHER_KEY"
     echo "HTTPS_REDIRECT=$HTTPS_REDIRECT"
     echo ""

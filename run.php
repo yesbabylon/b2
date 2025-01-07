@@ -67,12 +67,6 @@ function send_http_request($url, $method, $params)
         }
     }
 
-    if ($response === false) {
-        $error = error_get_last();
-        // echo "Erreur lors de la requête HTTP : " . $error['message'] . "\n";
-        $response = null;
-    }
-
     return [$http_code, $response];
 }
 
