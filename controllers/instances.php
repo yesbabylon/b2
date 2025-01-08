@@ -8,8 +8,12 @@
  * @throws Exception
  */
 function instances(array $data): array {
-    if(isset($data['with_deleted']) && !is_bool($data['with_deleted'])) {
-        throw new InvalidArgumentException("invalid_with_deleted", 400);
+    if(isset($data['with_deleted'])) {
+        if(!in_array(strtolower($data['with_deleted']), ['true', '1', 'yes', 'false', '0', 'no'])) {
+            throw new InvalidArgumentException("invalid_with_deleted", 400);
+        }
+
+        $data['with_deleted'] = in_array(strtolower($data['with_deleted']), ['true', '1', 'yes']);
     }
 
     $instances = get_instances($data['with_deleted'] ?? false);
