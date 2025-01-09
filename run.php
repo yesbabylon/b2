@@ -41,7 +41,8 @@ function send_http_request($url, $method, $params)
             'method'        => $method,
             'header'        => "Content-Type: application/json\r\n",
             'content'       => json_encode($params),
-            'timeout'       => 10,
+            // #memo - high timeout because operation can require some time (upload/download)
+            'timeout'       => 600,
             'ignore_errors' => true
         ]
     ];
@@ -56,7 +57,7 @@ function send_http_request($url, $method, $params)
     $streamContext = stream_context_create($context);
 
     $response = @file_get_contents($url, false, $streamContext);
-    $http_code = 500;
+    $http_code = is_array($response) ? 200 : 500;
 
     if(isset($http_response_header)) {
         foreach($http_response_header as $header) {
