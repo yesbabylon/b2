@@ -31,7 +31,8 @@ function send_http_response($body, $status_code): void {
     // Set the Content-Type header to indicate JSON response
     header('Content-Type: application/json');
 
-    $data = $body;
+    $data = [ 'result' => $body ];
+
     if($status_code > 299) {
         $data = [
             'errors' => $body
