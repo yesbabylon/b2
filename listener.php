@@ -12,9 +12,9 @@ const CONTROLLERS_DIR = __DIR__ . '/controllers';
 const SCRIPTS_DIR = __DIR__ . '/scripts';
 
 $request = [
-    'method'        => $_SERVER['REQUEST_METHOD'],
-    'uri'           => $_SERVER['REQUEST_URI'],
-    'content_type'  => $_SERVER['CONTENT_TYPE'],
+    'method'        => $_SERVER['REQUEST_METHOD'] ?? 'GET',
+    'uri'           => $_SERVER['REQUEST_URI'] ?? '/',
+    'content_type'  => $_SERVER['CONTENT_TYPE'] ?? 'application/json',
     'data'          => file_get_contents("php://input"),
 ];
 
@@ -40,5 +40,7 @@ $routes = [
 ];
 
 ['body' => $body, 'code' => $code] = handle_request($request, $routes);
+
+trigger_error('result: '.$body, E_USER_NOTICE);
 
 send_http_response($body, $code);
