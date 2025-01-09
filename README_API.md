@@ -162,6 +162,12 @@ Get the status of an instance.
 
 Create a backup of an instance.
 
+The related controller will create 3 files: `backup.sql.gz`, `config.tar`, `filestore.tar.gz`; and place them in a tarball in the `export` folder of the corresponding instance:
+
+```
+/home/$instance/export/{$instance}_$timestamp.tar
+```
+
 #### Request Headers
 
 | key          | value            |
@@ -203,14 +209,18 @@ Export the backup of an instance to the configured backup host.
 }
 ```
 
-| key       | required | default | values | Note                                            |
-|-----------|:--------:|:-------:|--------|-------------------------------------------------|
-| instance  |   true   |         |        | Must be a valid instance installed on the host. |
-| backup_id |   true   |         |        | Must be a valid backup in export directory.     |
+
+
+| key       | required | default | values | Note                                                         |
+| --------- | :------: | :-----: | ------ | ------------------------------------------------------------ |
+| instance  |   true   |         |        | Must be a valid instance installed on the host.              |
+| backup_id |   true   |         |        | Must be a valid backup in export directory, i.e.  `{instance_name}_{backup_id}.tar`<br/>or<br/>`{instance_name}_{backup_id}.tar.gpg` |
 
 **Notes**:
 
-The `BACKUP_HOST_URL` and `BACKUP_HOST_FTP` env configurations need to be correctly set for the export to work.
+* The `BACKUP_HOST_URL` and `BACKUP_HOST_FTP` env configurations need to be correctly set for the export to work.
+
+    
 
 ### POST _/instance/import-backup_
 
