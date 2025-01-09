@@ -85,7 +85,8 @@ function instance_backup(array $data): array {
     // Create archive to unite files
     $to_export = ["backup.sql.gz", "config.tar", "filestore.tar.gz"];
     $to_export_str = implode(' ', $to_export);
-    $timestamp = date('YmdHis');
+    $timestamp = date('Ymd').sprintf('%05d', time() - strtotime('today'));
+
     $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
     exec("cd $tmp_backup_dir && tar -cvf $backup_file $to_export_str");
 
