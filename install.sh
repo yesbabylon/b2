@@ -1,6 +1,58 @@
 #!/bin/bash
 
-# #memo - This script must be run with root privileges
+# ============================================================
+# Script Name: B2 Host Setup
+# Description: This script automates the installation of all
+#              required dependencies to configure and operate
+#              as a B2 host.
+#
+# Repository: https://github.com/yesbabylon/b2
+# Author: Yesbabylon
+# Version: 1.0
+# License: LGPL
+#
+# Usage: 
+#   - Run the script as a superuser or with sudo privileges.
+#   - Ensure the system has internet connectivity.
+#
+# Notes:
+#   - Review the script before running to ensure compatibility
+#     with your system configuration.
+#   - Logs will be generated in /var/log directory, if applicable.
+#
+# ============================================================
+
+
+print_help() {
+    echo "Usage: $0"
+    echo ""
+    echo "Description:"
+    echo "  This script expects a file named '.env' in the current directory."
+    echo "  The file must contain the following environment variable definitions:"
+    echo ""
+    echo "  Variables:"
+    echo "    ADMIN_HOST_URL   - URL of the admin host API endpoint (required)"
+    echo "    BACKUP_HOST_URL  - URL of the backup host API endpoint (required)"
+    echo "    BACKUP_HOST_FTP  - FQDN of the backup host (required)"
+    echo "    STATS_HOST_URL   - URL for the stats host API endpoint (required)"
+    echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
+    echo "    PUBLIC_IP        - Public IPv4 address (required)"
+    echo "    ROOT_PASSWORD    - Root account password for the host (required)"
+    echo ""
+    echo "Example of a .env file:"
+    echo "  ADMIN_HOST_URL=http://admin.local:8000"
+    echo "  BACKUP_HOST_URL=http://backup.local:8000"
+    echo "  BACKUP_HOST_FTP=backup.local"
+    echo "  STATS_HOST_URL=http://stats.local:8000"
+    echo "  GPG_PASSPHRASE=your-passphrase"
+    echo "  PUBLIC_IP=192.168.1.1"
+    echo "  ROOT_PASSWORD=your-root-password"
+    echo ""
+    echo "Note:"
+    echo "  Ensure the .env file is properly formatted and accessible by the script."
+    echo "  Feel free to use .env.example as template."
+}
+
 
 # Define constants for using some colors
 GREEN='\033[0;32m'
@@ -16,115 +68,76 @@ if [ "$INSTALL_DIR" != "/root/b2" ]; then
     exit 1
 fi
 
-# Needed vars
-GPG_NAME=""
-GPG_EMAIL=""
-GPG_EXPIRY_DATE=""
-GPG_PASSPHRASE=""
-
-# Function to display help
-flags_help() {
-    echo "Usage: script.sh [options]"
-    echo "Options:"
-    echo "  --gpg_name,        -n  Specify Name-Real of gpg configuration. (required)"
-    echo "  --gpg_email,       -e  Specify Name-Email of gpg configuration. (required)"
-    echo "  --gpg_expiry_date, -d  Specify Expire-Date of gpg configuration. (required)"
-    echo "  --gpg_passphrase,  -p  Specify Passphrase of gpg configuration. (required)"
-    echo "  --help, -h             Show help message."
-    [ "$1" = "error" ] && exit 1 || exit 0
-}
-
-# Parse options
-while [[ "$#" -gt 0 ]]; do
-    case $1 in
-        --gpg_name|-n )
-            GPG_NAME="$2"
-            if [[ -z "$GPG_NAME" ]]; then
-                echo "Error: --gpg_name requires a value."
-                exit 1
-            fi
-            shift ;;
-        --gpg_email|-e )
-            GPG_EMAIL="$2"
-            if [[ -z "$GPG_EMAIL" ]]; then
-                echo "Error: --gpg_email requires a value."
-                exit 1
-            fi
-            shift ;;
-        --gpg_expiry_date|-d )
-            GPG_EXPIRY_DATE="$2"
-            if [[ -z "$GPG_EXPIRY_DATE" ]]; then
-                echo "Error: --gpg_expiry_date requires a value."
-                exit 1
-            fi
-            shift ;;
-        --gpg_passphrase|-p )
-            GPG_PASSPHRASE="$2"
-            if [[ -z "$GPG_PASSPHRASE" ]]; then
-                echo "Error: --gpg_passphrase requires a value."
-                exit 1
-            fi
-            shift ;;
-        --help|-h )
-            flags_help ;;
-        * )
-            echo "Unknown option: $1"
-            flags_help error ;;
-    esac
-    shift
-done
-
-# Array of required variables and their descriptions
-declare -A required_vars=(
-    ["GPG_NAME"]="--gpg_name"
-    ["GPG_EMAIL"]="--gpg_email"
-    ["GPG_EXPIRY_DATE"]="--gpg_expiry_date"
-    ["GPG_PASSPHRASE"]="--gpg_passphrase"
-)
-
-# Iterate over the required variables
-for var in "${!required_vars[@]}"; do
-    if [ -z "${!var}" ]; then
-        echo "Missing required ${required_vars[$var]}"
-        exit 1
-    fi
-done
-
 
 #####################
 ### Env variables ###
 #####################
 
-# Ensure .env.example exists
-if [ ! -f "$INSTALL_DIR/.env.example" ]; then
-    echo "Error: $INSTALL_DIR/.env.example does not exist."
-    exit 1
+# Define required constants
+GPG_NAME="b2"
+GPG_EXPIRY_DATE="0"
+GPG_EMAIL="$(hostname)@b2.yb.run"
+
+if [ ! -f .env ]
+then
+    echo ".env file is missing."
+    print_help
+    exit 0
+else
+	# export vars from .env file
+    set -a
+    . ./.env
+    # stop auto export
+    set +a
+	
+	REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST_URL" "BACKUP_HOST_URL" "BACKUP_HOST_FTP" "STATS_HOST_URL")
+
+    for var in "${REQUIRED_ENV_VARS[@]}"; do
+        if [[ -z "${!var}" ]]; then
+			print_help
+			exit 0           
+        fi
+    done
 fi
 
-# Create .env file from example if it does not exist
-if [ ! -f "$INSTALL_DIR/.env" ]; then
-    cp "$INSTALL_DIR/.env.example" "$INSTALL_DIR/.env"
+
+########################
+### Allow SSH access ###
+########################
+
+echo 'PermitRootLogin yes
+PasswordAuthentication yes
+ClientAliveInterval 600
+ClientAliveCountMax 0' > /etc/ssh/sshd_config.d/10-settings.conf
+
+service ssh restart
+
+
+#########################
+### Set root password ###
+#########################
+
+usermod --password $(echo "$ROOT_PASSWORD" | openssl passwd -1 -stdin) root
+
+
+################################
+### Asssign Public IP (IPFO) ###
+################################
+
+if [[ "$PUBLIC_IP" != "0.0.0.0" && "$PUBLIC_IP" != "127.0.0.1" && -n "$PUBLIC_IP" ]]; then
+	echo "network:
+	  version: 2
+	  vlans:
+		veth0:
+		  id: 0
+		  link: ens3
+		  dhcp4: no
+		  addresses: [$PUBLIC_IP/24]" > /etc/netplan/51-failover.yaml
+
+	chmod 600 /etc/netplan/51-failover.yaml
+	netplan generate
+	netplan apply
 fi
-
-# List of configuration variables and their values
-declare -A configs=(
-    ["GPG_NAME"]="$GPG_NAME"
-    ["GPG_EMAIL"]="$GPG_EMAIL"
-    ["GPG_EXPIRY_DATE"]="$GPG_EXPIRY_DATE"
-)
-
-# Iterate over the configuration variables
-for key in "${!configs[@]}"; do
-    value="${configs[$key]}"
-
-    # Update or append the configuration in the .env file
-    if grep -q "^$key=" "$INSTALL_DIR/.env"; then
-        sed -i "s|^$key=.*|$key=$value|" "$INSTALL_DIR/.env"
-    else
-        echo "$key=$value" >> "$INSTALL_DIR/.env"
-    fi
-done
-
 
 ############
 ### Base ###
