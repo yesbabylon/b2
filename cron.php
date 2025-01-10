@@ -7,6 +7,7 @@ $cron_jobs = [
     //     'description'   => "Release expired backup tokens every 5 minutes.",
     //     'crontab'       => '*/5 * * * *',
     //     'controller'    => 'release-expired-tokens'
+    //     'data'          => []
     // ]
 ];
 
