@@ -41,9 +41,10 @@ function main($argv)
 {
     $options = parse_arguments(array_slice($argv, 1));
 
-    $result = exec_controller(str_replace('//', '/', '/'.$options['route']), $options['params']);
+    $controller = trim('/', str_replace('//', '/', '/'.$options['route']));
+    $result = exec_controller($controller, $options['params']);
 
-    echo "HTTP Status Code: $result['code']\n";
+    echo "HTTP Status Code: {$result['code']}\n";
     $data = json_decode($result['body'], true);
     echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
