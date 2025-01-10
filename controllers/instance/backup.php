@@ -46,6 +46,8 @@ function instance_backup(array $data): array {
         throw new Exception("DB_BACKUP_PASSWORD_not_configured", 500);
     }
 
+    $db_hostname = getenv('DB_NAME') ?: 'equal';
+
     $instance = $data['instance'];
 
     $tmp_backup_dir = "/home/$instance/tmp_backup";
@@ -61,7 +63,7 @@ function instance_backup(array $data): array {
     exec("mkdir /home/$instance/export");
 
     // Create mysql dump
-    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables equal > $tmp_backup_dir/backup.sql";
+    $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables $db_hostname > $tmp_backup_dir/backup.sql";
     exec($create_mysql_dump);
 
     // Stop docker containers
