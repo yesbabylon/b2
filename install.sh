@@ -235,9 +235,6 @@ docker network create proxynet
 # Create portainer volume
 docker volume create portainer_data
 
-# Install OVH real time monitoring
-# wget -qO - https://last-public-ovh-infra-yak.snap.mirrors.ovh.net/yak/archives/apply.sh | OVH_PUPPET_MANIFEST=distribyak/catalog/master/puppet/manifests/common/rtmv2.pp bash
-
 # Build docked-nginx image
 cd /home/docker/images/docked-nginx/
 ./build.sh
@@ -290,12 +287,6 @@ cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
 cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 touch /etc/fail2ban/emptylog
 
-# Make sure fail2ban starts on boot
-systemctl enable fail2ban
-
-# Restart fail2ban service
-systemctl restart fail2ban
-
 
 ########################
 ### Install listener ###
@@ -307,31 +298,27 @@ ln -s /root/b2/b2-listener.service /etc/systemd/system/b2-listener.service
 # Reload daemon to update after symlink added
 systemctl daemon-reload
 
-# Enable the listener service
-systemctl enable b2-listener.service
-
-# Start the listener service
-systemctl start b2-listener.service
-
-# Add a symbolic link for portainer
-ln -s /root/b2/docker/portainer.service /etc/systemd/system/portainer.service
-
-# Reload daemon to update after symlink added
-systemctl daemon-reload
-
 
 #########################
 ### Install portainer ###
 #########################
 
+# #memo - portainer is not mandatory and should not be started automatically but only when needed
+
+# Add a symbolic link for portainer
+# ln -s /root/b2/docker/portainer.service /etc/systemd/system/portainer.service
+
+# Reload daemon to update after symlink added
+# systemctl daemon-reload
+
 # Enable the portainer service
-systemctl enable portainer.service
+# systemctl enable portainer.service
 
 # Start the portainer service
-systemctl start portainer.service
+# systemctl start portainer.service
 
 # Alert portainer running
-echo -e "${RED}Portainer${NC} is running and listening on ${GREEN}http://$(hostname -I | cut -d' ' -f1):9000${NC}\n"
+# echo -e "${RED}Portainer${NC} is running and listening on ${GREEN}http://$(hostname -I | cut -d' ' -f1):9000${NC}\n"
 
 
 ################
