@@ -20,7 +20,7 @@ function parse_arguments($argv)
             $key = $parts[0];
             $value = isset($parts[1]) ? $parts[1] : true;
             if(in_array($value, ['true', 'false'])) {
-                $value = (bool) $value;
+                $value = ($value === 'true');
             }
             $options['params'][$key] = $value;
         }
