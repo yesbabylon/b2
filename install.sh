@@ -37,7 +37,7 @@ print_help() {
     echo "    STATS_HOST_URL   - URL for the stats host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
     echo "    PUBLIC_IP        - Public IPv4 address (required)"
-    echo "    ROOT_PASSWORD    - Root account password for the host (required)"
+    echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
     echo ""
     echo "Example of a .env file:"
     echo "  ADMIN_HOST_URL=http://admin.local:8000"
@@ -73,10 +73,10 @@ fi
 ### Env variables ###
 #####################
 
-# Define required constants
+# Define mandatory constants
 GPG_NAME="b2"
 GPG_EXPIRY_DATE="0"
-GPG_EMAIL="$(hostname)@b2.yb.run"
+GPG_EMAIL="$(hostname)@example.com"
 
 if [ ! -f .env ]
 then
