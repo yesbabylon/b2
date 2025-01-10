@@ -59,8 +59,7 @@ function instance_backup(array $data): array {
     instance_enable_maintenance_mode($instance);
 
     // Remove old export, if any
-    exec("rm -rf /home/$instance/export");
-    exec("mkdir /home/$instance/export");
+    exec("rm -rf /home/$instance/export/*");
 
     // Create mysql dump
     $create_mysql_dump = "docker exec $db_hostname /usr/bin/mysqldump -u $db_backup_username --password=\"$db_backup_password\" --single-transaction --skip-lock-tables $db_name > $tmp_backup_dir/backup.sql";
