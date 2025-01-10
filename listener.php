@@ -1,15 +1,5 @@
 <?php
-
-include_once './helpers/backup.php';
-include_once './helpers/env.php';
-include_once './helpers/instances.php';
-include_once './helpers/host-status.php';
-include_once './helpers/http-response.php';
-include_once './helpers/request-handler.php';
-
-const BASE_DIR = __DIR__;
-const CONTROLLERS_DIR = __DIR__ . '/controllers';
-const SCRIPTS_DIR = __DIR__ . '/scripts';
+include_once './boot.lib.php';
 
 $request = [
     'method'        => $_SERVER['REQUEST_METHOD'] ?? 'GET',

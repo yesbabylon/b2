@@ -66,39 +66,12 @@ function handle_cron_jobs(array $cron_jobs): array {
             continue;
         }
 
-        try {
-            $cron_parts = parse_cron($job['crontab']);
-            if(!cron_matches($cron_parts, $current_time)) {
-                continue;
-            }
-
-            $controller_file = CONTROLLERS_DIR . '/' . $job['controller'] . '.php';
-
-            // Check if the controller or script file exists
-            if(!file_exists($controller_file)) {
-                throw new Exception("missing_script_file", 503);
-            }
-
-            // Include the controller file
-            include_once $controller_file;
-
-            $handler_method_name = preg_replace('/[-\/]/', '_', $job['controller']);
-
-            // Call the controller function with the request data
-            if(!is_callable($handler_method_name)) {
-                throw new Exception("missing_method", 501);
-            }
-
-            load_env(BASE_DIR . '/.env');
-
-            // Respond with the returned body and code
-            ['body' => $body, 'code' => $code] = $handler_method_name($job['data'] ?? []);
-        }
-        catch(Exception $e) {
-            [$body, $code] = [$e->getMessage(), $e->getCode()];
+        $cron_parts = parse_cron($job['crontab']);
+        if(!cron_matches($cron_parts, $current_time)) {
+            continue;
         }
 
-        $map_results[$job['controller']] = compact('body', 'code');
+        $map_results[$job['controller']] = exec_controller($job['controller'], $job['data']);
     }
 
     return $map_results;

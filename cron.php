@@ -1,11 +1,5 @@
 <?php
-
-include_once './helpers/cron-handler.php';
-include_once './helpers/env.php';
-
-const BASE_DIR = __DIR__;
-const CONTROLLERS_DIR = __DIR__ . '/controllers';
-const SCRIPTS_DIR = __DIR__ . '/scripts';
+include_once './boot.lib.php';
 
 $cron_jobs = [
     // Add cron jobs here, like following example:

@@ -51,45 +51,13 @@ function handle_request(array $request, array $routes): array {
 			}
         }
 
-        $handler = trim($request['uri'], '/');
-
-        $controller_file = CONTROLLERS_DIR."/$handler.php";
-
-        // Check if the controller or script file exists
-        if(!file_exists($controller_file)) {
-            throw new Exception("missing_script_file", 503);
-        }
-
-        // Include the controller file
-        include_once $controller_file;
-
-        $handler_method_name = preg_replace('/[-\/]/', '_', $handler);
-
-        // Call the controller function with the request data
-        if(!is_callable($handler_method_name)) {
-            throw new Exception("missing_script_method", 501);
-        }
-
-        // Load host env variables
-        load_env(BASE_DIR.'/.env');
-
-        // Load env variables of a specific instance if needed
-        if(
-            strpos($request['uri'], '/instance/') === 0
-            && ($payload['instance'] ?? false)
-            && instance_exists($payload['instance'])
-            && file_exists("/home/{$payload['instance']}/.env")
-        ) {
-            load_env("/home/{$payload['instance']}/.env");
-        }
-
-        // Respond with the returned body and code
-        ['body' => $body, 'code' => $code] = $handler_method_name($payload);
+        $controller = trim($request['uri'], '/');
+        [$body, $code] = exec_controller($controller, $payload);
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
         [$body, $code] = ['{ "error": "'.$e->getMessage().'" }', $e->getCode()];
     }
 
-    return compact('body', 'code');
+    return [$body, $code];
 }
