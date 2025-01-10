@@ -38,9 +38,20 @@ function instance_export_backup(array $data): array {
         throw new Exception("BACKUP_HOST_FTP_not_configured", 500);
     }
 
-    $create_token_response = create_token($backup_host_url, $data['instance']);
-    if($create_token_response === false) {
-        throw new Exception("error_while_asking_for_token", 500);
+
+    $max_retries = 5;
+    $retry_count = 0;
+
+    while(true) {
+        $create_token_response = create_token($backup_host_url, $data['instance']);
+        if($create_token_response !== false) {
+            break;
+        }
+        if($retry_count >= $max_retries) {
+            throw new Exception("error_requesting_token", 500);            
+        }
+        $retry_count++;
+        sleep(60 * $retry_count); 
     }
 
     // Get token and created user ftp credentials
