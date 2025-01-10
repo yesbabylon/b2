@@ -266,7 +266,9 @@ function status(): array {
     }
 
     $result['type'] = 'b2';
-    $result['config']['env'] = getenv();
+    
+    // this adds up too much data and could reveal sensitive data
+    // $result['config']['env'] = getenv();
 
     return [
         'code' => 200,
