@@ -52,12 +52,15 @@ function handle_request(array $request, array $routes): array {
         }
 
         $controller = trim($request['uri'], '/');
-        [$body, $code] = exec_controller($controller, $payload);
+        $result = exec_controller($controller, $payload);
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
-        [$body, $code] = ['{ "error": "'.$e->getMessage().'" }', $e->getCode()];
+        $result = [
+            'body' => '{ "error": "'.$e->getMessage().'" }', 
+            'code' => $e->getCode()
+        ];
     }
 
-    return [$body, $code];
+    return $result;
 }

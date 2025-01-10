@@ -13,6 +13,8 @@ include_once './helpers/cron-handler.php';
 include_once './helpers/env.php';
 
 function exec_controller($controller, $payload) {
+    $result = ['body' => '', 'code' => 0];
+
     try {
         $controller_file = CONTROLLERS_DIR."/$controller.php";
         // Check if the controller or script file exists
@@ -44,12 +46,15 @@ function exec_controller($controller, $payload) {
         }
 
         // Respond with the returned body and code
-        ['body' => $body, 'code' => $code] = $handler_method_name($payload);
+        $result = $handler_method_name($payload);
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
-        [$body, $code] = ['{ "error": "'.$e->getMessage().'" }', $e->getCode()];
+        $result= [
+            'body'  => '{ "error": "'.$e->getMessage().'" }',
+            'code'  => $e->getCode()
+        ];
     }
     
-    return [$body, $code];
+    return $result;
 }
