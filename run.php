@@ -1,4 +1,5 @@
 <?php
+include_once './boot.lib.php';
 
 function parse_arguments($argv)
 {
@@ -34,55 +35,16 @@ function parse_arguments($argv)
     return $options;
 }
 
-function send_http_request($url, $method, $params)
-{
-    $context = [
-        'http' => [
-            'method'        => $method,
-            'header'        => "Content-Type: application/json\r\n",
-            'content'       => json_encode($params),
-            // #memo - high timeout because operation can require some time (upload/download)
-            'timeout'       => 600,
-            'ignore_errors' => true
-        ]
-    ];
 
-    if($method === 'GET') {
-        if(count($params)) {
-            $url .= '?' . http_build_query($params);
-        }
-        unset($context['http']['content']);
-    }
-
-    $streamContext = stream_context_create($context);
-
-    $response = @file_get_contents($url, false, $streamContext);
-    $http_code = is_array($response) ? 200 : 500;
-
-    if(isset($http_response_header)) {
-        foreach($http_response_header as $header) {
-            if(preg_match('/^HTTP\/\d\.\d (\d{3})/', $header, $matches)) {
-                $http_code = intval($matches[1]);
-                break;
-            }
-        }
-    }
-
-    return [$http_code, $response];
-}
 
 function main($argv)
 {
     $options = parse_arguments(array_slice($argv, 1));
 
-    [$http_code, $response] = send_http_request(
-            "http://127.0.0.1:8000" . str_replace('//', '/', '/'.$options['route']), 
-            $options['method'], 
-            $options['params']
-        );
+    $result = exec_controller(str_replace('//', '/', '/'.$options['route']), $options['params']);
 
-    echo "HTTP Status Code: $http_code\n";
-    $data = json_decode($response, true);
+    echo "HTTP Status Code: $result['code']\n";
+    $data = json_decode($result['body'], true);
     echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 
