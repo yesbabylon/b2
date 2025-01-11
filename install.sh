@@ -74,7 +74,7 @@ fi
 # Define GPG mandatory constants
 GPG_NAME="$(hostname)"
 GPG_EXPIRY_DATE="0"
-GPG_EMAIL="unused@example.com"
+GPG_EMAIL="$(hostname)@b2.host"
 
 if [ ! -f .env ]
 then
