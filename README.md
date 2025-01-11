@@ -1,47 +1,26 @@
 # b2
 
-The project b2 allows you to easily initialize eQual instances on your Ubuntu server!
-This repository provides scripts and configurations designed to automate the setup process of an eQual ecosystem.
 
-The `./install.sh` script:
-  - **setup essential services** on an Ubuntu server
-  - **starts an API** that allows to smoothly manage the host and its instances
+The b2 project combines the configuration of services (Docker, Nginx, Let's Encrypt, Fail2Ban, GPG) and tasks (instance creation, backup, restore, etc.) to form the architecture of a host designed for running containerized eQual instances.
 
-Whether you're a developer exploring the capabilities of eQual or a business owner seeking efficient server deployment
-solutions, our scripts simplify the installation and configuration of various tools and services.
+This repository contains scripts to automate the setup of a B2 host and simplify maintenance operations. 
 
-While eQual is the heart of our framework, powering open-source solutions for all, we also offer tailored instance setup
-services for customers who prefer a more hands-off approach.
+For those wondering about the name "b2", **bītu** (𒂍) means "home" in Akkadian/old Babylonian.
 
-Our experienced team ensures that your servers are configured optimally, allowing you to focus on your core business
-activities.
+For more information about the eQual framework, visit the [eQual GitHub repository](https://github.com/equalframework/equal) and the [official website](https://equal.run/).
 
-Explore the contents of the repository, contribute to the eQual framework, or reach out to us to learn more about our
-tailored instance setup services.
-
-For more information about the eQual framework,
-visit the [eQual GitHub repository](https://github.com/equalframework/equal) and
-our [official website](https://equal.run/).
-
-Thank you for considering our solutions!
-
-## Important Note
-
-The b2 repository must be placed in the `/root` folder of your server.
 
 ## Install
 
-Designed as the foundational script, `./install.sh` automates the setup process for essential Ubuntu server services.
-
-From configuring Apache utilities to managing PHP CLI, firewall, linux user management, and FTP services, this script ensures a smooth and efficient initial deployment.
-
-You'll find a breakdown of the tasks it performs below.
+The `./install.sh` script :
+  - **setup essential services** on an Ubuntu server
+  - **starts a listener API** that allows to smoothly manage the host and its instances through a [ReST API](doc/api.md).
 
 ### Prerequisite
+* The b2 repository must be placed in the `/root` folder of the server.
+* The `install.sh` script must be executed with **root privileges**.
 
-This script must be executed with **root privileges**.
-
-### Script steps
+### Steps performed by the script
 
 1. Checks that script run on correct directory and checks required args
 2. Creates .env file from .env.example and add/update GPG_* with command given args
@@ -50,15 +29,44 @@ This script must be executed with **root privileges**.
 5. Installs Docker for instances
 6. Installs cron and configure it, it'll start `./cron.php` every minute
 7. Installs fail2ban
-8. Installs [API](./README_API.md) service that will listen for requests on port :8000
+8. Installs [API](./doc/api.md) service that will listen for requests on port :8000
 9. Installs Portainer that will listen on :9000
+
 
 ### Usage
 
 ```bash
-./install.sh --gpg_name b2 --gpg_email b2@your-company.com --gpg_expiry_date 0 --gpg_passphrase thepassword1234
+./install.sh
 ```
 
-**Notes**:
-  - You must **execute** the installation script with **root privileges**.
-  - The **gpg arguments** are needed  to **encrypt the backups** of the instances.
+The script expects a `.env` file with the following values (exported as environment variables):
+
+```env
+ADMIN_HOST=admin.local
+BACKUP_HOST=backup.local
+STATS_HOST=stats.local
+PUBLIC_IP=192.168.1.1
+GPG_PASSPHRASE=your-passphrase-here
+ROOT_PASSWORD=your-root-password
+```
+**Variables**:
+
+- **`ADMIN_HOST`**  
+  Hostname or IP address of the admin host API endpoint (required).
+
+- **`BACKUP_HOST`**  
+  Hostname or IP address of the backup host API endpoint (required).
+
+- **`STATS_HOST`**  
+  Hostname or IP address of the stats host API endpoint (required).
+
+- **`GPG_PASSPHRASE`**  
+  Passphrase for the PGP key (required).
+
+- **`PUBLIC_IP`**  
+  Fail-over / Public IPv4 address (required).
+
+- **`ROOT_PASSWORD`**  
+  Password for the root account of the host (required).
+
+**Note:** `GPG_PASSPHRASE` and `ROOT_PASSWORD` are automatically removed from the `.env` file after the successful execution of the `install.sh` script.

@@ -31,19 +31,17 @@ print_help() {
     echo "  The file must contain the following environment variable definitions:"
     echo ""
     echo "  Variables:"
-    echo "    ADMIN_HOST_URL   - URL of the admin host API endpoint (required)"
-    echo "    BACKUP_HOST_URL  - URL of the backup host API endpoint (required)"
-    echo "    BACKUP_HOST_FTP  - FQDN of the backup host (required)"
-    echo "    STATS_HOST_URL   - URL for the stats host API endpoint (required)"
+    echo "    ADMIN_HOST       - Hostname or IP address of the admin host API endpoint (required)"
+    echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
+    echo "    STATS_HOST       - Hostname or IP address of the stats host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
-    echo "    PUBLIC_IP        - Public IPv4 address (required)"
+    echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
     echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
     echo ""
     echo "Example of a .env file:"
-    echo "  ADMIN_HOST_URL=http://admin.local:8000"
-    echo "  BACKUP_HOST_URL=http://backup.local:8000"
-    echo "  BACKUP_HOST_FTP=backup.local"
-    echo "  STATS_HOST_URL=http://stats.local:8000"
+    echo "  ADMIN_HOST=http://admin.local"
+    echo "  BACKUP_HOST=backup.local"
+    echo "  STATS_HOST=stats.local"
     echo "  GPG_PASSPHRASE=your-passphrase"
     echo "  PUBLIC_IP=192.168.1.1"
     echo "  ROOT_PASSWORD=your-root-password"
@@ -90,7 +88,7 @@ else
     # stop auto export
     set +a
 	
-	REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST_URL" "BACKUP_HOST_URL" "BACKUP_HOST_FTP" "STATS_HOST_URL")
+	REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST" "BACKUP_HOST" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -214,7 +212,7 @@ systemctl start docker
 systemctl enable docker
 
 # Prepare directory structure
-cp -r "$INSTALL_DIR"/docker /home/docker
+cp -r "$INSTALL_DIR"/conf/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
@@ -293,7 +291,7 @@ touch /etc/fail2ban/emptylog
 ########################
 
 # Add a symbolic link for the eQual instance listener service
-ln -s /root/b2/b2-listener.service /etc/systemd/system/b2-listener.service
+ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service
 
 # Reload daemon to update after symlink added
 systemctl daemon-reload
@@ -306,7 +304,7 @@ systemctl daemon-reload
 # #memo - portainer is not mandatory and should not be started automatically but only when needed
 
 # Add a symbolic link for portainer
-# ln -s /root/b2/docker/portainer.service /etc/systemd/system/portainer.service
+# ln -s /root/b2/conf/docker/portainer.service /etc/systemd/system/portainer.service
 
 # Reload daemon to update after symlink added
 # systemctl daemon-reload
@@ -327,6 +325,7 @@ systemctl daemon-reload
 
 sed -i '/GPG_PASSPHRASE=/d' .env
 sed -i '/ROOT_PASSWORD=/d' .env
+
 
 ################
 ### Finished ###
