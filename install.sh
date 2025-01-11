@@ -73,10 +73,10 @@ fi
 ### Env variables ###
 #####################
 
-# Define mandatory constants
-GPG_NAME="b2"
+# Define GPG mandatory constants
+GPG_NAME="$(hostname)"
 GPG_EXPIRY_DATE="0"
-GPG_EMAIL="$(hostname)@example.com"
+GPG_EMAIL="unused@example.com"
 
 if [ ! -f .env ]
 then
@@ -185,8 +185,8 @@ gpg --batch --generate-key ./key-gen.conf
 rm ./key-gen.conf
 
 # Export private and public keys to pgp files
-gpg --batch --pinentry-mode=loopback --yes --passphrase "$GPG_PASSPHRASE" --output private-gpg-key.pgp --armor --export-secret-key "$GPG_EMAIL"
-gpg --output public-gpg-key.pgp --armor --export "$GPG_EMAIL"
+gpg --batch --pinentry-mode=loopback --yes --passphrase "$GPG_PASSPHRASE" --output private-gpg-key.pgp --armor --export-secret-key "$GPG_NAME"
+gpg --output public-gpg-key.pgp --armor --export "$GPG_NAME"
 
 
 ######################
@@ -320,6 +320,13 @@ systemctl daemon-reload
 # Alert portainer running
 # echo -e "${RED}Portainer${NC} is running and listening on ${GREEN}http://$(hostname -I | cut -d' ' -f1):9000${NC}\n"
 
+
+########################################
+### Remove sensitive data from .env  ###
+########################################
+
+sed -i '/GPG_PASSPHRASE=/d' .env
+sed -i '/ROOT_PASSWORD=/d' .env
 
 ################
 ### Finished ###

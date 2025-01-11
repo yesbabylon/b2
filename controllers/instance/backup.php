@@ -23,13 +23,7 @@ function instance_backup(array $data): array {
         $data['encrypt'] = true;
     }
 
-    $gpg_email = null;
-    if($data['encrypt']) {
-        $gpg_email = getenv('GPG_EMAIL') ?: false;
-        if(!$gpg_email) {
-            throw new Exception("GPG_EMAIL_not_configured", 500);
-        }
-    }
+    $gpg_name = gethostname();
 
     $db_hostname = getenv('DB_HOSTNAME') ?: false;
     if(!$db_hostname) {
@@ -99,7 +93,7 @@ function instance_backup(array $data): array {
 
     if($data['encrypt']) {
         // Encrypt backup
-        exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_email $backup_file");
+        exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_name $backup_file");
 
         // Remove not encrypted backup to keep only secure one
         unlink($backup_file);
