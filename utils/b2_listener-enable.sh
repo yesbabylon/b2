@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Make sure fail2ban starts on boot
+systemctl unmask b2-listener.service
 systemctl enable b2-listener.service
 
 # Restart fail2ban service
