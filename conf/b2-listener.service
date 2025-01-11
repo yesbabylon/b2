@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2 /root/b2/listener.php
+ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2 /root/b2/src/listener.php
 WorkingDirectory=/root/b2
 Restart=always
 SyslogIdentifier=b2-listener

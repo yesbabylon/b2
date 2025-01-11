@@ -183,8 +183,8 @@ gpg --batch --generate-key ./key-gen.conf
 rm ./key-gen.conf
 
 # Export private and public keys to pgp files
-gpg --batch --pinentry-mode=loopback --yes --passphrase "$GPG_PASSPHRASE" --output ./keyring/private-gpg-key.pgp --armor --export-secret-key "$GPG_NAME"
-gpg --output ./keyring/public-gpg-key.pgp --armor --export "$GPG_NAME"
+gpg --batch --pinentry-mode=loopback --yes --passphrase "$GPG_PASSPHRASE" --output ./keyring/gpg-private-key.pgp --armor --export-secret-key "$GPG_NAME"
+gpg --output ./keyring/gpg-public-key.pgp --armor --export "$GPG_NAME"
 
 
 ######################
