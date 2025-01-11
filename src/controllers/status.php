@@ -28,7 +28,7 @@
  *             total_proc: string,
  *             ram_use: string,
  *             cpu_use: string,
- *             disk_use: string,
+ *             dsk_use: string,
  *             usr_active: string,
  *             usr_total: string,
  *         },
@@ -163,7 +163,7 @@ function status(): array {
                     return $res.'%';
                 }
             ],
-            'disk_use' => [
+            'dsk_use' => [
                 'description' => "consumed disk space",
                 'command'     => 'df . -h | tail -1 | awk \'{print $3}\'',
                 'adapt'       => function ($res) {
@@ -266,7 +266,7 @@ function status(): array {
 
     $result['type'] = 'b2';
     
-    // this adds up too much data and could reveal sensitive data
+    // #memo - this adds up too much data and could reveal sensitive data
     // $result['config']['env'] = getenv();
 
     return [
