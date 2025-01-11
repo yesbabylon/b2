@@ -11,8 +11,6 @@ For more information about the eQual framework, visit the [eQual GitHub reposito
 
 
 
-                                     |
-
 
 ## Install
 
@@ -81,7 +79,8 @@ ROOT_PASSWORD=your-root-password
 
 | **Path**                                  | **Description**                                            |
 | ----------------------------------------- | ---------------------------------------------------------- |
-| `README.md`                               | Main documentation for the project.                        |
+| `install.sh`                              | Installation script for the project (see Install section). |
+| `README.md`                               | Main documentation for the project (this file).            |
 | `conf/`                                   | Directory containing configuration files.                  |
 | ├── `b2-listener.service`                 | Systemd service file for the `b2-listener`.                |
 | ├── `default.crt`                         | Default SSL certificate.                                   |
@@ -102,12 +101,10 @@ ROOT_PASSWORD=your-root-password
 | │   │   ├── `action.d/docker-action.conf` | Custom actions for Fail2Ban with Docker.                   |
 | │   │   ├── `filter.d/`                   | Fail2Ban filters directory.                                |
 | │   │   │   ├── `eq-login.conf`           | Fail2Ban filter for Equal login attempts.                  |
-| │   │   │   ├── `joomla-login.conf`       | Fail2Ban filter for Joomla login attempts.                 |
 | │   │   │   ├── `nginx-req-limit.conf`    | Fail2Ban filter for NGINX request limits.                  |
-| │   │   │   ├── `ps-login.conf`           | Fail2Ban filter for PrestaShop login attempts.             |
 | │   │   │   └── `wp-login.conf`           | Fail2Ban filter for WordPress login attempts.              |
 | │   │   └── `jail.local`                  | Local configuration for Fail2Ban jails.                    |
-| │   ├── `logrotate.d/nginx`               | Log rotation configuration for NGINX.                      |
+| │   ├── `logrotate.d/nginx`               | Log rotation config for NGINX.                             |
 | │   └── `vsftpd.conf`                     | Configuration for the VSFTPD service.                      |
 | ├── `instance/create/`                    | Scripts and templates for creating instances.              |
 | │   ├── `create.bash`                     | Main script to create an instance.                         |
@@ -122,7 +119,6 @@ ROOT_PASSWORD=your-root-password
 | └── `vhost.d/default`                     | Default virtual host configuration.                        |
 | `doc/`                                    | Documentation files directory.                             |
 | └── `api.md`                              | API documentation.                                         |
-| `install.sh`                              | Installation script for the project.                       |
 | `keyring/`                                | Directory containing cryptographic keys.                   |
 | ├── `gpg-private-key.pgp`                 | Private GPG key.                                           |
 | └── `gpg-public-key.pgp`                  | Public GPG key.                                            |
@@ -147,7 +143,7 @@ ROOT_PASSWORD=your-root-password
 | `utils/`                                  | Utility scripts directory.                                 |
 | ├── `b2_listener-disable.sh`              | Script to disable the b2-listener service.                 |
 | ├── `b2_listener-enable.sh`               | Script to enable the b2-listener service.                  |
-| ├── `fail2ban-disable.sh`                 | Script to disable Fail2Ban.                                |
-| ├── `fail2ban-enable.sh`                  | Script to enable Fail2Ban.                                 |
+| ├── `fail2ban-disable.sh`                 | Script to disable Fail2Ban service.                        |
+| ├── `fail2ban-enable.sh`                  | Script to activate Fail2Ban service.                       |
 | ├── `public_ip_firewall-disable.sh`       | Script to disable the public IP firewall (IP tables).      |
 | └── `public_ip_firewall-enable.sh`        | Script to enable the public IP firewall (IP tables).       |
