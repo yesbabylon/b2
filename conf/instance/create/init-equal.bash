@@ -9,9 +9,8 @@
 # Add docker-compose.yml file
 cp /root/b2/scripts/instance/create/template/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
 # Add config needed by docker-compose.yml
-mkdir /home/"$USERNAME"/conf
-cp /root/b2/scripts/instance/create/template/php.ini /home/"$USERNAME"/conf/php.ini
-cp /root/b2/scripts/instance/create/template/mysql.cnf /home/"$USERNAME"/conf/mysql.cnf
+cp /root/b2/scripts/instance/create/template/php.ini /home/"$USERNAME"/php.ini
+cp /root/b2/scripts/instance/create/template/mysql.cnf /home/"$USERNAME"/mysql.cnf
 
 # Move to newly created docker-compose.yml
 cd /home/"$USERNAME"

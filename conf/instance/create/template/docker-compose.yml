@@ -5,7 +5,7 @@ services:
     restart: always
     volumes:
       - ./www/.:/var/www/html
-      - ./conf/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
     extra_hosts:
       - "${USERNAME}:127.0.0.1"
     hostname: ${USERNAME}
@@ -46,7 +46,7 @@ services:
     # command: --max_allowed_packet=536870912
     volumes:
       - db_data:/var/lib/mysql
-      - ./conf/mysql.cnf:/etc/mysql/conf.d/custom.cnf
+      - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: ${PMA_HOSTNAME}
