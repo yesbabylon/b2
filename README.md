@@ -147,3 +147,19 @@ ROOT_PASSWORD=your-root-password
 | ├── `fail2ban-enable.sh`                  | Script to activate Fail2Ban service.                       |
 | ├── `public_ip_firewall-disable.sh`       | Script to disable the public IP firewall (IP tables).      |
 | └── `public_ip_firewall-enable.sh`        | Script to enable the public IP firewall (IP tables).       |
+
+
+
+## Examples
+
+Examples of commands to be run under the `/src` folder:
+
+* Create a backup for the instance "yesbabylon.com"
+```
+php run.php --route=instance/backup --instance=yesbabylon.com
+```
+
+* Export the backup "2025011158175" for instance "yesbabylon.com" to the backup host
+```
+php run.php --route=instance/export-backup --instance=yesbabylon.com --backup_id=2025011158175
+```
