@@ -216,7 +216,7 @@ cp -r "$INSTALL_DIR"/conf/docker /home/docker
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
-# Copy temporay self-signed certs (required for nginx to use correct https template)
+# Copy temporary self-signed certs (required for nginx to use correct https template)
 mkdir /srv/docker/nginx/certs
 cp "$INSTALL_DIR"/conf/default.crt /srv/docker/nginx/certs/
 cp "$INSTALL_DIR"/conf/default.key /srv/docker/nginx/certs/
