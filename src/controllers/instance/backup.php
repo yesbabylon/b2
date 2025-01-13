@@ -1,6 +1,43 @@
 <?php
 
 /**
+ * Generates a TTL (Time-To-Live) integer representing the number of days a backup should be retained,
+ * calculated from the current date, and determined to maintain a theoretical total of 14 backups,
+ * distributed over a period of 4 months.
+ *
+ * @return int The number of days the backup should be retained.
+ */
+function get_ttl() {
+    $result = 0;
+    // get index of current week day
+    $dayofweek = (int) date('w', strtotime('now'));
+    // use 1 for monday, 7 for sunday
+    if($dayofweek == 0) {
+        $dayofweek = 7;
+    }
+    // assign TTL based on current day (17 backups)
+    $ttl_map = [
+        1 => 7,    // one week
+        2 => 7,    // one week
+        3 => 7,    // one week
+        4 => 7,    // one week
+        5 => 7,    // one week
+        6 => 28,   // four weeks
+        7 => 56    // two months
+    ];
+
+    $result = $ttl_map[$dayofweek];
+
+    $dayofmonth = date('j');
+
+    if($dayofmonth == 15) {
+        $result = 112;
+    }
+
+    return $result;
+}
+
+/**
  * Creates a backup of a specific instance
  *
  * @param array{instance: string, encrypt?: bool} $data
@@ -82,7 +119,10 @@ function instance_backup(array $data): array {
     $to_export_str = implode(' ', $to_export);
     $timestamp = date('Ymd').sprintf('%05d', time() - strtotime('today'));
 
-    $backup_file = "/home/$instance/export/{$instance}_$timestamp.tar";
+
+    $ttl = get_ttl();
+
+    $backup_file = "/home/$instance/export/{$instance}_{$timestamp}_{$ttl}.tar";
     exec("cd $tmp_backup_dir && tar -cvf $backup_file $to_export_str");
 
     // Remove tmp directory for backup
