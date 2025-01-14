@@ -18,7 +18,7 @@ function instance_status(array $data): array {
 
     $up = exec("docker inspect -f '{{.State.Running}}' {$data['instance']}") === 'true';
 
-    $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format \"{{ json . }}\"");
+    $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format '{{ json . }}'");
     $docker_stats = json_decode($docker_stats_json, true);
 
     if(is_null($docker_stats)) {
