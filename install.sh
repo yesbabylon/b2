@@ -11,7 +11,7 @@
 # Version: 1.0
 # License: LGPL
 #
-# Usage: 
+# Usage:
 #   - Run the script as a superuser or with sudo privileges.
 #   - Ensure the system has internet connectivity.
 #
@@ -82,18 +82,18 @@ then
     print_help
     exit 0
 else
-	# export vars from .env file
+    # auto export vars from .env file
     set -a
     . ./.env
     # stop auto export
     set +a
-	
-	REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST" "BACKUP_HOST" "BACKUP_HOST")
+
+    REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST" "BACKUP_HOST" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
-			print_help
-			exit 0           
+            print_help
+            exit 0
         fi
     done
 fi
@@ -123,18 +123,18 @@ usermod --password $(echo "$ROOT_PASSWORD" | openssl passwd -1 -stdin) root
 ################################
 
 if [[ "$PUBLIC_IP" != "0.0.0.0" && "$PUBLIC_IP" != "127.0.0.1" && -n "$PUBLIC_IP" ]]; then
-	echo "network:
-	  version: 2
-	  vlans:
-		veth0:
-		  id: 0
-		  link: ens3
-		  dhcp4: no
-		  addresses: [$PUBLIC_IP/24]" > /etc/netplan/51-failover.yaml
+    echo "network:
+      version: 2
+      vlans:
+        veth0:
+          id: 0
+          link: ens3
+          dhcp4: no
+          addresses: [$PUBLIC_IP/24]" > /etc/netplan/51-failover.yaml
 
-	chmod 600 /etc/netplan/51-failover.yaml
-	netplan generate
-	netplan apply
+    chmod 600 /etc/netplan/51-failover.yaml
+    netplan generate
+    netplan apply
 fi
 
 ############
