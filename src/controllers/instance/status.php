@@ -38,18 +38,15 @@ function instance_status(array $data): array {
         $dsk_use = round((float) 100 * $used_dsk / $avail_dsk, 2) . '%';
     }
 
-    /*
-    $ram_parts = explode('/', $docker_stats['MemUsage']);
-    $used_ram = convertToBytes($ram_parts[0]);
-    */
-
     $result = [
         'up'                    => $up,
-        'dsk_use'               => $dsk_use,
-        'cpu_use'               => $docker_stats['CPUPerc'],
-        'ram_use'               => $docker_stats['MemPerc'],
-        'total_proc'            => $docker_stats['PIDs'],    
         'maintenance_enabled'   => instance_is_maintenance_enabled($data['instance']),
+        'instant'               => [
+            'dsk_use'               => $dsk_use,
+            'cpu_use'               => $docker_stats['CPUPerc'],
+            'ram_use'               => $docker_stats['MemPerc'],
+            'total_proc'            => $docker_stats['PIDs'],
+        ],
         'docker_stats'          => $docker_stats
     ];
 

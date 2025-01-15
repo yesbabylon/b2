@@ -190,7 +190,7 @@ function status(): array {
                 'description' => "host name",
                 'command'     => 'hostname',
                 'adapt'       => function ($res) {
-                    return adapt_unit($res);
+                    return $res;
                 }
             ],
             'uptime' => [
