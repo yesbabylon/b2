@@ -265,7 +265,7 @@ docker exec nginx-proxy nginx -s reload
 apt-get install -y cron
 
 PHP_SCRIPT="cron.php"
-CRON_CMD="* * * * * cd /root/b2 && /usr/bin/php $PHP_SCRIPT"
+CRON_CMD="* * * * * cd /root/b2/src && /usr/bin/php $PHP_SCRIPT"
 
 # Check if the cron job already exists
 if ! crontab -l | grep -q "$PHP_SCRIPT"; then
