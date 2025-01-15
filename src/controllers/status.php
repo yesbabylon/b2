@@ -153,21 +153,21 @@ function status(): array {
                 'description' => "used RAM (%)",
                 'command'     => 'free -m | awk \'/Mem/{printf "%.2f%%\n", $3/$2 * 100}\'',
                 'adapt'       => function ($res) {
-                    return $res.'%';
+                    return $res;
                 }
             ],
             'cpu_use' => [
                 'description' => "used CPU (%)",
-                'command'     => 'top -bn2 -d 0.1 | grep "Cpu" | tail -1 | awk \'{print $2}\'',
+                'command'     => 'top -bn1 | grep "Cpu(s)" | awk \'{printf "%.2f%%\n", $2 + $4}\'',
                 'adapt'       => function ($res) {
-                    return $res.'%';
+                    return $res;
                 }
             ],
             'dsk_use' => [
                 'description' => "used DISK (%)",
                 'command'     => 'df -h . | tail -1 | awk \'{printf "%.2f%%\n", $3/$2 * 100}\'',
                 'adapt'       => function ($res) {
-                    return $res.'%';
+                    return $res;
                 }
             ],
             'usr_active' => [
