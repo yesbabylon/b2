@@ -16,8 +16,6 @@ function instance_status(array $data): array {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
-    $up = exec("docker inspect -f '{{.State.Running}}' {$data['instance']}") === 'true';
-
     $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format '{{ json . }}'");
     $docker_stats = json_decode($docker_stats_json, true);
 
