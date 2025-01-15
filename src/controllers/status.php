@@ -14,7 +14,7 @@
  *                 tx: string,
  *                 total: string,
  *                 avg_rate: string,
- *             }|false,
+ *             },
  *             cpu: string,
  *             uptime: string
  *         },
@@ -150,10 +150,10 @@ function status(): array {
                 }
             ],
             'ram_use' => [
-                'description' => "used RAM (Bytes)",
-                'command'     => 'free -mh |awk \'/Mem/{print $3}\'',
+                'description' => "used RAM (%)",
+                'command'     => 'free -m | awk \'/Mem/{printf "%.2f%%\n", $3/$2 * 100}\'',
                 'adapt'       => function ($res) {
-                    return adapt_unit($res);
+                    return $res.'%';
                 }
             ],
             'cpu_use' => [
@@ -164,10 +164,10 @@ function status(): array {
                 }
             ],
             'dsk_use' => [
-                'description' => "consumed disk space",
-                'command'     => 'df . -h | tail -1 | awk \'{print $3}\'',
+                'description' => "used DISK (%)",
+                'command'     => 'df -h . | tail -1 | awk \'{printf "%.2f%%\n", $3/$2 * 100}\'',
                 'adapt'       => function ($res) {
-                    return adapt_unit($res);
+                    return $res.'%';
                 }
             ],
             'usr_active' => [
