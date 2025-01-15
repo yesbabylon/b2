@@ -39,15 +39,15 @@ function instance_status(array $data): array {
     }
 
     $result = [
-        'up'                    => $up,
-        'maintenance_enabled'   => instance_is_maintenance_enabled($data['instance']),
-        'instant'               => [
-            'dsk_use'               => $dsk_use,
-            'cpu_use'               => $docker_stats['CPUPerc'],
-            'ram_use'               => $docker_stats['MemPerc'],
-            'total_proc'            => $docker_stats['PIDs'],
+        'up'            => $up,
+        'maintenance'   => instance_is_maintenance_enabled($data['instance']),
+        'instant'       => [
+            'dsk_use'       => $dsk_use,
+            'cpu_use'       => $docker_stats['CPUPerc'],
+            'ram_use'       => $docker_stats['MemPerc'],
+            'total_proc'    => $docker_stats['PIDs'],
         ],
-        'docker_stats'          => $docker_stats
+        'docker_stats'  => $docker_stats
     ];
 
     return [
