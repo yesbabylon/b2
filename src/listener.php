@@ -31,6 +31,6 @@ $routes = [
 
 ['body' => $body, 'code' => $code] = handle_request($request, $routes);
 
-trigger_error('result: '.$body, E_USER_NOTICE);
+trigger_error('result: '.serialize((array) $body), E_USER_NOTICE);
 
 send_http_response($body, $code);
