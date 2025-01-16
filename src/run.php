@@ -43,8 +43,7 @@ function main($argv) {
     $result = exec_controller($controller, $options['params']);
 
     echo "HTTP Status Code: {$result['code']}\n";
-    $data = json_decode($result['body'], true);
-    echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    echo json_encode($result['body'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
 
 main($argv);
