@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Returns host status statistics.
- * body.config.ip_* can be false if interfaces names are not ens3 (protected), veth0 (public) and ens4 (private).
+ * Creates new backups for all host instances and attempts to export them to related backup host.
  *
- * }
  * @throws Exception
  */
 function backup(): array {
@@ -13,17 +11,16 @@ function backup(): array {
     $instances = get_instances();
 
     foreach($instances as $instance) {
-        $result[$instance] = exec_controller('instance/backup', ['instance' => $instance]);
-        /*
-        $output = [];
-        $code = 0;
-        exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance", $output, $code);
-        if($code) {
-            $result[$instance] = ['error' => 'exec error code: ' . $code];
-            continue;    
+        $res_export = null;
+        $res_backup = exec_controller('instance/backup', ['instance' => $instance]);
+        $backup_id = $res_backup['body']['result'] ?? null;
+        if($backup_id) {
+            $res_export = exec_controller('instance/export-backup', ['instance' => $instance, 'backup_id' => $backup_id]);          
         }
-        $result[$instance] = json_decode(implode('', $output), true);
-        */
+        $result[$instance] = [
+            'backup' => $res_backup,
+            'export' => $res_export
+        ];
     }
 
     return [
