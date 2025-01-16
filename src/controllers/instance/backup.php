@@ -145,6 +145,6 @@ function instance_backup(array $data): array {
 
     return [
         'code' => 201,
-        'body' => basename($backup_file)
+        'body' => [ 'result' => basename($backup_file) ]
     ];
 }
