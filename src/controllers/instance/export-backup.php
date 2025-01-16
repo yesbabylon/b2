@@ -51,7 +51,13 @@ function instance_export_backup(array $data): array {
     }
 
     // Get token and created user ftp credentials
-    ['token' => $token, 'credentials' => $ftp_credentials] = json_decode($create_token_response, true);
+    $values = json_decode($create_token_response, true);
+
+    if(!$values) {
+        throw new Exception("unexpected_response_format", 500);
+    }
+
+    ['token' => $token, 'credentials' => $ftp_credentials] = $values['result'] ?? []; 
 
     $ftp_connection_id = ftp_connect($backup_host);
     if(!$ftp_connection_id) {
