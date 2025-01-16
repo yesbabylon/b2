@@ -10,6 +10,6 @@ function reboot(): array {
 
     return [
         'code' => 200,
-        'body' => "host_will_reboot_now",
+        'body' => [ 'result' => 'host_will_reboot_now' ]
     ];
 }

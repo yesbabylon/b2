@@ -28,6 +28,6 @@ function ip(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "ip_address_updated"
+        'body' => [ 'result' => 'ip_address_updated' ]
     ];
 }

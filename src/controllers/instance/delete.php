@@ -43,6 +43,6 @@ function instance_delete(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "instance_successfully_deleted"
+        'body' => [ 'result' => 'instance_successfully_deleted' ]
     ];
 }

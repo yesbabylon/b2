@@ -28,6 +28,9 @@ function instance_backups(array $data): array {
 
     return [
         'code' => 200,
-        'body' => compact('export', 'import'),
+        'body' => [
+            'export' => $export,
+            'import' => $import
+        ]
     ];
 }

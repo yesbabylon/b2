@@ -79,6 +79,6 @@ function instance_export_backup(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "backup_sent"
+        'body' => [ 'result' => 'backup_sent' ]
     ];
 }

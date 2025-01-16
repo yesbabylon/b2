@@ -126,6 +126,6 @@ function instance_restore(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "instance_restore_success"
+        'body' => [ 'result' => 'instance_restore_success' ]
     ];
 }

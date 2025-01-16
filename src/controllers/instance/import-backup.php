@@ -65,6 +65,6 @@ function instance_import_backup(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "backup_imported"
+        'body' => [ 'result' => 'backup_imported' ]
     ];
 }

@@ -26,6 +26,6 @@ function instance_enable_maintenance(array $data): array {
 
     return [
         'code' => 200,
-        'body' => "instance_maintenance_enabled",
+        'body' => [ 'result' => 'instance_maintenance_enabled' ]
     ];
 }

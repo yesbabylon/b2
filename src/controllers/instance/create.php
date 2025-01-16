@@ -97,6 +97,6 @@ function instance_create(array $data): array {
 
     return [
         'code' => 201,
-        'body' => "instance_successfully_created"
+        'body' => [ 'result' => 'instance_successfully_created' ]
     ];
 }
