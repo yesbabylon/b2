@@ -13,8 +13,12 @@ function backup(): array {
     $instances = get_instances();
 
     foreach($instances as $instance) {
-        $output = exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance");
-        $result[$instance] = json_decode($output, true);
+        exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance", $output, $code);
+        if($code) {
+            $result[$instance] = ['error' => 'exec error code: ' . $code];
+            continue;    
+        }
+        $result[$instance] = json_decode(implode('', $output), true);
     }
 
     return [
