@@ -13,6 +13,8 @@ function backup(): array {
     $instances = get_instances();
 
     foreach($instances as $instance) {
+        $result[$instance] = exec_controller('instance/backup', ['instance' => $instance]);
+        /*
         $output = [];
         $code = 0;
         exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance", $output, $code);
@@ -21,6 +23,7 @@ function backup(): array {
             continue;    
         }
         $result[$instance] = json_decode(implode('', $output), true);
+        */
     }
 
     return [
