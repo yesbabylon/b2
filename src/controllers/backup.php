@@ -13,6 +13,8 @@ function backup(): array {
     $instances = get_instances();
 
     foreach($instances as $instance) {
+        $output = [];
+        $code = 0;
         exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance", $output, $code);
         if($code) {
             $result[$instance] = ['error' => 'exec error code: ' . $code];
