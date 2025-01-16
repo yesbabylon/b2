@@ -13,9 +13,12 @@ function backup(): array {
     foreach($instances as $instance) {
         $res_export = null;
         $res_backup = exec_controller('instance/backup', ['instance' => $instance]);
-        $backup_id = $res_backup['body']['result'] ?? null;
-        if($backup_id) {
-            $res_export = exec_controller('instance/export-backup', ['instance' => $instance, 'backup_id' => $backup_id]);          
+        $backup_file = $res_backup['body']['result'] ?? null;
+        if($backup_file) {
+            if(preg_match('/_(\d+)_/', $backup_file, $matches)) {
+                $backup_id = $matches[1]; // Le timestamp capturé
+                $res_export = exec_controller('instance/export-backup', ['instance' => $instance, 'backup_id' => $backup_id]);          
+            } 
         }
         $result[$instance] = [
             'backup' => $res_backup,
