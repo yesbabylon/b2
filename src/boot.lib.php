@@ -48,7 +48,7 @@ function exec_controller($controller, $payload) {
     }
     catch(Exception $e) {
         // Respond with the exception message and status code
-        $result= [
+        $result = [
             'body'  => '{ "error": "'.$e->getMessage().'" }',
             'code'  => $e->getCode()
         ];
