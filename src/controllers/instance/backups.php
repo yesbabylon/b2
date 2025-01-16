@@ -16,15 +16,40 @@ function instance_backups(array $data): array {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
-    $export = array_map(
+    $export = [];
+    $import = [];
+    
+    $backup_files = array_map(
         'basename',
         array_filter(glob('/home/'.$data['instance'].'/export/*'), 'is_file')
     );
 
-    $import = array_map(
+    foreach($backup_files as $backup_file) {
+        $backup_id = null;
+        if(preg_match('/_(.*?)\./', $backup_file, $matches)) {
+            $backup_id = $matches[1];
+        }
+        $export[] = [
+            'id'        => $backup_id,
+            'filename'  => $backup_file
+        ];        
+    }
+
+    $backup_files = array_map(
         'basename',
         array_filter(glob('/home/'.$data['instance'].'/import/*'), 'is_file')
     );
+
+    foreach($backup_files as $backup_file) {
+        $backup_id = null;
+        if(preg_match('/_(.*?)\./', $backup_file, $matches)) {
+            $backup_id = $matches[1];
+        }
+        $import[] = [
+            'id'        => $backup_id,
+            'filename'  => $backup_file
+        ];        
+    }
 
     return [
         'code' => 200,
