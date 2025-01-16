@@ -39,11 +39,15 @@ function send_http_response($body, $status_code): void {
         ];
     }
 
-    // Convert the response data to JSON format
-    $json_response = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    $json_response = $data;
 
-    if(!$json_response) {
-        $json_response = '';
+    if(is_array($data)) {
+        // Convert the response data to JSON format
+        $json_response = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        if(!$json_response) {
+            $json_response = '';
+        }
     }
 
     // Output the JSON response
