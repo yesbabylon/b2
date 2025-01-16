@@ -81,7 +81,6 @@ function main($argv)
             $options['params']
         );
 
-    echo "HTTP Status Code: $http_code\n";
     $data = json_decode($response, true);
     echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 }
