@@ -14,7 +14,7 @@ function backup(): array {
 
     foreach($instances as $instance) {
         $output = exec("/usr/bin/php ".BASE_DIR."/src/run.php --route=instance/backup --instance=$instance");
-        $result[$instance] = $output;
+        $result[$instance] = json_decode($output, true);
     }
 
     return [

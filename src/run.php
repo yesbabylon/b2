@@ -1,8 +1,7 @@
 <?php
 include_once './boot.lib.php';
 
-function parse_arguments($argv)
-{
+function parse_arguments($argv) {
     $options = [
         'route'  => '',
         'method' => 'GET',
@@ -37,8 +36,7 @@ function parse_arguments($argv)
 
 
 
-function main($argv)
-{
+function main($argv) {
     $options = parse_arguments(array_slice($argv, 1));
 
     $controller = trim(str_replace('//', '/', '/'.$options['route']), '/');
