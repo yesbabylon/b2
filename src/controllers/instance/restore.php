@@ -95,10 +95,12 @@ function instance_restore(array $data): array {
 
     instance_enable_maintenance_mode($instance);
 
+    $db_name = getenv('DB_NAME') ?: 'equal';
+
     // Restore database
     exec("cd $tmp_restore_dir && gunzip backup.sql.gz");
-    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS equal; CREATE DATABASE equal;\"");
-    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password equal < $tmp_restore_dir/backup.sql");
+    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS $db_name; CREATE DATABASE $db_name;\"");
+    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password $db_name < $tmp_restore_dir/backup.sql");
 
     // Stop docker containers
     $docker_file_path = "/home/$instance/docker-compose.yml";
@@ -106,7 +108,7 @@ function instance_restore(array $data): array {
 
     // Restore config
     exec("cd $tmp_restore_dir && tar -xvf config.tar");
-    $config_files = [".env", "docker-compose.yml", "conf"];
+    $config_files = [".env", "docker-compose.yml", "php.ini", "mysql.cnf"];
     foreach($config_files as $file) {
         exec("mv -f $tmp_restore_dir/$file /home/$instance");
     }
