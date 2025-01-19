@@ -200,6 +200,20 @@ function status(): array {
                     return date('c', strtotime($res));
                 }
             ],
+            'platform_ver' => [
+                'description' => "OS version",
+                'command'     => 'hostnamectl | awk -F: \'/Operating System/ {print $2}\' | xargs',
+                'adapt'       => function ($res) {
+                    return $res;
+                }
+            ],
+            'kernel_ver' => [
+                'description' => "Linux kernel version",
+                'command'     => 'hostnamectl | awk -F: \'/Kernel/ {print $2}\' | xargs',
+                'adapt'       => function ($res) {
+                    return $res;
+                }
+            ],    
             'mem' => [
                 'description' => "total RAM",
                 'command'     => 'free -mh | awk \'/Mem/{print $2}\'',
@@ -247,7 +261,7 @@ function status(): array {
                 }
             ],
             'ip_private' => [
-                'description' => "total disk space",
+                'description' => "private vlan IP address",
                 'command'     => 'ip -4 addr show ens4 | grep \'inet \' | awk \'{print $2}\'',
                 'adapt'       => function ($res) {
                     return $res;
