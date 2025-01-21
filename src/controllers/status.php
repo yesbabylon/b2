@@ -248,21 +248,21 @@ function status(): array {
             ],
             'ip_protected' => [
                 'description' => "main IP address",
-                'command'     => 'ip -4 addr show ens3 | grep \'inet \' | awk \'{print $2}\'',
+                'command'     => 'ip -4 addr show ens3 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1',
                 'adapt'       => function ($res) {
                     return $res;
                 }
             ],
             'ip_public' => [
                 'description' => "public/failover IP address",
-                'command'     => 'ip -4 addr show veth0 | grep \'inet \' | awk \'{print $2}\'',
+                'command'     => 'ip -4 addr show veth0 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1',
                 'adapt'       => function ($res) {
                     return $res;
                 }
             ],
             'ip_private' => [
                 'description' => "private vlan IP address",
-                'command'     => 'ip -4 addr show ens4 | grep \'inet \' | awk \'{print $2}\'',
+                'command'     => 'ip -4 addr show ens4 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1',
                 'adapt'       => function ($res) {
                     return $res;
                 }
