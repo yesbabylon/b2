@@ -5,36 +5,35 @@
  * calculated from the current date, and determined to maintain a theoretical total of 14 backups,
  * distributed over a period of 4 months.
  *
+ * Logic is based on the day number in the year:
+ * - every 4 months, a backup is created with a TTL of 4 months
+ * - every 3 months, a backup is created with a TTL of 3 months
+ * - every 2 months, a backup is created with a TTL of 2 months
+ * - every Sunday, a backup is created with a TTL of 1 month
+ * - in other cases, a backup is created with a lifespan of 7 days
+ * 
  * @return int The number of days the backup should be retained.
  */
 function get_ttl() {
-    $result = 0;
-    // get index of current week day
-    $dayofweek = (int) date('w', strtotime('now'));
-    // use 1 for monday, 7 for sunday
-    if($dayofweek == 0) {
-        $dayofweek = 7;
-    }
-    // assign TTL based on current day (17 backups)
-    $ttl_map = [
-        1 => 7,    // one week
-        2 => 7,    // one week
-        3 => 7,    // one week
-        4 => 7,    // one week
-        5 => 7,    // one week
-        6 => 28,   // four weeks
-        7 => 56    // two months
-    ];
+    $ttl = 7;
+    
+    $day_of_week = (int) date('N');
+    $day_of_year = (int) date('z');
 
-    $result = $ttl_map[$dayofweek];
-
-    $dayofmonth = date('j');
-
-    if($dayofmonth == 15) {
-        $result = 112;
+    if($day_of_year % 112 == 0) {
+        $ttl = 112;
+    } 
+    elseif($day_of_year % 84 == 0) {
+        $ttl = 84;
+    } 
+    elseif($day_of_year % 56 == 0) {
+        $ttl = 56;
+    } 
+    elseif($day_of_week == 7) {
+        $ttl = 28;
     }
 
-    return $result;
+    return $ttl;
 }
 
 /**
