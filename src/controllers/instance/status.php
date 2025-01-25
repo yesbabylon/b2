@@ -74,24 +74,24 @@ function instance_status(array $data): array {
             'cpu_use' => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return file_get_contents("/sys/fs/cgroup/cpu/docker/$container_id/cpuacct.usage");
+                'adapt'       => function ($res) use($data) {
+                    return fetchDockerStats($data['instance'])['CPUPerc'];
                 }
             ],
 
             'ram_use'       => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return file_get_contents("/sys/fs/cgroup/cpu/docker/$container_id/memory.usage_in_bytes");
+                'adapt'       => function ($res) use($data) {
+                    return fetchDockerStats($data['instance'])['MemPerc'];
                 }
             ],
 
             'total_proc'    => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return file_get_contents("/sys/fs/cgroup/pids/docker/$container_id/pids.current");;
+                'adapt'       => function ($res) use($data) {                
+                    return fetchDockerStats($data['instance'])['PIDs'];
                 }
             ],
 
@@ -99,8 +99,7 @@ function instance_status(array $data): array {
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
-                    $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format '{{ json . }}'");
-                    return json_decode($docker_stats_json, true);
+                    return fetchDockerStats($data['instance']);
                 }
             ]
 
@@ -150,6 +149,14 @@ function instance_status(array $data): array {
     ];
 }
 
+function fetchDockerStats(string $instance): array {
+    static $result;
+    if(!$result) {
+        $docker_stats_json = exec("docker stats {$instance} --no-stream --format '{{ json . }}'");
+        $result = json_decode($docker_stats_json, true);
+    }
+    return $result;
+}
 
 function convertToBytes(string $size): int {
     $size = strtolower(trim($size));
