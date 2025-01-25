@@ -13,21 +13,23 @@
   * @throws Exception
   *
   * @return array{
-  *     config: array{
-  *         id: string,          // The Docker container ID.
-  *         image: string        // The image used by the container.
+  *     instant: array{
+  *         dsk_use: string,        // Disk usage percentage (e.g., "2.07%").
+  *         cpu_use: string,        // CPU usage percentage (e.g., "0.01%").
+  *         ram_use: string,        // RAM usage percentage (e.g., "5.46%").
+  *         total_proc: string,     // Total number of processes running in the container.
   *     },
   *     state: array{
-  *         up: bool,            // Indicates if the container is running.
-  *         pid: string,         // The main PID of the container on the host.
-  *          maintenance: bool,  // Indicates if the container is in maintenance mode.
-  *         containers: string[] // List of container names associated with this instance.
+  *         up: bool,               // Indicates if the container is running (true if running).
+  *         pid: string,            // The PID of the container's main process on the host.
+  *         maintenance: bool,      // Indicates if the container is in maintenance mode.
+  *         containers: string[],   // List of container names associated with this instance.
+  *         net: string,            // Network I/O usage in the format "<received> / <transmitted>" (e.g., "89MB / 19MB").
+  *         dsk: string             // Disk I/O usage in the format "<written> / <read>" (e.g., "84.8MB / 4.1kB").
   *     },
-  *     instant: array{
-  *         dsk_use: string,     // Disk usage percentage (e.g., "2.07%").
-  *         cpu_use: string,     // CPU usage percentage (e.g., "0.01%").
-  *         ram_use: string,     // RAM usage percentage (e.g., "5.56%").
-  *         total_proc: string   // Total number of processes in the container.
+  *     config: array{
+  *         id: string,             // The Docker container ID (e.g., "76197eca3602").
+  *         image: string           // The Docker image used by the container (e.g., "docked-wp:latest").
   *     }
   * }
   */

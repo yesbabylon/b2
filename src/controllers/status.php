@@ -13,49 +13,38 @@
  *     code: int,
  *     body: array{
  *         type: string,
- *         stats: array{
- *             net: array{
- *                 rx: string,
- *                 tx: string,
- *                 total: string,
- *                 avg_rate: string,
- *             },
- *             cpu: string,
- *             uptime: string
- *         },
  *         instant: array{
- *             mysql_mem: string,
- *             apache_mem: string,
- *             nginx_mem: string,
- *             apache_proc: string,
- *             nginx_proc: string,
- *             mysql_proc: string,
- *             total_proc: string,
- *             ram_use: string,
- *             cpu_use: string,
- *             dsk_use: string,
- *             usr_active: string,
- *             usr_total: string,
- *         },
- *         config: array{
- *             host: string,
- *             uptime: string,
- *             mem: string,
- *             cpu_qty: string,
- *             cpu_freq: string,
- *             disk: string,
- *             ip_protected: string|false,
- *             ip_public: string|false,
- *             ip_private: string|false,
- *             env: array{
- *                 ADMIN_HOST: string,
- *                 BACKUP_HOST: string,
- *                 STATS_HOST: string,
- *                 GPG_NAME: string,
- *                 GPG_EMAIL: string,
- *                 GPG_EXPIRY_DATE: string
- *             }
- *         }
+ *              mysql_mem: string,      // Memory consumption by MySQL as a percentage.
+ *              apache_mem: string,     // Memory consumption by Apache as a percentage.
+ *              nginx_mem: string,      // Memory consumption by Nginx as a percentage.
+ *              apache_proc: int,       // Number of Apache processes.
+ *              nginx_proc: int,        // Number of Nginx processes.
+ *              mysql_proc: int,        // Number of MySQL processes.
+ *              total_proc: int,        // Total number of running processes.
+ *              ram_use: string,        // RAM usage as a percentage.
+ *              cpu_use: string,        // CPU usage as a percentage.
+ *              dsk_use: string,        // Disk usage as a percentage.
+ *              usr_active: int,        // Number of logged-in users.
+ *              usr_total: int          // Total number of system users.
+ *          },
+ *          state: array{
+ *              uptime: string,         // Uptime in days (e.g., "3days").
+ *              fw_secured: bool,       // Indicates if the firewall secures the public IP.
+ *              net: string             // Network usage metrics.
+ *              cpu: string             // Average CPU load since the last reboot.
+ *          },
+ *          config: array{
+ *              host: string,           // Hostname of the server.
+ *              platform_ver: string,   // Operating system version.
+ *              kernel_ver: string,     // Kernel version.
+ *              mem: string,            // Total memory available.
+ *              cpu_qty: int,           // Number of CPU cores.
+ *              cpu_freq: string,       // CPU frequency (e.g., "3.2GHz").
+ *              disk: string,           // Total disk space available.
+ *              ip_protected: string,   // Main IP address protected by the firewall.
+ *              ip_public: string,      // Public or failover IP address.
+ *              ip_private: string      // Private VLAN IP address.
+ *          }
  *     }
  * }
  * @throws Exception
@@ -198,7 +187,7 @@ function status(array $data): array {
                 'adapt'       => function ($res) {
                     return (100 - intval($res)).'%';
                 }
-            ]            
+            ]
         ],
         'config' => [
             'host' => [
@@ -221,7 +210,7 @@ function status(array $data): array {
                 'adapt'       => function ($res) {
                     return $res;
                 }
-            ],    
+            ],
             'mem' => [
                 'description' => "total RAM",
                 'command'     => 'free -mh | awk \'/Mem/{print $2}\'',
@@ -291,7 +280,7 @@ function status(array $data): array {
     }
 
     $result['type'] = 'b2';
-    
+
     // #memo - this adds up too much info and could reveal sensitive data
     // $result['config']['env'] = getenv();
 
