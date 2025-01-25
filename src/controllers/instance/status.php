@@ -23,34 +23,53 @@ function instance_status(array $data): array {
     }
 
     $commands = [
-        'status' => [
-
+        'config' => [
+            'id' => [
+                'description' => "Docker Container ID.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return $container_id;
+                }
+            ],
+            'image' => [
+                'description' => "Name of the image used by the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
+                }
+            ]
+        ],
+        'state' => [
             'up' => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "Flag telling if the instance is running.",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
                     return exec("docker inspect -f '{{.State.Running}}' {$container_id}") === 'true';
                 }
             ],
-
+            'pid' => [
+                'description' => "ID of the host process running the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.State.Pid}}' {$container_id}");
+                }
+            ],
             'maintenance' => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "Flag telling if the instance is in maintenance mode.",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
                     return instance_is_maintenance_enabled($data['instance']);
                 }
             ],
-
             'containers' => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "Running containers associated with the instance (same stack).",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
                     return explode(' ', exec("docker compose --project-directory /home/{$data['instance']} ps 2>/dev/null | awk 'NR>1 {print $1}' | paste -sd ' '"));
                 }
-            ],
+            ]
         ],
         'instant' => [
-
             'dsk_use' => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -70,7 +89,6 @@ function instance_status(array $data): array {
                     return $dsk_use;
                 }
             ],
-
             'cpu_use' => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -78,7 +96,6 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance'])['CPUPerc'];
                 }
             ],
-
             'ram_use'       => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -86,7 +103,6 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance'])['MemPerc'];
                 }
             ],
-
             'total_proc'    => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -94,7 +110,6 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance'])['PIDs'];
                 }
             ],
-
             'docker_stats'    => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -102,36 +117,11 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance']);
                 }
             ]
-
-        ],
-        'config' => [
-            'host' => [
-                'description' => "host name",
-                'command'     => 'hostname',
-                'adapt'       => function ($res) {
-                    return $res;
-                }
-            ]
         ]
 
     ];
 
     $result = [];
-
-    /*
-    $result = [
-        'up'            => $up,
-        'containers'    => $up,
-        'maintenance'   => instance_is_maintenance_enabled($data['instance']),
-        'instant'       => [
-            'dsk_use'       => $dsk_use,
-            'cpu_use'       => $docker_stats['CPUPerc'],
-            'ram_use'       => $docker_stats['MemPerc'],
-            'total_proc'    => $docker_stats['PIDs'],
-        ],
-        'docker_stats'  => $docker_stats
-    ];
-    */
 
     foreach($commands as $cat => $cat_commands) {
         if(isset($data['scope']) && $data['scope'] !== $cat) {

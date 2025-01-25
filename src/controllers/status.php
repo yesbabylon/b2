@@ -185,19 +185,31 @@ function status(array $data): array {
                 }
             ]
         ],
+        'state' => [
+            'uptime' => [
+                'description' => "time since last reboot",
+                'command'     => 'uptime -s',
+                'adapt'       => function ($res) {
+                    return date('c', strtotime($res));
+                }
+            ],
+            'fw_secured' => [
+                'description' => "Flag telling if public IP is secured by firewall.",
+                'command'     => 'IP=$(ip addr show veth0 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1) && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 443 -j ACCEPT" && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 80 -j ACCEPT" && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -j DROP" && echo "true" || echo "false"',
+                'adapt'       => function ($res) {
+                    return ($res === 'true');
+                }
+            ]
+        ],
         'config' => [
             'host' => [
                 'description' => "host name",
                 'command'     => 'hostname',
                 'adapt'       => function ($res) {
                     return $res;
-                }
-            ],
-            'uptime' => [
-                'description' => "time since last reboot",
-                'command'     => 'uptime -s',
-                'adapt'       => function ($res) {
-                    return date('c', strtotime($res));
                 }
             ],
             'platform_ver' => [
@@ -265,16 +277,6 @@ function status(array $data): array {
                 'command'     => 'ip -4 addr show ens4 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1',
                 'adapt'       => function ($res) {
                     return $res;
-                }
-            ],
-            'fw_secured' => [
-                'description' => "Flag telling if public IP is secured by firewall.",
-                'command'     => 'IP=$(ip addr show veth0 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1) && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 443 -j ACCEPT" && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 80 -j ACCEPT" && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -j DROP" && echo "true" || echo "false"',
-                'adapt'       => function ($res) {
-                    return ($res === 'true');
                 }
             ]
         ]
