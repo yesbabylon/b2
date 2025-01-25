@@ -16,30 +16,113 @@ function instance_status(array $data): array {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
-    $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format '{{ json . }}'");
-    $docker_stats = json_decode($docker_stats_json, true);
+    $container_id = exec('docker ps -qf "name=^'.preg_quote($data['instance']).'$"');
 
-    if(is_null($docker_stats)) {
+    if($container_id === '') {
         throw new Exception("instance_not_found", 404);
     }
 
-    $up = exec("docker inspect -f '{{.State.Running}}' {$data['instance']}") === 'true';
+    $commands = [
+        'status' => [
 
-    $dsk_use = '0.0%';
+            'up' => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.State.Running}}' {$container_id}") === 'true';
+                }
+            ],
 
-    $dsk_use_db = exec('du -sh $(docker inspect -f \'{{ range .Mounts }}{{ if eq .Destination "/var/lib/mysql" }}{{ .Source }}{{ end }}{{ end }}\' sql.'.$data['instance'].') | awk \'{print $1}\'');
-    $dsk_use_fs = exec('du -hs /home/'.$data['instance'].'/www | awk \'{print $1}\'');
-    $total_dsk = exec('lsblk -o NAME,SIZE,TYPE | awk \'$1=="sda" && $3=="disk" {print $2}\'');
+            'maintenance' => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return instance_is_maintenance_enabled($data['instance']),;
+                }
+            ],
 
-    $avail_dsk = convertToBytes($total_dsk);
-    $used_dsk = convertToBytes($dsk_use_db) + convertToBytes($dsk_use_fs);
-    
-    if($avail_dsk > 0) {
-        $dsk_use = round((float) 100 * $used_dsk / $avail_dsk, 2) . '%';
-    }
+            'containers' => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return explode(' ', exec("docker compose --project-directory /home/{$data['instance']} ps 2>/dev/null | awk 'NR>1 {print $1}' | paste -sd ' '"));
+                }
+            ],
+        ],
+        'instant' => [
 
+            'dsk_use' => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data, $container_id) {
+                    $dsk_use = '0.0%';
+
+                    $dsk_use_db = exec('du -sh $(docker inspect -f \'{{ range .Mounts }}{{ if eq .Destination "/var/lib/mysql" }}{{ .Source }}{{ end }}{{ end }}\' sql.'.$data['instance'].') | awk \'{print $1}\'');
+                    $dsk_use_fs = exec('du -hs /home/'.$data['instance'].'/www | awk \'{print $1}\'');
+                    $total_dsk = exec('lsblk -o NAME,SIZE,TYPE | awk \'$1=="sda" && $3=="disk" {print $2}\'');
+
+                    $avail_dsk = convertToBytes($total_dsk);
+                    $used_dsk = convertToBytes($dsk_use_db) + convertToBytes($dsk_use_fs);
+
+                    if($avail_dsk > 0) {
+                        $dsk_use = round((float) 100 * $used_dsk / $avail_dsk, 2) . '%';
+                    }
+                    return $dsk_use;
+                }
+            ],
+
+            'cpu_use' => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return file_get_contents("/sys/fs/cgroup/cpu/docker/$container_id/cpuacct.usage");
+                }
+            ],
+
+            'ram_use'       => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return file_get_contents("/sys/fs/cgroup/cpu/docker/$container_id/memory.usage_in_bytes");
+                }
+            ],
+
+            'total_proc'    => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return file_get_contents("/sys/fs/cgroup/pids/docker/$container_id/pids.current");;
+                }
+            ],
+
+            'docker_stats'    => [
+                'description' => "mem consumption mysql (%MEM)",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    $docker_stats_json = exec("docker stats {$data['instance']} --no-stream --format '{{ json . }}'");
+                    return json_decode($docker_stats_json, true);
+                }
+            ]
+
+        ],
+        'config' => [
+            'host' => [
+                'description' => "host name",
+                'command'     => 'hostname',
+                'adapt'       => function ($res) {
+                    return $res;
+                }
+            ]
+        ]
+
+    ];
+
+    $result = [];
+
+    /*
     $result = [
         'up'            => $up,
+        'containers'    => $up,
         'maintenance'   => instance_is_maintenance_enabled($data['instance']),
         'instant'       => [
             'dsk_use'       => $dsk_use,
@@ -49,6 +132,17 @@ function instance_status(array $data): array {
         ],
         'docker_stats'  => $docker_stats
     ];
+    */
+
+    foreach($commands as $cat => $cat_commands) {
+        if(isset($data['scope']) && $data['scope'] !== $cat) {
+            continue;
+        }
+        foreach($cat_commands as $cmd => $command) {
+            $res = exec_status_cmd($command['command']);
+            $result[$cat][$cmd] = $command['adapt']($res);
+        }
+    }
 
     return [
         'code' => 200,
@@ -63,22 +157,22 @@ function convertToBytes(string $size): int {
     if(preg_match('/^([\d.]+)\s*(k|m|g|t|kib|mib|gib|tib|kb|mb|gb|tb)$/i', $size, $matches)) {
         $value = floatval($matches[1]);
         $unit = $matches[2];
-        
+
         switch ($unit) {
             case 't':
-            case 'tib': 
+            case 'tib':
                 $value *= 1024;
             case 'g':
-            case 'gib': 
+            case 'gib':
                 $value *= 1024;
-            case 'm': 
-            case 'mib': 
+            case 'm':
+            case 'mib':
                 $value *= 1024;
             case 'k':
             case 'kib':
                 $value *= 1024;
                 break;
-            case 'tb':  
+            case 'tb':
                 $value *= 1000;
             case 'gb':
                 $value *= 1000;
