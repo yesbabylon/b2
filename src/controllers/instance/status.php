@@ -37,14 +37,14 @@ function instance_status(array $data): array {
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
-                    return instance_is_maintenance_enabled($data['instance']),;
+                    return instance_is_maintenance_enabled($data['instance']);
                 }
             ],
 
             'containers' => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
+                'adapt'       => function ($res) use($data) {
                     return explode(' ', exec("docker compose --project-directory /home/{$data['instance']} ps 2>/dev/null | awk 'NR>1 {print $1}' | paste -sd ' '"));
                 }
             ],
@@ -54,7 +54,7 @@ function instance_status(array $data): array {
             'dsk_use' => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($data, $container_id) {
+                'adapt'       => function ($res) use($data) {
                     $dsk_use = '0.0%';
 
                     $dsk_use_db = exec('du -sh $(docker inspect -f \'{{ range .Mounts }}{{ if eq .Destination "/var/lib/mysql" }}{{ .Source }}{{ end }}{{ end }}\' sql.'.$data['instance'].') | awk \'{print $1}\'');
