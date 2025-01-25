@@ -90,6 +90,7 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance'])['PIDs'];
                 }
             ],
+            /*
             'docker_stats'    => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
@@ -97,6 +98,7 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance']);
                 }
             ]
+            */
         ],
         'state' => [
             'up' => [
