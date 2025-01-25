@@ -55,7 +55,7 @@
  * }
  * @throws Exception
  */
-function status(): array {
+function status(array $data): array {
     // retrieve interface (usually either eth0 or ens3)
     $interface = exec_status_cmd('ip link show | head -3 | tail -1 | awk \'{print $2}\'');
     if(!$interface) {
@@ -266,12 +266,26 @@ function status(): array {
                 'adapt'       => function ($res) {
                     return $res;
                 }
+            ],
+            'fw_secured' => [
+                'description' => "Flag telling if public IP is secured by firewall.",
+                'command'     => 'IP=$(ip addr show veth0 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1) && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 443 -j ACCEPT" && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 80 -j ACCEPT" && \
+                    iptables-save | grep -qE "\-A INPUT -d $IP -j DROP" && echo "true" || echo "false"',
+                'adapt'       => function ($res) {
+                    return ($res === 'true');
+                }
             ]
         ]
     ];
 
     $result = [];
+
     foreach($commands as $cat => $cat_commands) {
+        if(isset($data['scope']) && $data['scope'] !== $cat) {
+            continue;
+        }
         foreach($cat_commands as $cmd => $command) {
             $res = exec_status_cmd($command['command']);
             $result[$cat][$cmd] = $command['adapt']($res);
