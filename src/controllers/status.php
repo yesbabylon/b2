@@ -1,4 +1,9 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
 /**
  * Returns host status statistics.
@@ -65,40 +70,6 @@ function status(array $data): array {
     $interface = trim($interface, ':');
 
     $commands = [
-        'stats' => [
-            'net' => [
-                'description' => "monthly network volume",
-                'command'     => 'vnstat -i '.$interface.' -m | tail -3 | head -1',
-                'adapt'       => function ($res) {
-                    if(strpos($res, '|') === false) {
-                        return [
-                            'rx'        => 'No data yet',
-                            'tx'        => 'No data yet',
-                            'total'     => 'No data yet',
-                            'avg_rate'  => 'No data yet',
-                        ];
-                    }
-
-                    $parts = preg_split('/\s{2,10}/', $res, 3);
-                    $b = array_map('adapt_unit', array_map('trim', explode('|', $parts[2])));
-                    return array_combine(['rx', 'tx', 'total', 'avg_rate'], $b);
-                }
-            ],
-            'cpu' => [
-                'description' => "average CPU load (%) since last reboot",
-                'command'     => 'vmstat | tail -1| awk \'{print $15}\'',
-                'adapt'       => function ($res) {
-                    return (100 - intval($res)).'%';
-                }
-            ],
-            'uptime' => [
-                'description' => "quantity of days passed since the server is up",
-                'command'     => 'cat /proc/uptime | awk \'{print $1}\'',
-                'adapt'       => function ($res) {
-                    return (intval($res / 86400) + 1).'days';
-                }
-            ]
-        ],
         'instant' => [
             'mysql_mem' => [
                 'description' => "mem consumption mysql (%MEM)",
@@ -187,10 +158,10 @@ function status(array $data): array {
         ],
         'state' => [
             'uptime' => [
-                'description' => "time since last reboot",
-                'command'     => 'uptime -s',
+                'description' => "quantity of days passed since the server is up",
+                'command'     => 'cat /proc/uptime | awk \'{print $1}\'',
                 'adapt'       => function ($res) {
-                    return date('c', strtotime($res));
+                    return (intval($res / 86400) + 1).'days';
                 }
             ],
             'fw_secured' => [
@@ -202,7 +173,32 @@ function status(array $data): array {
                 'adapt'       => function ($res) {
                     return ($res === 'true');
                 }
-            ]
+            ],
+            'net' => [
+                'description' => "monthly network volume",
+                'command'     => 'vnstat -i '.$interface.' -m | tail -3 | head -1',
+                'adapt'       => function ($res) {
+                    if(strpos($res, '|') === false) {
+                        return [
+                            'rx'        => 'No data yet',
+                            'tx'        => 'No data yet',
+                            'total'     => 'No data yet',
+                            'avg_rate'  => 'No data yet',
+                        ];
+                    }
+
+                    $parts = preg_split('/\s{2,10}/', $res, 3);
+                    $b = array_map('adapt_unit', array_map('trim', explode('|', $parts[2])));
+                    return array_combine(['rx', 'tx', 'total', 'avg_rate'], $b);
+                }
+            ],
+            'cpu' => [
+                'description' => "average CPU load (%) since last reboot",
+                'command'     => 'vmstat | tail -1| awk \'{print $15}\'',
+                'adapt'       => function ($res) {
+                    return (100 - intval($res)).'%';
+                }
+            ]            
         ],
         'config' => [
             'host' => [

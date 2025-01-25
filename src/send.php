@@ -1,7 +1,11 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
-function parse_arguments($argv)
-{
+function parse_arguments($argv) {
     $options = [
         'route'  => '',
         'method' => 'GET',
@@ -11,10 +15,10 @@ function parse_arguments($argv)
     foreach ($argv as $arg) {
         if(preg_match('/^--route=(.+)$/', $arg, $matches)) {
             $options['route'] = $matches[1];
-        } 
+        }
         elseif(preg_match('/^--method=(.+)$/', $arg, $matches)) {
             $options['method'] = strtoupper($matches[1]);
-        } 
+        }
         elseif(strpos($arg, '--') === 0) {
             $parts = explode('=', substr($arg, 2), 2);
             $key = $parts[0];
@@ -76,8 +80,8 @@ function main($argv)
     $options = parse_arguments(array_slice($argv, 1));
 
     [$http_code, $response] = send_http_request(
-            "http://127.0.0.1:8000" . str_replace('//', '/', '/'.$options['route']), 
-            $options['method'], 
+            "http://127.0.0.1:8000" . str_replace('//', '/', '/'.$options['route']),
+            $options['method'],
             $options['params']
         );
 

@@ -1,4 +1,9 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
 /**
  * Handles the given request and returns the response body and status code
@@ -16,7 +21,7 @@ function handle_request(array $request, array $routes): array {
     try {
         $method = $request['method'];
 		$payload = [];
-		
+
         if(!isset($routes[$method])) {
             throw new Exception("method_not_allowed", 405);
         }
@@ -34,7 +39,7 @@ function handle_request(array $request, array $routes): array {
             throw new Exception("unknown_route", 404);
         }
 
-		if($method != 'GET') { 
+		if($method != 'GET') {
 	        if($request['content_type'] !== 'application/json') {
 				throw new Exception("invalid_body", 400);
 			}
@@ -57,7 +62,7 @@ function handle_request(array $request, array $routes): array {
     catch(Exception $e) {
         // Respond with the exception message and status code
         $result = [
-            'body' => [ 'error' => $e->getMessage() ], 
+            'body' => [ 'error' => $e->getMessage() ],
             'code' => $e->getCode()
         ];
     }

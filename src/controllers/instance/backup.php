@@ -1,4 +1,9 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
 /**
  * Generates a TTL (Time-To-Live) integer representing the number of days a backup should be retained,
@@ -11,24 +16,24 @@
  * - every 2 months, a backup is created with a TTL of 2 months
  * - every Sunday, a backup is created with a TTL of 1 month
  * - in other cases, a backup is created with a lifespan of 7 days
- * 
+ *
  * @return int The number of days the backup should be retained.
  */
 function get_ttl() {
     $ttl = 7;
-    
+
     $day_of_week = (int) date('N');
     $day_of_year = (int) date('z');
 
     if($day_of_year % 112 == 0) {
         $ttl = 112;
-    } 
+    }
     elseif($day_of_year % 84 == 0) {
         $ttl = 84;
-    } 
+    }
     elseif($day_of_year % 56 == 0) {
         $ttl = 56;
-    } 
+    }
     elseif($day_of_week == 7) {
         $ttl = 28;
     }

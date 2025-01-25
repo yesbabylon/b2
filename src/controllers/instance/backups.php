@@ -1,4 +1,9 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
 /**
  * Returns the list a backups for a specific instance
@@ -18,7 +23,7 @@ function instance_backups(array $data): array {
 
     $export = [];
     $import = [];
-    
+
     $backup_files = array_map(
         'basename',
         array_filter(glob('/home/'.$data['instance'].'/export/*'), 'is_file')
@@ -32,7 +37,7 @@ function instance_backups(array $data): array {
         $export[] = [
             'id'        => $backup_id,
             'filename'  => $backup_file
-        ];        
+        ];
     }
 
     $backup_files = array_map(
@@ -48,7 +53,7 @@ function instance_backups(array $data): array {
         $import[] = [
             'id'        => $backup_id,
             'filename'  => $backup_file
-        ];        
+        ];
     }
 
     return [

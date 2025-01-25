@@ -1,12 +1,36 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
-/**
- * Returns status statistics about a given instance.
- *
- * @param array{instance: string} $data
- * @return array{code: int, body: string}
- * @throws Exception
- */
+ /**
+  * Retrieves Docker container statistics as an associative array.
+  *
+  * @param array{instance: string} $data
+  *
+  * @throws Exception
+  *
+  * @return array{
+  *     config: array{
+  *         id: string,          // The Docker container ID.
+  *         image: string        // The image used by the container.
+  *     },
+  *     state: array{
+  *         up: bool,            // Indicates if the container is running.
+  *         pid: string,         // The main PID of the container on the host.
+  *          maintenance: bool,  // Indicates if the container is in maintenance mode.
+  *         containers: string[] // List of container names associated with this instance.
+  *     },
+  *     instant: array{
+  *         dsk_use: string,     // Disk usage percentage (e.g., "2.07%").
+  *         cpu_use: string,     // CPU usage percentage (e.g., "0.01%").
+  *         ram_use: string,     // RAM usage percentage (e.g., "5.56%").
+  *         total_proc: string   // Total number of processes in the container.
+  *     }
+  * }
+  */
 function instance_status(array $data): array {
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
@@ -23,52 +47,6 @@ function instance_status(array $data): array {
     }
 
     $commands = [
-        'config' => [
-            'id' => [
-                'description' => "Docker Container ID.",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return $container_id;
-                }
-            ],
-            'image' => [
-                'description' => "Name of the image used by the container.",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
-                }
-            ]
-        ],
-        'state' => [
-            'up' => [
-                'description' => "Flag telling if the instance is running.",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return exec("docker inspect -f '{{.State.Running}}' {$container_id}") === 'true';
-                }
-            ],
-            'pid' => [
-                'description' => "ID of the host process running the container.",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($container_id) {
-                    return exec("docker inspect -f '{{.State.Pid}}' {$container_id}");
-                }
-            ],
-            'maintenance' => [
-                'description' => "Flag telling if the instance is in maintenance mode.",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($data) {
-                    return instance_is_maintenance_enabled($data['instance']);
-                }
-            ],
-            'containers' => [
-                'description' => "Running containers associated with the instance (same stack).",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($data) {
-                    return explode(' ', exec("docker compose --project-directory /home/{$data['instance']} ps 2>/dev/null | awk 'NR>1 {print $1}' | paste -sd ' '"));
-                }
-            ]
-        ],
         'instant' => [
             'dsk_use' => [
                 'description' => "mem consumption mysql (%MEM)",
@@ -106,7 +84,7 @@ function instance_status(array $data): array {
             'total_proc'    => [
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($data) {                
+                'adapt'       => function ($res) use($data) {
                     return fetchDockerStats($data['instance'])['PIDs'];
                 }
             ],
@@ -117,8 +95,67 @@ function instance_status(array $data): array {
                     return fetchDockerStats($data['instance']);
                 }
             ]
+        ],
+        'state' => [
+            'up' => [
+                'description' => "Flag telling if the instance is running.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.State.Running}}' {$container_id}") === 'true';
+                }
+            ],
+            'pid' => [
+                'description' => "ID of the host process running the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.State.Pid}}' {$container_id}");
+                }
+            ],
+            'maintenance' => [
+                'description' => "Flag telling if the instance is in maintenance mode.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return instance_is_maintenance_enabled($data['instance']);
+                }
+            ],
+            'containers' => [
+                'description' => "Running containers associated with the instance (same stack).",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return explode(' ', exec("docker compose --project-directory /home/{$data['instance']} ps 2>/dev/null | awk 'NR>1 {print $1}' | paste -sd ' '"));
+                }
+            ],
+            'net' => [
+                'description' => "Total network input and output traffic for the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return fetchDockerStats($data['instance'])['NetIO'];
+                }
+            ],
+            'dsk' => [
+                'description' => "Total block I/O usage by the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return fetchDockerStats($data['instance'])['BlockIO'];
+                }
+            ]
+        ],
+        'config' => [
+            'id' => [
+                'description' => "Docker Container ID.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return $container_id;
+                }
+            ],
+            'image' => [
+                'description' => "Name of the image used by the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
+                }
+            ]
         ]
-
     ];
 
     $result = [];

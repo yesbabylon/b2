@@ -1,4 +1,9 @@
 <?php
+ /*
+    This file is part of the B2 package <http://github.com/yesbabylon/b2>
+    Some Rights Reserved, Yesbabylon, 2025
+    Licensed under MIT License <https://opensource.org/licenses/MIT>
+*/
 
 /**
  * Creates new backups for all host instances and attempts to export them to related backup host.
@@ -7,7 +12,7 @@
  */
 function backup(): array {
     $result = [];
-    
+
     $instances = get_instances();
 
     foreach($instances as $instance) {
@@ -18,7 +23,7 @@ function backup(): array {
             if(preg_match('/_(.*?)\./', $backup_file, $matches)) {
                 $backup_id = $matches[1];
                 $res_export = exec_controller('instance/export-backup', ['instance' => $instance, 'backup_id' => $backup_id]);
-            } 
+            }
         }
         $result[$instance] = [
             'backup' => $res_backup,
