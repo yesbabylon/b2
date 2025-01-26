@@ -26,7 +26,7 @@ function exec_controller($controller, $payload) {
         $controller_file = CONTROLLERS_DIR."/$controller.php";
         // Check if the controller or script file exists
         if(!file_exists($controller_file)) {
-            throw new Exception("missing_script_file", 503);
+            throw new Exception("unknown_controller", 503);
         }
 
         // Include the controller file
@@ -36,7 +36,7 @@ function exec_controller($controller, $payload) {
 
         // Call the controller function with the request data
         if(!is_callable($handler_method_name)) {
-            throw new Exception("missing_script_method", 501);
+            throw new Exception("unknown_method", 501);
         }
 
         // Load host env variables
@@ -61,6 +61,6 @@ function exec_controller($controller, $payload) {
             'code'  => $e->getCode()
         ];
     }
-    
+
     return $result;
 }
