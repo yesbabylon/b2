@@ -51,7 +51,7 @@ function instance_status(array $data): array {
     $commands = [
         'instant' => [
             'dsk_use' => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "disk consumption mysql (%DISK)",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
                     $dsk_use = '0.0%';
@@ -70,7 +70,7 @@ function instance_status(array $data): array {
                 }
             ],
             'cpu_use' => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "cpu consumption mysql (%CPU)",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
                     return fetchDockerStats($data['instance'])['CPUPerc'];
@@ -84,7 +84,7 @@ function instance_status(array $data): array {
                 }
             ],
             'total_proc'    => [
-                'description' => "mem consumption mysql (%MEM)",
+                'description' => "number of running processes",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($data) {
                     return fetchDockerStats($data['instance'])['PIDs'];
