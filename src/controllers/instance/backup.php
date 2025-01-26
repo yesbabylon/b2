@@ -115,7 +115,7 @@ function instance_backup(array $data): array {
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
-    $compress_filestore = "cd /home/$instance && tar -cvzf $tmp_backup_dir/filestore.tar.gz www";
+    $compress_filestore = "cd /home/$instance && tar --exclude='./.*' --exclude='*/.git' --exclude='./log/equal.log' -cvzf $tmp_backup_dir/filestore.tar.gz www";
     exec($compress_filestore);
 
     // Create archive to unite files
