@@ -232,6 +232,7 @@ docker volume create portainer_data
 
 # Build docked-nginx image
 cd /home/docker/images/docked-nginx/
+chmod +x ./build.sh
 ./build.sh
 
 # Start reverse proxy and let's encrypt companion
@@ -239,13 +240,14 @@ docker compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 
 # wait for the services to be fully started (to prevent following files to be overwritten)
 echo -e "${GREEN}(Waiting for services to be fully started)${NC}\n"
-sleep 30
+sleep 60
 
 # make sure a default maintenance page is available
-cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
+mkdir -p /srv/docker/nginx/html && cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
 
 # add custom nginx conf in the newly created dir env
-cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
+mkdir -p /srv/docker/nginx/conf.d && cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
+
 # (#memo - in latest deployments, file was not created automatically by letsencrypt-companion)
 mkdir -p /usr/share/nginx/html
 mkdir -p /srv/docker/nginx/vhost.d
