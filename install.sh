@@ -19,6 +19,8 @@
 #   - The script requires a Debian/Ubuntu based distribution.
 #   - Logs will be generated in /var/log directory, if applicable.
 #
+# Tested with: Ubuntu 24.04
+#
 # ============================================================
 
 
@@ -318,8 +320,8 @@ systemctl daemon-reload
 ### Remove sensitive data from .env  ###
 ########################################
 
-sed -i '/GPG_PASSPHRASE=/d' .env
-sed -i '/ROOT_PASSWORD=/d' .env
+sed -i '/GPG_PASSPHRASE=/d' "$INSTALL_DIR"/.env
+sed -i '/ROOT_PASSWORD=/d' "$INSTALL_DIR"/.env
 
 
 ################
