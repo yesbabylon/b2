@@ -240,7 +240,7 @@ docker compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
 
 # wait for the services to be fully started (to prevent following files to be overwritten)
 echo -e "${GREEN}(Waiting for services to be fully started)${NC}\n"
-sleep 60
+sleep 30
 
 # make sure a default maintenance page is available
 mkdir -p /srv/docker/nginx/html && cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
