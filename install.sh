@@ -13,11 +13,10 @@
 #
 # Usage:
 #   - Run the script as a superuser or with sudo privileges.
-#   - Ensure the system has internet connectivity.
+#   - Ensure the system has outgoing internet connectivity.
 #
 # Notes:
-#   - Review the script before running to ensure compatibility
-#     with your system configuration.
+#   - The script requires a Debian/Ubuntu based distribution.
 #   - Logs will be generated in /var/log directory, if applicable.
 #
 # ============================================================
@@ -31,17 +30,13 @@ print_help() {
     echo "  The file must contain the following environment variable definitions:"
     echo ""
     echo "  Variables:"
-    echo "    ADMIN_HOST       - Hostname or IP address of the admin host API endpoint (required)"
     echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
-    echo "    STATS_HOST       - Hostname or IP address of the stats host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
     echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
     echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
     echo ""
     echo "Example of a .env file:"
-    echo "  ADMIN_HOST=http://admin.local"
     echo "  BACKUP_HOST=backup.local"
-    echo "  STATS_HOST=stats.local"
     echo "  GPG_PASSPHRASE=your-passphrase"
     echo "  PUBLIC_IP=192.168.1.1"
     echo "  ROOT_PASSWORD=your-root-password"
@@ -88,7 +83,7 @@ else
     # stop auto export
     set +a
 
-    REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "ADMIN_HOST" "BACKUP_HOST" "BACKUP_HOST")
+    REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
