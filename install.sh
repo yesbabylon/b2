@@ -267,17 +267,13 @@ fi
 
 # Install F2B service (#memo - we need to do this after nginx init since F2B relies on nginx log folder)
 
-# #memo - this is broken with ubuntu 24.x (@see https://github.com/fail2ban/fail2ban/issues/3487)
-# apt-get -y install fail2ban
 
-wget https://launchpad.net/ubuntu/+source/fail2ban/1.1.0-1/+build/28291332/+files/fail2ban_1.1.0-1_all.deb
+apt-get -y install fail2ban
 
-# wait for dpkg to be available
-while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
-    sleep 2
-done
+#memo - pyasynchat is broken with ubuntu 24.x (@see https://github.com/fail2ban/fail2ban/issues/3487)
+apt-get install python3-pip
+python3 -m pip install pyasynchat --break-system-packages
 
-sudo dpkg -i fail2ban_1.1.0-1_all.deb
 
 cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
 cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
@@ -285,7 +281,7 @@ cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 touch /etc/fail2ban/emptylog
 
 systemctl enable fail2ban
-service fail2ban start
+systemctl start fail2ban
 
 
 ########################
