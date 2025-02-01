@@ -188,22 +188,11 @@ gpg --output ./keyring/gpg-public-key.pgp --armor --export "$GPG_NAME"
 ### Install Docker ###
 ######################
 
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+apt-get install -y apt-transport-https software-properties-common
 
-# Add Docker's official GPG key
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o docker.gpg
-gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg docker.gpg
-rm docker.gpg
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh ./get-docker.sh
 
-# Add Docker repository
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-
-# Update package list and install Docker
-apt-get update
-apt-get install -y docker-ce docker-ce-cli containerd.io
-
-# Start docker
-systemctl start docker
 
 # Make sure docker starts on boot
 systemctl enable docker
@@ -214,13 +203,13 @@ cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
 # Copy temporary self-signed certs (required for nginx to use correct https template)
-mkdir /srv/docker/nginx/certs
+mkdir -p /srv/docker/nginx/certs
 cp "$INSTALL_DIR"/conf/default.crt /srv/docker/nginx/certs/
 cp "$INSTALL_DIR"/conf/default.key /srv/docker/nginx/certs/
 cp "$INSTALL_DIR"/conf/dhparam.pem /srv/docker/nginx/certs/
 
-mkdir /srv/docker/nginx/htpasswd
-mkdir /var/log/nginx
+mkdir -p /srv/docker/nginx/htpasswd
+mkdir -p /var/log/nginx
 
 sh -c "echo '/usr/local/bin/ssh-login' >> /etc/shells"
 
