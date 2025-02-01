@@ -149,7 +149,7 @@ mv /etc/adduser.conf /etc/adduser.conf.orig
 cp "$INSTALL_DIR"/conf/etc/adduser.conf /etc/adduser.conf
 
 # Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for API) and FTP service
-apt-get install -y apache2-utils vnstat php-cli vsftpd
+apt-get install -y apache2-utils vnstat php-cli vsftpd apt-transport-https software-properties-common
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
@@ -188,7 +188,6 @@ gpg --output ./keyring/gpg-public-key.pgp --armor --export "$GPG_NAME"
 ### Install Docker ###
 ######################
 
-apt-get install -y apt-transport-https software-properties-common
 
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
@@ -267,11 +266,20 @@ fi
 ###################
 
 # Install F2B service (#memo - we need to do this after nginx init since F2B relies on nginx log folder)
-apt-get -y install fail2ban
+
+# #memo - this is broken with ubuntu 24.x (@see https://github.com/fail2ban/fail2ban/issues/3487)
+# apt-get -y install fail2ban
+
+wget https://launchpad.net/ubuntu/+source/fail2ban/1.1.0-1/+build/28291332/+files/fail2ban_1.1.0-1_all.deb
+sudo dpkg -i fail2ban_1.1.0-1_all.deb
+
 cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
 cp "$INSTALL_DIR"/conf/etc/fail2ban/action.d/* /etc/fail2ban/action.d/
 cp "$INSTALL_DIR"/conf/etc/fail2ban/filter.d/* /etc/fail2ban/filter.d/
 touch /etc/fail2ban/emptylog
+
+systemctl enable fail2ban
+service fail2ban start
 
 
 ########################
