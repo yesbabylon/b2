@@ -271,6 +271,12 @@ fi
 # apt-get -y install fail2ban
 
 wget https://launchpad.net/ubuntu/+source/fail2ban/1.1.0-1/+build/28291332/+files/fail2ban_1.1.0-1_all.deb
+
+# wait for dpkg to be available
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+    sleep 2
+done
+
 sudo dpkg -i fail2ban_1.1.0-1_all.deb
 
 cp "$INSTALL_DIR"/conf/etc/fail2ban/jail.local /etc/fail2ban/jail.local
