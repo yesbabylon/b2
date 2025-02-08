@@ -68,7 +68,7 @@ function instance_is_maintenance_enabled(string $instance): bool {
  */
 function instance_enable_maintenance_mode(string $instance) {
     if(!instance_is_maintenance_enabled($instance)) {
-        file_put_contents("/srv/docker/nginx/html/$instance/maintenance", "");
+        exec("touch /srv/docker/nginx/html/$instance/maintenance");
     }
 }
 
@@ -80,6 +80,6 @@ function instance_enable_maintenance_mode(string $instance) {
  */
 function instance_disable_maintenance_mode(string $instance) {
     if(instance_is_maintenance_enabled($instance)) {
-        unlink("/srv/docker/nginx/html/$instance/maintenance");
+        exec("rm /srv/docker/nginx/html/$instance/maintenance");
     }
 }
