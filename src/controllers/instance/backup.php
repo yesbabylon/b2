@@ -102,7 +102,8 @@ function instance_backup(array $data): array {
 
     // Stop docker containers
     $docker_file_path = "/home/$instance/docker-compose.yml";
-    exec("docker compose -f $docker_file_path stop");
+    // #memo - stopping container prevents nginx to route requests to the maintenance page (since the domain is then unknown to nginx)
+    // exec("docker compose -f $docker_file_path stop");
 
     // Compress dump
     $compress_mysql_dump = "cd $tmp_backup_dir && gzip -c backup.sql > backup.sql.gz";
@@ -133,7 +134,7 @@ function instance_backup(array $data): array {
     exec("rm -rf $tmp_backup_dir");
 
     // Restart docker containers
-    exec("docker compose -f $docker_file_path start");
+    // exec("docker compose -f $docker_file_path start");
 
     if($data['encrypt']) {
         // Encrypt backup
