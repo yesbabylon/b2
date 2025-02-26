@@ -6,7 +6,7 @@ if [ "$#" -ne 2 ]; then
 	exit 1
 fi
 
-IP_PRIVEE=$1
+IP_PRIVATE=$1
 MAC_ADDRESS=$2
 
 # Retrieve IPv6 address and MAC address of ens3
@@ -32,7 +32,7 @@ network:
 		ens3:
 			accept-ra: false
 			addresses:
-			- $ENS3_IPV6
+			- $ENS3_IPV6/56
 			dhcp4: true
 			match:
 				macaddress: $ENS3_MAC
@@ -50,7 +50,7 @@ network:
 			match:
 				macaddress: "$MAC_ADDRESS"
 			addresses:
-			- "$IP_PRIVEE/16"
+			- "$IP_PRIVATE/16"
 			nameservers:
 				addresses:
 				- 0.0.0.0
