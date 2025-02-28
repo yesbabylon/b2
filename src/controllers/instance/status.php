@@ -89,16 +89,7 @@ function instance_status(array $data): array {
                 'adapt'       => function ($res) use($data) {
                     return fetchDockerStats($data['instance'])['PIDs'];
                 }
-            ],
-            /*
-            'docker_stats'    => [
-                'description' => "mem consumption mysql (%MEM)",
-                'command'     => 'true',
-                'adapt'       => function ($res) use($data) {
-                    return fetchDockerStats($data['instance']);
-                }
             ]
-            */
         ],
         'state' => [
             'up' => [
@@ -157,6 +148,22 @@ function instance_status(array $data): array {
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
                     return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
+                }
+            ],
+            'mem' => [
+                'description' => "Amount of memory allocated to the container (in MB).",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    $mem_count = exec("docker inspect -f '{{.HostConfig.Memory}}' {$container_id}");
+                    return round(intval($mem_count) / (1024 * 1024), 0);
+                }
+            ],
+            'cpu_qty' => [
+                'description' => "Amount of CPU allocated to the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    $cpu_count = exec("docker inspect -f '{{.HostConfig.NanoCpus}}' {$container_id}");
+                    return round(floatval($cpu_count) / 1000000000, 2);
                 }
             ]
         ]
