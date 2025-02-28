@@ -1,39 +1,5 @@
 services:
-  equal_srv:
-    image: equalframework/equal
-    container_name: ${USERNAME}
-    restart: always
-    volumes:
-      - ./www/.:/var/www/html
-      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
-    extra_hosts:
-      - "${USERNAME}:127.0.0.1"
-    hostname: ${USERNAME}
-    domainname: local
-    environment:
-      - EQ_DB_HOST=${DB_HOSTNAME}
-      - EQ_DB_USER=${APP_USERNAME}
-      - EQ_DB_PASS=${APP_PASSWORD}
-      - EQ_DB_NAME=equal
-      - EQ_CIPHER_KEY=${CIPHER_KEY}
-      - EQ_MEM_LIMIT=${MEM_LIMIT}
-      - HTTPS_METHOD=${HTTPS_REDIRECT}
-      - VIRTUAL_PORT=80
-      - VIRTUAL_HOST=${USERNAME}
-      - LETSENCRYPT_HOST=${USERNAME}
-      - LETSENCRYPT_EMAIL=contact@${USERNAME}
-    links:
-      - mysql:db
-    networks:
-      - proxynet
-    depends_on:
-      - mysql
-    deploy:
-      resources:
-        limits:
-          cpus: ${CPU_LIMIT}
-          memory: ${MEM_LIMIT}
-  mysql:
+  {{db_ID}}:
     image: mysql:5.7
     container_name: ${DB_HOSTNAME}
     restart: always
@@ -47,25 +13,58 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
+  equal:
+    image: equalframework/equal
+    container_name: ${USERNAME}
+    restart: always
+    volumes:
+      - ./www/.:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+    extra_hosts:
+      # If instance calls itself through HTTP, force sending the requests to the reverse proxy 
+      - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
+    environment:
+      - EQ_DB_HOST=${DB_HOSTNAME}
+      - EQ_DB_USER=${APP_USERNAME}
+      - EQ_DB_PASS=${APP_PASSWORD}
+      - EQ_DB_NAME=equal
+      - EQ_CIPHER_KEY=${CIPHER_KEY}
+      - EQ_MEM_LIMIT=${MEM_LIMIT}
+      - HTTPS_METHOD=${HTTPS_REDIRECT}
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=${USERNAME}
+      - LETSENCRYPT_HOST=${USERNAME}
+      - LETSENCRYPT_EMAIL=contact@${USERNAME}
+    networks:
+      - proxynet
+    links:
+      - {{db_ID}}:db
+    depends_on:
+      - {{db_ID}}
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPU_LIMIT}
+          memory: ${MEM_LIMIT}
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: ${PMA_HOSTNAME}
+    container_name: phpmyadmin.${USERNAME}
     restart: always
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=${DB_HOSTNAME}
-      - HTTPS_METHOD=${HTTPS_REDIRECT}
+      - HTTPS_METHOD=redirect
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=phpmyadmin.${USERNAME}
       - UPLOAD_LIMIT=100M
       - MAX_EXECUTION_TIME=3600
       - MEMORY_LIMIT=128M
     links:
-      - mysql:db
+      - {{db_ID}}:db
     networks:
       - proxynet
     depends_on:
-      - mysql
+      - {{db_ID}}
 networks:
   proxynet:
     external: true
