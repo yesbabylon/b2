@@ -20,6 +20,7 @@
  *     WP_EMAIL?: string,
  *     WP_TITLE?: string,
  *     MEM_LIMIT?: string
+ *     CPU_LIMIT?: string
  * } $data
  * @return array{code: int, body: string}
  * @throws Exception
@@ -70,16 +71,21 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_MEM_LIMIT", 400);
     }
 
+    if(isset($data['CPU_LIMIT']) && !is_numeric($data['CPU_LIMIT']) ) {
+        throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
+    }
+
     $data = array_merge([
-        'symbiose'          => false,
-        'equalpress'        => false,
-        'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
-        'HTTPS_REDIRECT'    => 'noredirect',
-        'WP_VERSION'        => '6.4',
-        'WP_EMAIL'          => 'root@equal.local',
-        'WP_TITLE'          => 'eQualPress',
-        'MEM_LIMIT'         => '1000M'
-    ], $data);
+			'symbiose'          => false,
+			'equalpress'        => false,
+			'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
+			'HTTPS_REDIRECT'    => 'noredirect',
+			'WP_VERSION'        => '6.4',
+			'WP_EMAIL'          => 'root@equal.local',
+			'WP_TITLE'          => 'eQualPress',
+			'MEM_LIMIT'         => '1000M'
+			'CPU_LIMIT'         => '1'
+		], $data);
 
     foreach($data as $key => $value) {
         if(is_bool($value)) {
