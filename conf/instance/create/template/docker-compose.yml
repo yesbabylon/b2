@@ -1,3 +1,21 @@
+# This file is part of the B2 package <http://github.com/yesbabylon/b2>
+# Some Rights Reserved, Yesbabylon, 2025
+# Licensed under MIT License <https://opensource.org/licenses/MIT>
+# 
+# Docker Compose file for setting up an eQual framework environment
+#
+# This setup includes:
+# - A MySQL 5.7 database service
+# - A phpMyAdmin interface for managing the database
+# - An eQual framework application service
+#
+# Networks:
+# - "internal": Used for communication between services
+# - "proxynet": External network for public access (assumed to be managed by a reverse proxy)
+#
+# Volumes:
+# - "db_data": Persistent storage for the MySQL database
+#
 services:
   {{db_ID}}:
     image: mysql:5.7
@@ -7,12 +25,30 @@ services:
       - MYSQL_DATABASE=equal
       - MYSQL_ROOT_PASSWORD=${APP_PASSWORD}
     networks:
-      - proxynet
-    # allow packets up to 512 MB (for imports) - #commented - should be included in the `mysql.cnf` below
-    # command: --max_allowed_packet=536870912
+      - internal
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin.${USERNAME}
+    restart: always
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=${DB_HOSTNAME}
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=80
+      - VIRTUAL_HOST=phpmyadmin.${USERNAME}
+      - UPLOAD_LIMIT=100M
+      - MAX_EXECUTION_TIME=3600
+      - MEMORY_LIMIT=512M
+    links:
+      - {{db_ID}}:db
+    networks:
+      - internal
+      - proxynet
+    depends_on:
+      - {{db_ID}}
   equal:
     image: equalframework/equal
     container_name: ${USERNAME}
@@ -20,8 +56,8 @@ services:
     volumes:
       - ./www/.:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
-    extra_hosts:
-      # If instance calls itself through HTTP, force sending the requests to the reverse proxy 
+      - ./mpm_prefork.conf:/etc/apache2/mods-available/mpm_prefork.conf
+    extra_hosts:      
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
       - EQ_DB_HOST=${DB_HOSTNAME}
@@ -36,6 +72,7 @@ services:
       - LETSENCRYPT_HOST=${USERNAME}
       - LETSENCRYPT_EMAIL=contact@${USERNAME}
     networks:
+      - internal
       - proxynet
     links:
       - {{db_ID}}:db
@@ -46,26 +83,9 @@ services:
         limits:
           cpus: ${CPU_LIMIT}
           memory: ${MEM_LIMIT}
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin.${USERNAME}
-    restart: always
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=${DB_HOSTNAME}
-      - HTTPS_METHOD=redirect
-      - VIRTUAL_PORT=80
-      - VIRTUAL_HOST=phpmyadmin.${USERNAME}
-      - UPLOAD_LIMIT=100M
-      - MAX_EXECUTION_TIME=3600
-      - MEMORY_LIMIT=128M
-    links:
-      - {{db_ID}}:db
-    networks:
-      - proxynet
-    depends_on:
-      - {{db_ID}}
 networks:
+  internal:
+    driver: bridge
   proxynet:
     external: true
 volumes:

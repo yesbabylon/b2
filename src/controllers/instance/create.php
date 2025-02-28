@@ -134,20 +134,27 @@ function instance_create(array $data): array {
     // create .env file
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, <<<EOT
+        # Username should be FQDN as defined in DNS (e.g. example.com)
         USERNAME=$USERNAME
+
         APP_USERNAME=$APP_USERNAME
         APP_PASSWORD=$APP_PASSWORD
+
+        # Cipher key for setting secrets encryption and decryption
         CIPHER_KEY=$CIPHER_KEY
 
-        # Should the HTTP requests be redirected to their HTTPS equivalent. Possible values are: redirect, noredirect
+        # Whether HTTP requests should be redirected to their HTTPS equivalent (Possible values are: redirect, noredirect).
         HTTPS_REDIRECT=$HTTPS_REDIRECT
 
+        # Relay host public IP address to allow container calling itself (enforce sending the requests to the reverse proxy).
         EXTERNAL_IP_ADDRESS=$EXTERNAL_IP_ADDRESS
 
+        # Database host & credentials
         DB_HOSTNAME=$DB_HOSTNAME
         DB_BACKUP_USERNAME=$DB_BACKUP_USERNAME
         DB_BACKUP_PASSWORD=$DB_BACKUP_PASSWORD
 
+        # Limits for resources allocated by docker to the container
         MEM_LIMIT=$MEM_LIMIT
         CPU_LIMIT=$CPU_LIMIT
         EOT
@@ -156,9 +163,10 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-    exec("cp /root/b2/conf/instance/create/template/docker-compose.yml /home/$USERNAME/docker-compose.yml");
-    exec("cp /root/b2/conf/instance/create/template/php.ini /home/$USERNAME/php.ini");
-    exec("cp /root/b2/conf/instance/create/template/mysql.cnf /home/$USERNAME/mysql.cnf");
+    exec("cp /root/b2/conf/instance/create/template/docker-compose.yml /home/$USERNAME/");
+    exec("cp /root/b2/conf/instance/create/template/php.ini /home/$USERNAME/");
+    exec("cp /root/b2/conf/instance/create/template/mysql.cnf /home/$USERNAME/");
+    exec("cp /root/b2/conf/instance/create/template/mpm_prefork.conf /home/$USERNAME/");
 
     // replace {{db_ID}} in docker-compose.yml
     $hash = substr(md5($USERNAME), 0, 5);
