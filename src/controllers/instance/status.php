@@ -150,7 +150,7 @@ function instance_status(array $data): array {
                     return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
                 }
             ],
-            'mem' => [
+            'mem_limit' => [
                 'description' => "Amount of memory allocated to the container (in MB).",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
@@ -158,7 +158,7 @@ function instance_status(array $data): array {
                     return round(intval($mem_count) / (1024 * 1024), 0);
                 }
             ],
-            'cpu_qty' => [
+            'cpu_limit' => [
                 'description' => "Amount of CPU allocated to the container.",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
