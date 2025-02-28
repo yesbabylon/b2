@@ -56,14 +56,6 @@ RUN set -ex; \
 				| xargs -rt apt-mark manual; \
 		\
 		rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
-# set recommended PHP.ini settings
-RUN { \
-		echo 'opcache.memory_consumption=256'; \
-		echo 'opcache.interned_strings_buffer=64'; \
-		echo 'opcache.max_accelerated_files=8000'; \
-		echo 'opcache.revalidate_freq=60'; \
-		echo 'opcache.enable_cli=1'; \
-	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN a2enmod rewrite expires
 
