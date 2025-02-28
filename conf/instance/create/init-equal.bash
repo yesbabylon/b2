@@ -1,18 +1,12 @@
 #!/bin/bash
 
-# WARNING: This script is intended to be executed by `./create.bash`
 
-#####################
-### HANDLE DOCKER ###
-#####################
+#todo - handle WP settings, when required
+#    echo "WP_VERSION=$WP_VERSION"
+#    echo "WP_EMAIL=$WP_EMAIL"
+#    echo "WP_TITLE=$WP_TITLE"
 
-# Add docker-compose.yml file
-cp /root/b2/conf/instance/create/template/docker-compose.yml /home/"$USERNAME"/docker-compose.yml
-# Add config needed by docker-compose.yml
-cp /root/b2/conf/instance/create/template/php.ini /home/"$USERNAME"/php.ini
-cp /root/b2/conf/instance/create/template/mysql.cnf /home/"$USERNAME"/mysql.cnf
-
-# Move to newly created docker-compose.yml
+# Move to folder holding docker-compose.yml
 cd /home/"$USERNAME"
 
 docker compose build
@@ -37,9 +31,9 @@ mysql -u'$APP_USERNAME' -p'$APP_PASSWORD' -e \"$CREATE_BACKUP_USER_SQL_COMMANDS\
 "
 
 
-##########################
-### INIT eQual PROJECT ###
-##########################
+##################
+### INIT eQual ###
+##################
 
 docker exec "$USERNAME" bash -c "
 apt-get update
@@ -85,6 +79,6 @@ else
     "
 fi
 
-printf "eQual project initialized.\n"
+printf "eQual initialized.\n"
 
 exit 0
