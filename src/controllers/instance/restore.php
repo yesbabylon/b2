@@ -29,10 +29,12 @@ function instance_restore(array $data): array {
         throw new InvalidArgumentException("invalid_passphrase", 400);
     }
 
-    $db_hostname = getenv('DB_HOSTNAME') ?: false;
-    if(!$db_hostname) {
-        throw new Exception("DB_HOSTNAME_not_configured", 500);
+    $username = getenv('USERNAME') ?: false;
+    if(!$username) {
+        throw new Exception("USERNAME_not_configured", 500);
     }
+
+    $db_hostname = 'sql.'.$username;
 
     $db_backup_username = 'root';
     $db_backup_password = getenv('PASSWORD') ?: false;

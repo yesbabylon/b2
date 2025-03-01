@@ -66,12 +66,12 @@ function instance_backup(array $data): array {
 
     $gpg_name = gethostname();
 
-    $usernname = getenv('USERNAME') ?: false;
-    if(!$usernname) {
+    $username = getenv('USERNAME') ?: false;
+    if(!$username) {
         throw new Exception("USERNAME_not_configured", 500);
     }
 
-    $db_hostname = 'sql.'.$usernname;
+    $db_hostname = 'sql.'.$username;
 
     $db_backup_username = 'root';
     $db_backup_password = getenv('PASSWORD') ?: false;
