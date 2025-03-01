@@ -127,7 +127,6 @@ function instance_create(array $data): array {
 
     file_put_contents($log_file, "User created and configured.\n", FILE_APPEND | LOCK_EX);
 
-    $DB_HOSTNAME = "sql.$USERNAME";
     $EXTERNAL_IP_ADDRESS = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
 
     // create .env file
@@ -148,9 +147,6 @@ function instance_create(array $data): array {
 
         # Relay host public IP address to allow container calling itself (enforce sending the requests to the reverse proxy).
         EXTERNAL_IP_ADDRESS=$EXTERNAL_IP_ADDRESS
-
-        # Database host (by convention sql.{USERNAME})
-        DB_HOSTNAME=$DB_HOSTNAME
 
         # Limits for resources allocated by docker to the container
         MEM_LIMIT=$MEM_LIMIT
