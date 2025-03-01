@@ -49,6 +49,7 @@ function instance_restore(array $data): array {
         "/home/$instance/import/{$instance}_$backup_id.tar",
         "/home/$instance/export/{$instance}_$backup_id.tar"
     ];
+
     if($encrypted) {
         $possible_backup_files = array_map(
             function ($file) {return "$file.gpg";},
