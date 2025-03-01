@@ -58,6 +58,12 @@ network:
             mtu: 1500
 EOL
 
+netplan generate
+
+if ip link show veth0 >/dev/null 2>&1; then
+    ip link delete veth0
+fi
+
 # Apply Netplan configuration
 netplan apply
 
