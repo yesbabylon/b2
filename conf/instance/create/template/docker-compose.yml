@@ -59,7 +59,7 @@ services:
     extra_hosts:      
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
-      - EQ_DB_HOST=sql.${USERNAME}
+      - EQ_DB_HOST={{db_ID}}
       - EQ_DB_USER=root
       - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
