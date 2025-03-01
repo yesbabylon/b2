@@ -32,7 +32,7 @@ network:
         ens3:
             accept-ra: false
             addresses:
-            - $ENS3_IPV6/56
+            - $ENS3_IPV6
             dhcp4: true
             match:
                 macaddress: $ENS3_MAC
