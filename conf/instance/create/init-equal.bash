@@ -31,15 +31,13 @@ yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
 docker exec "$USERNAME" bash -c "
-./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=root --db_password=$PASSWORD
+./equal.run --do=config_generate --dbms=MYSQL --db_host=sql.$USERNAME --db_port=3306 --db_name=equal --db_username=root --db_password=$PASSWORD
 "
-sleep 5
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
 ./equal.run --do=init_package --package=core --import=true
 "
-sleep 15
 
 # Modify default root and user login to use domain name in mail
 docker exec "$USERNAME" bash -c "
