@@ -9,14 +9,14 @@
  * Creates a user instance with the specified data.
  *
  * @param array{
- *     USERNAME: string,
- *     APP_USERNAME: string,
- *     APP_PASSWORD: string,
- *     CIPHER_KEY?: string,
- *     HTTPS_REDIRECT?: string,
- *     MEM_LIMIT?: string
- *     CPU_LIMIT?: string
- * } $data
+ *          USERNAME: string,
+ *           PASSWORD: string,
+ *           APP_USERNAME: string,
+ *           CIPHER_KEY?: string,
+ *           HTTPS_REDIRECT?: string,
+ *           MEM_LIMIT?: string
+ *           CPU_LIMIT?: string
+ *          }                               $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
  */
@@ -56,12 +56,12 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_APP_USERNAME", 400);
     }
 
-    if(!isset($data['APP_PASSWORD'])) {
-        throw new InvalidArgumentException("missing_APP_PASSWORD", 400);
+    if(!isset($data['PASSWORD'])) {
+        throw new InvalidArgumentException("missing_PASSWORD", 400);
     }
 
-    if(!is_string($data['APP_PASSWORD']) || strlen($data['APP_PASSWORD']) < 8 || strlen($data['APP_PASSWORD']) > 70) {
-        throw new InvalidArgumentException("invalid_APP_PASSWORD", 400);
+    if(!is_string($data['PASSWORD']) || strlen($data['PASSWORD']) < 8 || strlen($data['PASSWORD']) > 70) {
+        throw new InvalidArgumentException("invalid_PASSWORD", 400);
     }
 
     if(isset($data['CIPHER_KEY']) && (!is_string($data['CIPHER_KEY']) || strlen($data['CIPHER_KEY']) !== 32)) {
@@ -87,7 +87,7 @@ function instance_create(array $data): array {
             'CPU_LIMIT'         => '1'
         ], $data);
 
-    $create_equal_instance_bash = BASE_DIR.'/conf/instance/create/create.bash';
+    // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create/create.bash';
 
     // Create specific log file for creation to record creation instance
     $log_file = BASE_DIR.'/logs/instance_create_'.$data['USERNAME'].'-'.date('YmdHis').'.log';
@@ -96,8 +96,8 @@ function instance_create(array $data): array {
     // exec("bash $create_equal_instance_bash > $log_file 2>&1");
 
     $USERNAME = $data['USERNAME'];
+    $PASSWORD = $data['PASSWORD'];
     $APP_USERNAME = $data['APP_USERNAME'];
-    $APP_PASSWORD = $data['APP_PASSWORD'];
     $CIPHER_KEY = $data['CIPHER_KEY'];
     $MEM_LIMIT = $data['MEM_LIMIT'];
     $CPU_LIMIT = $data['CPU_LIMIT'];
@@ -105,7 +105,7 @@ function instance_create(array $data): array {
 
     // create a new user and set password
     exec("adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
-    exec("echo '$USERNAME:$APP_PASSWORD' | chpasswd");
+    exec("echo '$USERNAME:$PASSWORD' | chpasswd");
 
     // add user to docker group
     exec("usermod -a -G docker $USERNAME");
@@ -116,6 +116,7 @@ function instance_create(array $data): array {
     exec("chmod g+w -R /home/$USERNAME/www");
 
     // define ssh-login as default shell for user
+    // #memo - ssh-login is expected to have been installed in /usr/local/bin/ssh-login by the install script
     exec("chsh -s /usr/local/bin/ssh-login $USERNAME");
 
     // restart SFTP service
@@ -127,8 +128,6 @@ function instance_create(array $data): array {
     file_put_contents($log_file, "User created and configured.\n", FILE_APPEND | LOCK_EX);
 
     $DB_HOSTNAME = "sql.$USERNAME";
-    $DB_BACKUP_USERNAME = "backup";
-    $DB_BACKUP_PASSWORD = bin2hex(random_bytes(8)); // 16 caractères aléatoires
     $EXTERNAL_IP_ADDRESS = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
 
     // create .env file
@@ -136,9 +135,10 @@ function instance_create(array $data): array {
     file_put_contents($env_file, <<<EOT
         # Username should be FQDN as defined in DNS (e.g. example.com)
         USERNAME=$USERNAME
+        PASSWORD=$PASSWORD
 
+        # Name of the user user that will be automatically created and access the application (eQual or Wordpress).
         APP_USERNAME=$APP_USERNAME
-        APP_PASSWORD=$APP_PASSWORD
 
         # Cipher key for setting secrets encryption and decryption
         CIPHER_KEY=$CIPHER_KEY
@@ -149,10 +149,8 @@ function instance_create(array $data): array {
         # Relay host public IP address to allow container calling itself (enforce sending the requests to the reverse proxy).
         EXTERNAL_IP_ADDRESS=$EXTERNAL_IP_ADDRESS
 
-        # Database host & credentials
+        # Database host (by convention sql.{USERNAME})
         DB_HOSTNAME=$DB_HOSTNAME
-        DB_BACKUP_USERNAME=$DB_BACKUP_USERNAME
-        DB_BACKUP_PASSWORD=$DB_BACKUP_PASSWORD
 
         # Limits for resources allocated by docker to the container
         MEM_LIMIT=$MEM_LIMIT
@@ -163,10 +161,7 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-    exec("cp /root/b2/conf/instance/create/template/docker-compose.yml /home/$USERNAME/");
-    exec("cp /root/b2/conf/instance/create/template/php.ini /home/$USERNAME/");
-    exec("cp /root/b2/conf/instance/create/template/mysql.cnf /home/$USERNAME/");
-    exec("cp /root/b2/conf/instance/create/template/mpm_prefork.conf /home/$USERNAME/");
+    exec("cp /root/b2/conf/instance/create/template/* /home/$USERNAME/");
 
     // replace {{db_ID}} in docker-compose.yml
     $hash = substr(md5($USERNAME), 0, 5);

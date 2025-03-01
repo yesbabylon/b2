@@ -91,26 +91,24 @@ Create a new instance.
 ```json
 {
   "USERNAME":"equal.local",
-  "APP_USERNAME":"root",
-  "APP_PASSWORD":"thepassword1234",
-  "symbiose": true,
-  "equalpress": false
+  "PASSWORD":"thepassword1234",
+  "APP_USERNAME":"root"
 }
 ```
 
-| key            | required |     default      | values                 | Note                                                                    |
-|----------------|:--------:|:----------------:|------------------------|-------------------------------------------------------------------------|
-| USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.                      |
-| APP_USERNAME   |   true   |                  |                        | User name for eQual and db accesses.                                    |
-| APP_PASSWORD   |   true   |                  |                        | Password for eQual and db accesses. Must be at least 8 characters long. |
-| symbiose       |  false   |      false       |                        | If true it installs Symbiose.                                           |
-| equalpress     |  false   |      false       |                        | If true it installs eQualPress.                                         |
-| CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key.       |
-| HTTPS_REDIRECT |  false   |    noredirect    | redirect \| noredirect | Noredirect is for HTTP and redirect for HTTPS.                          |
-| WP_VERSION     |  false   |       6.4        |                        | Version of WordPress installed. Only required if equalpress is true.    |
-| WP_EMAIL       |  false   | root@equal.local |                        | Email address for WordPress. Only required if equalpress is true.       |
-| WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true.        |
-| MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                                |
+| key            | required |     default      | values                 | Note                                                         |
+| -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
+| USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.           |
+| PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
+| APP_USERNAME   |   true   |                  |                        | User name for eQual or Wordpress (is used as `app_username@username`) |
+| symbiose       |  false   |      false       |                        | If true it installs Symbiose.                                |
+| equalpress     |  false   |      false       |                        | If true it installs eQualPress.                              |
+| CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
+| HTTPS_REDIRECT |  false   |    noredirect    | redirect \| noredirect | Noredirect is for HTTP and redirect for HTTPS.               |
+| WP_VERSION     |  false   |       6.4        |                        | Version of WordPress installed. Only required if equalpress is true. |
+| WP_EMAIL       |  false   | root@equal.local |                        | Email address for WordPress. Only required if equalpress is true. |
+| WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true. |
+| MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                     |
 
 **Notes**: 
 

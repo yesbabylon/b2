@@ -71,14 +71,11 @@ function instance_backup(array $data): array {
         throw new Exception("DB_HOSTNAME_not_configured", 500);
     }
 
-    $db_backup_username = getenv('DB_BACKUP_USERNAME') ?: false;
-    if(!$db_backup_username) {
-        throw new Exception("DB_BACKUP_USERNAME_not_configured", 500);
-    }
+    $db_backup_username = 'root';
+    $db_backup_password = getenv('PASSWORD') ?: false;
 
-    $db_backup_password = getenv('DB_BACKUP_PASSWORD') ?: false;
     if(!$db_backup_password) {
-        throw new Exception("DB_BACKUP_PASSWORD_not_configured", 500);
+        throw new Exception("PASSWORD_not_configured", 500);
     }
 
     $db_name = getenv('DB_NAME') ?: 'equal';

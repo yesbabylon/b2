@@ -23,7 +23,7 @@ services:
     restart: always
     environment:
       - MYSQL_DATABASE=equal
-      - MYSQL_ROOT_PASSWORD=${APP_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${PASSWORD}
     networks:
       - internal
     volumes:
@@ -61,8 +61,8 @@ services:
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
       - EQ_DB_HOST=${DB_HOSTNAME}
-      - EQ_DB_USER=${APP_USERNAME}
-      - EQ_DB_PASS=${APP_PASSWORD}
+      - EQ_DB_USER=root
+      - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
       - EQ_CIPHER_KEY=${CIPHER_KEY}
       - EQ_MEM_LIMIT=${MEM_LIMIT}

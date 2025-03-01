@@ -16,21 +16,6 @@ sleep 15
 printf "Docker images built and containers started\n"
 
 
-#############################
-### Create db backup user ###
-#############################
-
-CREATE_BACKUP_USER_SQL_COMMANDS="
-CREATE USER '${DB_BACKUP_USERNAME}'@'localhost' IDENTIFIED BY '${DB_BACKUP_PASSWORD}';
-GRANT SELECT, SHOW VIEW, PROCESS, DROP, CREATE, INSERT, ALTER, LOCK TABLES, EVENT, TRIGGER ON *.* TO '${DB_BACKUP_USERNAME}'@'localhost';
-FLUSH PRIVILEGES;
-"
-
-docker exec "$DB_HOSTNAME" bash -c "
-mysql -u'$APP_USERNAME' -p'$APP_PASSWORD' -e \"$CREATE_BACKUP_USER_SQL_COMMANDS\"
-"
-
-
 ##################
 ### INIT eQual ###
 ##################
@@ -46,7 +31,7 @@ yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
 docker exec "$USERNAME" bash -c "
-./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=$APP_USERNAME --db_password=$APP_PASSWORD
+./equal.run --do=config_generate --dbms=MYSQL --db_host=$DB_HOSTNAME --db_port=3306 --db_name=equal --db_username=root --db_password=$PASSWORD
 "
 sleep 5
 
@@ -62,22 +47,21 @@ docker exec "$USERNAME" bash -c "
 ./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
 "
 
-# Check if APP_USERNAME is equal to root if yes, change the password of the root user, else create the user
-if [ "$APP_USERNAME" = "root" ]; then
-    docker exec "$USERNAME" bash -c "
-    ./equal.run --do=user_pass-update --user_id=1 --password=$APP_PASSWORD --confirm=$APP_PASSWORD
-    "
-else
-    docker exec "$USERNAME" bash -c "
-    ./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$APP_PASSWORD
-    ./equal.run --do=model_update --entity='core\\User' --id=3 --fields='{\"validated\":1, \"status\": \"instance\"}' --force=true
-    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
-    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
-    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
-    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=delete
-    ./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=manage
-    "
-fi
+# Update root password with the one provided
+docker exec "$USERNAME" bash -c "
+./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$APP_PASSWORD
+"
+# Create a new user with same default password
+docker exec "$USERNAME" bash -c "
+./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$PASSWORD
+./equal.run --do=model_update --entity='core\\User' --id=3 --fields='{\"validated\":1, \"status\": \"instance\"}' --force=true
+./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
+./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
+./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
+./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=delete
+./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=manage
+"
+
 
 printf "eQual initialized.\n"
 
