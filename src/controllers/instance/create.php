@@ -22,6 +22,8 @@
  */
 function instance_create(array $data): array {
 
+    // check env for required binaries
+
     if (!shell_exec('command -v git')) {
         // "Git not found. Please install Git before running this script."
         throw new InvalidArgumentException("missing_git", 400);
@@ -32,15 +34,24 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("missing_docker", 400);
     }
 
+    // check presence of mandatory params
+
     if(!isset($data['USERNAME'])) {
         throw new InvalidArgumentException("missing_USERNAME", 400);
     }
 
-    $domain_name_pattern = '/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/';
-    if(
-        !is_string($data['USERNAME']) || empty($data['USERNAME']) || strlen($data['USERNAME']) > 32
-        || preg_match($domain_name_pattern, $data['USERNAME']) === 0
-    ) {
+    if(!isset($data['APP_USERNAME'])) {
+        throw new InvalidArgumentException("missing_APP_USERNAME", 400);
+    }
+
+    if(!isset($data['PASSWORD'])) {
+        throw new InvalidArgumentException("missing_PASSWORD", 400);
+    }
+
+    // check params validity
+
+    if( !is_string($data['USERNAME']) || empty($data['USERNAME']) || strlen($data['USERNAME']) > 32
+        || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0 ) {
         throw new InvalidArgumentException("invalid_USERNAME", 400);
     }
 
@@ -48,16 +59,8 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("instance_already_exists", 400);
     }
 
-    if(!isset($data['APP_USERNAME'])) {
-        throw new InvalidArgumentException("missing_APP_USERNAME", 400);
-    }
-
     if(!is_string($data['APP_USERNAME']) || empty($data['APP_USERNAME'])) {
         throw new InvalidArgumentException("invalid_APP_USERNAME", 400);
-    }
-
-    if(!isset($data['PASSWORD'])) {
-        throw new InvalidArgumentException("missing_PASSWORD", 400);
     }
 
     if(!is_string($data['PASSWORD']) || strlen($data['PASSWORD']) < 8 || strlen($data['PASSWORD']) > 70) {
@@ -80,6 +83,7 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
+    // assign default values for non-mandatory parameters if not provided
     $data = array_merge([
             'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
             'HTTPS_REDIRECT'    => 'noredirect',
@@ -136,7 +140,7 @@ function instance_create(array $data): array {
         USERNAME=$USERNAME
         PASSWORD=$PASSWORD
 
-        # Name of the user user that will be automatically created and access the application (eQual or Wordpress).
+        # Name of the user user that will be automatically created for accessing the application (eQual or Wordpress).
         APP_USERNAME=$APP_USERNAME
 
         # Cipher key for setting secrets encryption and decryption
