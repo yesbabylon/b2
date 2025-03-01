@@ -121,13 +121,13 @@ usermod --password $(echo "$ROOT_PASSWORD" | openssl passwd -1 -stdin) root
 
 if [[ "$PUBLIC_IP" != "0.0.0.0" && "$PUBLIC_IP" != "127.0.0.1" && -n "$PUBLIC_IP" ]]; then
     echo "network:
-      version: 2
-      vlans:
-        veth0:
-          id: 0
-          link: ens3
-          dhcp4: no
-          addresses: [$PUBLIC_IP/24]" > /etc/netplan/51-failover.yaml
+  version: 2
+  vlans:
+    veth0:
+      id: 0
+      link: ens3
+      dhcp4: no
+      addresses: [$PUBLIC_IP/24]" > /etc/netplan/51-failover.yaml
 
     chmod 600 /etc/netplan/51-failover.yaml
     netplan generate

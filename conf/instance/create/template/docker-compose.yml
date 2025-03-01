@@ -19,7 +19,7 @@
 services:
   {{db_ID}}:
     image: mysql:5.7
-    container_name: ${DB_HOSTNAME}
+    container_name: sql.${USERNAME}
     restart: always
     environment:
       - MYSQL_DATABASE=equal
@@ -34,8 +34,7 @@ services:
     container_name: phpmyadmin.${USERNAME}
     restart: always
     environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=${DB_HOSTNAME}
+      - PMA_HOST={{db_ID}}
       - HTTPS_METHOD=redirect
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=phpmyadmin.${USERNAME}
@@ -60,7 +59,7 @@ services:
     extra_hosts:      
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
-      - EQ_DB_HOST=${DB_HOSTNAME}
+      - EQ_DB_HOST=sql.${USERNAME}
       - EQ_DB_USER=root
       - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
