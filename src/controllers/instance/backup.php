@@ -118,7 +118,11 @@ function instance_backup(array $data): array {
     $compress_filestore = "cd /home/$instance && tar --exclude='./.*' --exclude='*/.git' --exclude='./log/equal.log' -cvzf $tmp_backup_dir/filestore.tar.gz www";
     exec($compress_filestore);
 
-    // Create archive to unite files
+    // (commented - see above) Restart docker containers
+    // exec("docker compose -f $docker_file_path start");
+    instance_disable_maintenance_mode($instance);
+
+    // Merge files into a single archive
     $to_export = ["backup.sql.gz", "config.tar", "filestore.tar.gz"];
     $to_export_str = implode(' ', $to_export);
     $timestamp = date('Ymd').sprintf('%05d', time() - strtotime('today'));
@@ -132,9 +136,6 @@ function instance_backup(array $data): array {
     // Remove tmp directory for backup
     exec("rm -rf $tmp_backup_dir");
 
-    // Restart docker containers
-    // exec("docker compose -f $docker_file_path start");
-
     if($data['encrypt']) {
         // Encrypt backup
         exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_name $backup_file");
@@ -144,8 +145,6 @@ function instance_backup(array $data): array {
 
         $backup_file = $backup_file.'.gpg';
     }
-
-    instance_disable_maintenance_mode($instance);
 
     return [
         'code' => 201,
