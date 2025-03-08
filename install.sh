@@ -149,7 +149,7 @@ mv /etc/adduser.conf /etc/adduser.conf.orig
 cp "$INSTALL_DIR"/conf/etc/adduser.conf /etc/adduser.conf
 
 # Install Apache utilities (htpasswd), vnstat (bandwidth monitoring), PHP cli (for API) and FTP service
-apt-get install -y apache2-utils vnstat php-cli vsftpd apt-transport-https software-properties-common
+DEBIAN_FRONTEND=noninteractive apt-get install -y apache2-utils vnstat php-cli vsftpd apt-transport-https software-properties-common
 
 # Custom FTP config
 mv /etc/vsftpd.conf /etc/vsftpd.conf.orig
@@ -249,7 +249,7 @@ docker exec nginx-proxy nginx -s reload
 ### Install cron ###
 ####################
 
-apt-get install -y cron
+DEBIAN_FRONTEND=noninteractive apt-get install -y cron
 
 PHP_SCRIPT="cron.php"
 CRON_CMD="* * * * * cd /root/b2/src && /usr/bin/php $PHP_SCRIPT"
