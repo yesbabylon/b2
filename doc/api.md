@@ -91,8 +91,7 @@ Create a new instance.
 ```json
 {
   "USERNAME":"equal.local",
-  "PASSWORD":"thepassword1234",
-  "APP_USERNAME":"root"
+  "PASSWORD":"thepassword1234"
 }
 ```
 
@@ -100,7 +99,6 @@ Create a new instance.
 | -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
 | USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.           |
 | PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
-| APP_USERNAME   |   true   |                  |                        | User name for eQual or Wordpress (is used as `app_username@username`) |
 | symbiose       |  false   |      false       |                        | If true it installs Symbiose.                                |
 | equalpress     |  false   |      false       |                        | If true it installs eQualPress.                              |
 | CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
@@ -110,11 +108,7 @@ Create a new instance.
 | WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true. |
 | MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                     |
 
-**Notes**: 
 
-If the _APP_USERNAME_ given isn't `root`, then the eQual login will be _APP_USERNAME_@_USERNAME_.
-
-For instance if _APP_USERNAME_ is `johndoe` and _USERNAME_ is `equal.local` then the eQual login will be `johndoe@equal.local`.
 
 ### POST _/instance/delete_
 

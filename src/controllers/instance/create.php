@@ -10,13 +10,12 @@
  *
  * @param array{
  *          USERNAME: string,
- *           PASSWORD: string,
- *           APP_USERNAME: string,
- *           CIPHER_KEY?: string,
- *           HTTPS_REDIRECT?: string,
- *           MEM_LIMIT?: string
- *           CPU_LIMIT?: string
- *          }                               $data   The data for the new instance.
+ *          PASSWORD: string,
+ *          CIPHER_KEY?: string,
+ *          HTTPS_REDIRECT?: string,
+ *          MEM_LIMIT?: string
+ *          CPU_LIMIT?: string
+ *      }                               $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
  */
@@ -40,10 +39,6 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("missing_USERNAME", 400);
     }
 
-    if(!isset($data['APP_USERNAME'])) {
-        throw new InvalidArgumentException("missing_APP_USERNAME", 400);
-    }
-
     if(!isset($data['PASSWORD'])) {
         throw new InvalidArgumentException("missing_PASSWORD", 400);
     }
@@ -57,10 +52,6 @@ function instance_create(array $data): array {
 
     if(instance_exists($data['USERNAME'])) {
         throw new InvalidArgumentException("instance_already_exists", 400);
-    }
-
-    if(!is_string($data['APP_USERNAME']) || empty($data['APP_USERNAME'])) {
-        throw new InvalidArgumentException("invalid_APP_USERNAME", 400);
     }
 
     if(!is_string($data['PASSWORD']) || strlen($data['PASSWORD']) < 8 || strlen($data['PASSWORD']) > 70) {
@@ -101,7 +92,6 @@ function instance_create(array $data): array {
 
     $USERNAME = $data['USERNAME'];
     $PASSWORD = $data['PASSWORD'];
-    $APP_USERNAME = $data['APP_USERNAME'];
     $CIPHER_KEY = $data['CIPHER_KEY'];
     $MEM_LIMIT = $data['MEM_LIMIT'];
     $CPU_LIMIT = $data['CPU_LIMIT'];
@@ -139,9 +129,6 @@ function instance_create(array $data): array {
         # Username should be FQDN as defined in DNS (e.g. example.com)
         USERNAME=$USERNAME
         PASSWORD=$PASSWORD
-
-        # Name of the user user that will be automatically created for accessing the application (eQual or Wordpress).
-        APP_USERNAME=$APP_USERNAME
 
         # Cipher key for setting secrets encryption and decryption
         CIPHER_KEY=$CIPHER_KEY
