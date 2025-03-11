@@ -137,7 +137,7 @@ function instance_backup(array $data): array {
     exec("rm -rf $tmp_backup_dir");
 
     if($data['encrypt']) {
-		
+
 		exec("gpg --list-keys " . escapeshellarg($gpg_name) . " 2>&1", $output, $return_var);
 
 		// gpgp key found
@@ -146,7 +146,7 @@ function instance_backup(array $data): array {
 			exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_name $backup_file");
 
 			$backup_file = $backup_file.'.gpg';
-			
+
 			// Remove non-encrypted backup (keep only crypted one)
 			unlink($backup_file);
 		}

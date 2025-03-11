@@ -104,8 +104,14 @@ function instance_restore(array $data): array {
 
     // Restore database
     exec("cd $tmp_restore_dir && gunzip backup.sql.gz");
-    exec("docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS $db_name; CREATE DATABASE $db_name;\"");
-    exec("docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password $db_name < $tmp_restore_dir/backup.sql");
+
+    $cmd_empty_database = "docker exec $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password -e \"DROP DATABASE IF EXISTS $db_name; CREATE DATABASE $db_name;\"";
+    echo "Running $cmd_empty_database\n";
+    exec($cmd_empty_database);
+
+    $cmd_restore_databse = "docker exec -i $db_hostname /usr/bin/mysql -u $db_backup_username --password=$db_backup_password $db_name < $tmp_restore_dir/backup.sql";
+    echo "Running $cmd_restore_databse\n";
+    exec($cmd_restore_databse);
 
     // Stop docker containers
     $docker_file_path = "/home/$instance/docker-compose.yml";
