@@ -2,7 +2,7 @@
 # Some Rights Reserved, Yesbabylon, 2025
 # Licensed under MIT License <https://opensource.org/licenses/MIT>
 # 
-# Docker Compose file for setting up an eQual framework environment
+# Docker Compose file template for setting up an eQual framework environment
 #
 # This setup includes:
 # - A MySQL 5.7 database service
@@ -10,7 +10,7 @@
 # - An eQual framework application service
 #
 # Networks:
-# - "internal": Used for communication between services
+# - "internal_{{db_ID}}": Used for communication between services of the stack (segregation between instances on a same host)
 # - "proxynet": External network for public access (assumed to be managed by a reverse proxy)
 #
 # Volumes:
@@ -25,9 +25,9 @@ services:
       - MYSQL_DATABASE=equal
       - MYSQL_ROOT_PASSWORD=${PASSWORD}
     networks:
-      - internal
+      - internal_{{db_ID}}
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data_{{db_ID}}:/var/lib/mysql
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -41,10 +41,8 @@ services:
       - UPLOAD_LIMIT=100M
       - MAX_EXECUTION_TIME=3600
       - MEMORY_LIMIT=512M
-    links:
-      - {{db_ID}}:db
     networks:
-      - internal
+      - internal_{{db_ID}}
       - proxynet
     depends_on:
       - {{db_ID}}
@@ -71,10 +69,8 @@ services:
       - LETSENCRYPT_HOST=${USERNAME}
       - LETSENCRYPT_EMAIL=contact@${USERNAME}
     networks:
-      - internal
+      - internal_{{db_ID}}
       - proxynet
-    links:
-      - {{db_ID}}:db
     depends_on:
       - {{db_ID}}
     deploy:
@@ -83,9 +79,9 @@ services:
           cpus: ${CPU_LIMIT}
           memory: ${MEM_LIMIT}
 networks:
-  internal:
+  internal_{{db_ID}}:
     driver: bridge
   proxynet:
     external: true
 volumes:
-  db_data:
+  db_data_{{db_ID}}:
