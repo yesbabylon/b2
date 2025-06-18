@@ -145,10 +145,11 @@ function instance_backup(array $data): array {
 			// Encrypt backup
 			exec("gpg --trust-model always --output $backup_file.gpg --encrypt --recipient $gpg_name $backup_file");
 
-			// Remove non-encrypted backup (keep only crypted one)
-			unlink($backup_file);
-
-			$backup_file = $backup_file.'.gpg';			
+			if($return_var === 0 && file_exists("$backup_file.gpg")) {
+				// Remove non-encrypted backup (keep only crypted one)
+				unlink($backup_file);
+				$backup_file = $backup_file.'.gpg';			
+			}
 		}
     }
 
