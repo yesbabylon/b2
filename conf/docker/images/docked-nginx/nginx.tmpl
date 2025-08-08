@@ -114,8 +114,15 @@ server {
 server {
 	server_name _; # This is just an invalid value which will never trigger on a real hostname.
 	listen 443 ssl http2;
+	#todo - replace with
+	# listen 443 ssl;
+	# http2 on;
 	{{ if $enable_ipv6 }}
 	listen [::]:443 ssl http2;
+	#todo - replace with
+	# listen [::]:443 ssl;
+	# http2 on;
+
 	{{ end }}
 	access_log /var/log/nginx/access.log vhost;
 	return 503;
