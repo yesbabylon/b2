@@ -51,6 +51,7 @@ services:
     container_name: ${USERNAME}
     restart: always
     volumes:
+      - opt_bin_cache:/opt/bin
       - ./www/.:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./mpm_prefork.conf:/etc/apache2/mods-available/mpm_prefork.conf
@@ -85,3 +86,4 @@ networks:
     external: true
 volumes:
   db_data_{{db_ID}}:
+  opt_bin_cache:
