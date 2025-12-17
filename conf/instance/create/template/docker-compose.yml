@@ -72,6 +72,8 @@ services:
       - EQ_MEM_LIMIT=1000M
       # todo - use a dedicated var in .env file
       - EQ_MEM_FREE_LIMIT=1000M
+      # todo - create a var in .env file
+      # - EQ_MEM_FREE_LIMIT=${EQ_MEM_FREE_LIMIT}
       # remember to disable following line once the SSL certificate has been set up
       - HTTPS_METHOD=${HTTPS_REDIRECT}
       # nginx config is set to add a www. subdomain to each virtual host
