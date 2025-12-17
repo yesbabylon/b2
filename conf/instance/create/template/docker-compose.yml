@@ -25,9 +25,11 @@ services:
       - MYSQL_DATABASE=equal
       - MYSQL_ROOT_PASSWORD=${PASSWORD}
     networks:
+      # database is not exposed on the public network (proxynet)
       - internal_{{db_ID}}
     volumes:
       - db_data_{{db_ID}}:/var/lib/mysql
+      # map local file for custom config (e.g. `max_allowed_packet`)
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -35,6 +37,7 @@ services:
     restart: always
     environment:
       - PMA_HOST={{db_ID}}
+      # login page requires HTTPS, so we must redirect even if no valid certificate is set
       - HTTPS_METHOD=redirect
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=phpmyadmin.${USERNAME}
@@ -53,9 +56,11 @@ services:
     volumes:
       - opt_bin_cache:/opt/bin
       - ./www/.:/var/www/html
+      # map local file for custom config (e.g. `upload_max_filesize`)
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
       - ./mpm_prefork.conf:/etc/apache2/mods-available/mpm_prefork.conf
-    extra_hosts:      
+    extra_hosts:
+      # If instance calls itself through HTTP, force sending the requests to the reverse proxy
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
       - EQ_DB_HOST={{db_ID}}
@@ -63,10 +68,17 @@ services:
       - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
       - EQ_CIPHER_KEY=${CIPHER_KEY}
-      - EQ_MEM_LIMIT=${MEM_LIMIT}
+      # minimum amount of memory that must be available for handling a request (`MEM_LIMIT` has a distinct meaning [= max usage] and should not be used here)
+      - EQ_MEM_LIMIT=1000M
+      # todo - use a dedicated var in .env file
+      - EQ_MEM_FREE_LIMIT=1000M
+      # remember to disable following line once the SSL certificate has been set up
       - HTTPS_METHOD=${HTTPS_REDIRECT}
+      # nginx config is set to add a www. subdomain to each virtual host
       - VIRTUAL_PORT=80
       - VIRTUAL_HOST=${USERNAME}
+      # all domains that require a SSL cert (necessary fr direct HTTPS connection)
+      # by convention we leave www.DOMAIN_NAME HTTP only, it will be redirected to https://DOMAIN_NAME
       - LETSENCRYPT_HOST=${USERNAME}
       - LETSENCRYPT_EMAIL=contact@${USERNAME}
     networks:
@@ -79,6 +91,8 @@ services:
         limits:
           cpus: ${CPU_LIMIT}
           memory: ${MEM_LIMIT}
+# Expose the services through the 'proxynet' which contains a nginx reverse proxy.
+# Only services having a VIRTUAL_HOST environment are accessible.
 networks:
   internal_{{db_ID}}:
     driver: bridge
