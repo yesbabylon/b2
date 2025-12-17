@@ -5,9 +5,9 @@
 # Docker Compose file template for setting up an eQual framework environment
 #
 # This setup includes:
-# - A MySQL 5.7 database service
-# - A phpMyAdmin interface for managing the database
-# - An eQual framework application service
+# - A MySQL database container (mysql/mysql:5.7)
+# - A phpMyAdmin container (phpmyadmin/phpmyadmin:latest)
+# - An eQual container (equalframework/equal:latest)
 #
 # Networks:
 # - "internal_{{db_ID}}": Used for communication between services of the stack (segregation between instances on a same host)
