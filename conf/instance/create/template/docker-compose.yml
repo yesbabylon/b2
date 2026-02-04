@@ -68,12 +68,10 @@ services:
       - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
       - EQ_CIPHER_KEY=${CIPHER_KEY}
+      # maximum amount of memory that should be used for handling a request
+      - EQ_MEM_LIMIT=${MEM_LIMIT}
       # minimum amount of memory that must be available for handling a request (`MEM_LIMIT` has a distinct meaning [= max usage] and should not be used here)
-      - EQ_MEM_LIMIT=1000M
-      # todo - use a dedicated var in .env file
-      - EQ_MEM_FREE_LIMIT=1000M
-      # todo - create a var in .env file
-      # - EQ_MEM_FREE_LIMIT=${EQ_MEM_FREE_LIMIT}
+      - EQ_MEM_FREE_LIMIT=${EQ_MEM_FREE_LIMIT}
       # remember to disable following line once the SSL certificate has been set up
       - HTTPS_METHOD=${HTTPS_REDIRECT}
       # nginx config is set to add a www. subdomain to each virtual host

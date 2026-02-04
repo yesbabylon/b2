@@ -79,7 +79,8 @@ function instance_create(array $data): array {
             'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
             'HTTPS_REDIRECT'    => 'noredirect',
             'MEM_LIMIT'         => '1000M',
-            'CPU_LIMIT'         => '1'
+            'CPU_LIMIT'         => '1',
+            'EQ_MEM_FREE_LIMIT' => '256M'
         ], $data);
 
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create/create.bash';
@@ -96,6 +97,7 @@ function instance_create(array $data): array {
     $MEM_LIMIT = $data['MEM_LIMIT'];
     $CPU_LIMIT = $data['CPU_LIMIT'];
     $HTTPS_REDIRECT = $data['HTTPS_REDIRECT'];
+    $EQ_MEM_FREE_LIMIT = $data['EQ_MEM_FREE_LIMIT'];
 
     // create a new user and set password
     exec("adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
@@ -142,6 +144,8 @@ function instance_create(array $data): array {
         # Limits for resources allocated by docker to the container
         MEM_LIMIT=$MEM_LIMIT
         CPU_LIMIT=$CPU_LIMIT
+
+        EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
         EOT
     );
 
