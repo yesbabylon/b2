@@ -9,6 +9,17 @@
  * Returns host status statistics.
  * body.config.ip_* can be false if interfaces names are not ens3 (protected), veth0 (public) and ens4 (private).
  *
+ * Required system binaries:
+ *
+ * standard: ps, awk, grep, head, tail, cut, wc, free, vmstat, df, w, hostname, xargs, cat
+ * extra: ip, vnstat, iptables-save, hostnamectl
+ *
+ * Notes:
+ * - hostnamectl requires systemd
+ * - vnstat is required for network statistics
+ * - iptables-save is required for firewall inspection
+ *
+ *
  * @return array{
  *     code: int,
  *     body: array{
@@ -48,6 +59,7 @@
  *     }
  * }
  * @throws Exception
+ *
  */
 function status(array $data): array {
     // retrieve interface (usually either eth0 or ens3)
@@ -62,7 +74,7 @@ function status(array $data): array {
         'instant' => [
             'mysql_mem' => [
                 'description' => "mem consumption mysql (%MEM)",
-                'command'     => 'ps -o %mem,command ax | grep mysqld | head -1 | cut -d\' \' -f 1',
+                'command'     => 'ps -C mysqld -o %mem= | head -1',
                 'adapt'       => function ($res) {
                     return intval($res).'%';
                 }
@@ -76,14 +88,14 @@ function status(array $data): array {
             ],
             'nginx_mem' => [
                 'description' => "mem consumption nginx (%MEM)",
-                'command'     => 'ps aux| awk \'/nginx/{total+=$4}END{print total}\'',
+                'command'     => 'ps -eo %mem,comm | awk \'$2=="nginx"{sum+=$1} END {print sum}\'',
                 'adapt'       => function ($res) {
                     return $res.'%';
                 }
             ],
             'apache_proc' => [
                 'description' => "number of apache processes",
-                'command'     => 'ps -o command ax | grep apache2 | head -n -1 | wc -l',
+                'command'     => 'ps -o command ax | grep -c \'[a]pache2\'',
                 'adapt'       => function ($res) {
                     return $res;
                 }
@@ -104,7 +116,7 @@ function status(array $data): array {
             ],
             'total_proc' => [
                 'description' => "total number of running processes",
-                'command'     => 'ps aux | head -n -1 | wc -l',
+                'command'     => 'ps aux | wc -l',
                 'adapt'       => function ($res) {
                     return $res;
                 }
@@ -118,14 +130,14 @@ function status(array $data): array {
             ],
             'cpu_use' => [
                 'description' => "used CPU (%)",
-                'command'     => 'top -bn1 | grep "Cpu(s)" | awk \'{printf "%.2f%%\n", $2 + $4}\'',
+                'command'     => 'vmstat 1 2 | tail -1 | awk \'{print 100 - $15}\'',
                 'adapt'       => function ($res) {
                     return $res;
                 }
             ],
             'dsk_use' => [
                 'description' => "used DISK (%)",
-                'command'     => 'df -h . | tail -1 | awk \'{printf "%.2f%%\n", $3/$2 * 100}\'',
+                'command'     => 'df -P . | tail -1 | awk \'{print $5}\'',
                 'adapt'       => function ($res) {
                     return $res;
                 }
