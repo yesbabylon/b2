@@ -123,7 +123,7 @@ function status(array $data): array {
             ],
             'ram_use' => [
                 'description' => "used RAM (%)",
-                'command'     => 'free -m | awk \'/Mem/{printf "%.2f%%\n", $3/$2 * 100}\'',
+                'command'     => 'free -m | awk \'/Mem/{printf "%d%%\n", ($3/$2)*100}\'',
                 'adapt'       => function ($res) {
                     return $res;
                 }
