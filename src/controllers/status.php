@@ -76,21 +76,21 @@ function status(array $data): array {
                 'description' => "mem consumption mysql (%MEM)",
                 'command'     => 'ps -C mysqld -o %mem= | head -1',
                 'adapt'       => function ($res) {
-                    return intval($res).'%';
+                    return intval($res) . '%';
                 }
             ],
             'apache_mem' => [
                 'description' => "mem consumption apache (%MEM)",
                 'command'     => 'ps aux| awk \'/apach[e]/{total+=$4}END{print total}\'',
                 'adapt'       => function ($res) {
-                    return $res.'%';
+                    return $res . '%';
                 }
             ],
             'nginx_mem' => [
                 'description' => "mem consumption nginx (%MEM)",
                 'command'     => 'ps -eo %mem,comm | awk \'$2=="nginx"{sum+=$1} END {print sum}\'',
                 'adapt'       => function ($res) {
-                    return $res.'%';
+                    return $res . '%';
                 }
             ],
             'apache_proc' => [
@@ -132,7 +132,7 @@ function status(array $data): array {
                 'description' => "used CPU (%)",
                 'command'     => 'vmstat 1 2 | tail -1 | awk \'{print 100 - $15}\'',
                 'adapt'       => function ($res) {
-                    return $res;
+                    return $res . '%';
                 }
             ],
             'dsk_use' => [
