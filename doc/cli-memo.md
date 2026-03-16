@@ -1,168 +1,168 @@
-# CLI memo (`run.sh`) — routes/actions and expected parameters
+# CLI memo (`run.sh`) — available routes/actions and expected parameters
 
-Ce mémo résume les actions disponibles via la CLI locale (`./run.sh`), avec les paramètres attendus et leur type.
+This memo summarizes the actions you can run with the local CLI (`./run.sh`), including expected parameters and value types.
 
-## Format de commande
-
-```bash
-./run.sh --route=<route> [--param=value ...]
-```
-
-Exemple:
+## Command format
 
 ```bash
-./run.sh --route=instance/status --instance=example.com
+./run.sh --route=/<route> [--param=value ...]
 ```
 
-## Règles de parsing (important)
+Example:
 
-- `--route` est obligatoire.
-- Chaque argument `--clé=valeur` devient un paramètre de payload.
-- Les valeurs `true` et `false` (exactement) sont converties en booléens.
-- Un argument sans valeur (ex: `--flag`) devient `true`.
+```bash
+./run.sh --route=/instance/status --instance=example.com
+```
+
+## Parsing rules (important)
+
+- `--route` is required.
+- Every `--key=value` argument is passed as payload data.
+- The exact values `true` and `false` are converted to booleans.
+- A flag without value (example: `--flag`) becomes `true`.
 
 ## Host actions
 
-### `status`
-- **But**: état global de l’hôte.
-- **Paramètres**:
-  - `scope` *(string, optionnel)*: `instant`, `state` ou `config`.
-- **Exemple**:
+### `/status`
+- **Purpose**: get global host status.
+- **Parameters**:
+  - `scope` *(string, optional)*: `instant`, `state`, or `config`.
+- **Example**:
   ```bash
-  ./run.sh --route=status --scope=state
+  ./run.sh --route=/status --scope=state
   ```
 
-### `instances`
-- **But**: liste des instances.
-- **Paramètres**:
-  - `with_deleted` *(string/bool, optionnel)*: `1`, `0`, `yes`, `no` (ou `true`/`false` via API HTTP).
-- **Exemple**:
+### `/instances`
+- **Purpose**: list instances.
+- **Parameters**:
+  - `with_deleted` *(string/bool, optional)*: accepted values include `1`, `0`, `yes`, `no` (and `true`/`false` in HTTP/API usage).
+- **Example**:
   ```bash
-  ./run.sh --route=instances --with_deleted=1
+  ./run.sh --route=/instances --with_deleted=1
   ```
 
-### `ip`
-- **But**: ajoute l’IP publique sur `veth0`.
-- **Paramètres**:
-  - `ip_address` *(string, requis)*: IPv4 valide.
-  - `subnet` *(string/int, requis)*: CIDR IPv4 `0..32`.
-- **Exemple**:
+### `/ip`
+- **Purpose**: add the public IP on `veth0`.
+- **Parameters**:
+  - `ip_address` *(string, required)*: valid IPv4 address.
+  - `subnet` *(string/int, required)*: IPv4 CIDR prefix `0..32`.
+- **Example**:
   ```bash
-  ./run.sh --route=ip --ip_address=203.0.113.10 --subnet=24
+  ./run.sh --route=/ip --ip_address=203.0.113.10 --subnet=24
   ```
 
-### `reboot`
-- **But**: redémarre l’hôte (différé de 5s).
-- **Paramètres**: aucun.
-- **Exemple**:
+### `/reboot`
+- **Purpose**: reboot the host (with a 5-second delay).
+- **Parameters**: none.
+- **Example**:
   ```bash
-  ./run.sh --route=reboot
+  ./run.sh --route=/reboot
   ```
 
-### `backup` *(CLI only)*
-- **But**: lance backup + export pour toutes les instances.
-- **Paramètres**: aucun.
-- **Exemple**:
+### `/backup` *(CLI only)*
+- **Purpose**: run backup + export for all instances.
+- **Parameters**: none.
+- **Example**:
   ```bash
-  ./run.sh --route=backup
+  ./run.sh --route=/backup
   ```
 
 ## Instance actions
 
-### `instance/create`
-- **Paramètres requis**:
-  - `USERNAME` *(string)*: FQDN (nom d’instance).
-  - `PASSWORD` *(string)*: 8 à 70 caractères.
-- **Paramètres optionnels**:
-  - `CIPHER_KEY` *(string)*: exactement 32 caractères.
-  - `HTTPS_REDIRECT` *(string)*: `redirect` ou `noredirect`.
-  - `MEM_LIMIT` *(string)*: format `\d+[MG]` (ex: `512M`, `2G`).
-  - `CPU_LIMIT` *(number/string numérique)*.
-- **Exemple**:
+### `/instance/create`
+- **Required parameters**:
+  - `USERNAME` *(string)*: instance FQDN.
+  - `PASSWORD` *(string)*: 8 to 70 characters.
+- **Optional parameters**:
+  - `CIPHER_KEY` *(string)*: exactly 32 characters.
+  - `HTTPS_REDIRECT` *(string)*: `redirect` or `noredirect`.
+  - `MEM_LIMIT` *(string)*: format `\d+[MG]` (examples: `512M`, `2G`).
+  - `CPU_LIMIT` *(number / numeric string)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/create --USERNAME=example.com --PASSWORD='StrongPass123' --MEM_LIMIT=1024M --CPU_LIMIT=1
+  ./run.sh --route=/instance/create --USERNAME=example.com --PASSWORD='StrongPass123' --MEM_LIMIT=1024M --CPU_LIMIT=1
   ```
 
-### `instance/delete`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-- **Exemple**:
+### `/instance/delete`
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/delete --instance=example.com
+  ./run.sh --route=/instance/delete --instance=example.com
   ```
 
-### `instance/status`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-  - `scope` *(string, optionnel)*: `instant`, `state` ou `config`.
-- **Exemple**:
+### `/instance/status`
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `scope` *(string, optional)*: `instant`, `state`, or `config`.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/status --instance=example.com --scope=instant
+  ./run.sh --route=/instance/status --instance=example.com --scope=instant
   ```
 
-### `instance/backup`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-  - `encrypt` *(bool, optionnel, défaut: `true`)*.
-- **Exemple**:
+### `/instance/backup`
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `encrypt` *(bool, optional, default: `true`)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/backup --instance=example.com --encrypt=true
+  ./run.sh --route=/instance/backup --instance=example.com --encrypt=true
   ```
 
-### `instance/backups`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-- **Exemple**:
+### `/instance/backups`
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/backups --instance=example.com
+  ./run.sh --route=/instance/backups --instance=example.com
   ```
 
-### `instance/export-backup`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-  - `backup_id` *(string, requis)*.
-- **Exemple**:
+### `/instance/export-backup`
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/export-backup --instance=example.com --backup_id=20241210091621
+  ./run.sh --route=/instance/export-backup --instance=example.com --backup_id=20241210091621
   ```
 
-### `instance/import-backup`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-  - `backup_id` *(string, requis)*.
-- **Exemple**:
+### `/instance/import-backup`
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/import-backup --instance=example.com --backup_id=20241210091621
+  ./run.sh --route=/instance/import-backup --instance=example.com --backup_id=20241210091621
   ```
 
-### `instance/restore`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-  - `backup_id` *(string, requis)*.
-  - `passphrase` *(string, optionnel)*: requis si backup chiffré.
-- **Exemple**:
+### `/instance/restore`
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*.
+  - `passphrase` *(string, optional)*: required when restoring an encrypted backup.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/restore --instance=example.com --backup_id=20241210091621 --passphrase='your-gpg-passphrase'
+  ./run.sh --route=/instance/restore --instance=example.com --backup_id=20241210091621 --passphrase='your-gpg-passphrase'
   ```
 
-### `instance/enable-maintenance`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-- **Exemple**:
+### `/instance/enable-maintenance`
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/enable-maintenance --instance=example.com
+  ./run.sh --route=/instance/enable-maintenance --instance=example.com
   ```
 
-### `instance/disable-maintenance`
-- **Paramètres**:
-  - `instance` *(string, requis)*.
-- **Exemple**:
+### `/instance/disable-maintenance`
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
   ```bash
-  ./run.sh --route=instance/disable-maintenance --instance=example.com
+  ./run.sh --route=/instance/disable-maintenance --instance=example.com
   ```
 
-## Notes pratiques
+## Practical notes
 
-- Les routes HTTP exposées par `listener.php` sont: `status`, `instances`, `ip`, `reboot`, et toutes les routes `instance/*` listées ci-dessus.
-- La route `backup` est disponible en CLI (controller direct) mais n’est pas dans la liste des routes HTTP du listener.
-- Pour la CLI, `run.sh` passe les arguments à `src/run.php`; le paramètre `--method` existe mais n’est pas utilisé pour choisir le controller.
+- HTTP routes exposed by `listener.php` include `/status`, `/instances`, `/ip`, `/reboot`, and all `/instance/*` routes listed above.
+- `/backup` is available in CLI (direct controller execution), but it is not part of the HTTP listener route list.
+- `run.sh` forwards arguments to `src/run.php`; `--method` exists in the parser but is not used to choose the controller.
