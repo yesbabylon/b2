@@ -330,6 +330,11 @@ systemctl daemon-reload
 ### Remove sensitive data from .env  ###
 ########################################
 
+# Store hash version of the password 
+php -r 'echo password_hash($argv[1], PASSWORD_DEFAULT), PHP_EOL;' "$ROOT_PASSWORD" > "$INSTALL_DIR/host.secrets"
+chmod 600 "$INSTALL_DIR/host.secrets"
+chown root:root "$INSTALL_DIR/host.secrets"
+
 sed -i '/GPG_PASSPHRASE=/d' "$INSTALL_DIR"/.env
 sed -i '/ROOT_PASSWORD=/d' "$INSTALL_DIR"/.env
 
