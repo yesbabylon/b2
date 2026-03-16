@@ -13,6 +13,14 @@
  * @throws Exception
  */
 function instance_delete(array $data): array {
+
+	// #todo - handle deletino as a deferred operation (not instant, but scheduled) with a message sent to Host administrator.
+
+
+    if(PHP_SAPI !== 'cli') {
+        throw new RuntimeException("deletion_limited_to_cli_only", 403);
+    }
+
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }
