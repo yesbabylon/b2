@@ -118,7 +118,8 @@ ROOT_PASSWORD=your-root-password
 | ├── `ssh-login`                           | Configuration or script for SSH login setup.               |
 | └── `vhost.d/default`                     | Default virtual host configuration.                        |
 | `doc/`                                    | Documentation files directory.                             |
-| └── `api.md`                              | API documentation.                                         |
+| ├── `api.md`                              | API documentation.                                         |
+| └── `cli-memo.md`                         | CLI memo for `run.sh` routes/actions and examples.         |
 | `keyring/`                                | Directory containing cryptographic keys.                   |
 | ├── `gpg-private-key.pgp`                 | Private GPG key.                                           |
 | └── `gpg-public-key.pgp`                  | Public GPG key.                                            |
