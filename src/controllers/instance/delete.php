@@ -29,6 +29,8 @@ function instance_delete(array $data): array {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
+	// #todo - prevent deleting a running instance
+
     // Stop and remove the instance with docker compose to /home/$data['instance']
     exec('docker compose -f /home/'.$data['instance'].'/docker-compose.yml down -v');
 

@@ -18,7 +18,7 @@
 #
 services:
   {{db_ID}}:
-    image: mysql:5.7
+    image: mysql:5.7.44
     container_name: sql.${USERNAME}
     restart: always
     environment:
@@ -32,7 +32,7 @@ services:
       # map local file for custom config (e.g. `max_allowed_packet`)
       - ./mysql.cnf:/etc/mysql/conf.d/custom.cnf
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:5.2.1
     container_name: phpmyadmin.${USERNAME}
     restart: always
     environment:
@@ -50,7 +50,7 @@ services:
     depends_on:
       - {{db_ID}}
   equal:
-    image: equalframework/equal:latest
+    image: equalframework/equal:2.0.0
     container_name: ${USERNAME}
     restart: always
     volumes:
