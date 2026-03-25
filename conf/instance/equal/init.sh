@@ -78,22 +78,11 @@ docker exec "$USERNAME" bash -c "
 # Modify default root and user login to use domain name in mail
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
-./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
 "
 
 # Update root password with the one provided
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$APP_PASSWORD
-"
-# Create a new user with same default password
-docker exec "$USERNAME" bash -c "
-./equal.run --do=user_create --login=$APP_USERNAME@$USERNAME --password=$PASSWORD
-./equal.run --do=model_update --entity='core\\User' --id=3 --fields='{\"validated\":1, \"status\": \"instance\"}' --force=true
-./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=create
-./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=read
-./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=update
-./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=delete
-./equal.run --do=user_grant --user=$APP_USERNAME@$USERNAME --group=admins --right=manage
 "
 
 touch "$INITIALIZED_FILE"

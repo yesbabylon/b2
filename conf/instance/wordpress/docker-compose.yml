@@ -49,7 +49,7 @@ services:
       - proxynet
     depends_on:
       - {{db_ID}}
-  equal:
+  wordpress:
     image: docked-wordpress:6.9.4
     container_name: ${USERNAME}
     restart: always
@@ -68,6 +68,10 @@ services:
       - EQ_DB_PASS=${PASSWORD}
       - EQ_DB_NAME=equal
       - EQ_CIPHER_KEY=${CIPHER_KEY}
+      - WORDPRESS_DB_NAME=equal
+      - WORDPRESS_DB_HOST={{db_ID}}
+      - WORDPRESS_DB_USER=root
+      - WORDPRESS_DB_PASSWORD=${PASSWORD}
       # maximum amount of memory that should be used for handling a request
       - EQ_MEM_LIMIT=${MEM_LIMIT}
       # minimum amount of memory that must be available for handling a request (`MEM_LIMIT` has a distinct meaning [= max usage] and should not be used here)
