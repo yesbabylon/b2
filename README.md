@@ -106,7 +106,7 @@ ROOT_PASSWORD=your-root-password
 | │   │   └── `jail.local`                  | Local configuration for Fail2Ban jails.                    |
 | │   ├── `logrotate.d/nginx`               | Log rotation config for NGINX.                             |
 | │   └── `vsftpd.conf`                     | Configuration for the VSFTPD service.                      |
-| ├── `instance/create/`                    | Per-type assets for instance provisioning.                 |
+| ├── `instance/`                    | Per-type assets for instance provisioning.                 |
 | │   ├── `equal/`                          | `equal` assets (compose/config/scripts + `init.sh`).       |
 | │   ├── `wordpress/`                      | `wordpress` assets (compose/config/scripts + `init.sh`).   |
 | │   ├── `equalpress/`                     | `equalpress` assets (compose/config/scripts + `init.sh`).  |

@@ -107,7 +107,7 @@ Create a new instance.
 
 
 
-#### Init script safety behavior (`conf/instance/create/<type>/init.sh`)
+#### Init script safety behavior (`conf/instance/<type>/init.sh`)
 
 Each type has its own `init.sh` stored next to its compose/config/script assets (no `template/` subdirectory).
 

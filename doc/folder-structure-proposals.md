@@ -28,7 +28,7 @@ This is a depth of 4-5 levels before reaching the files you edit most often.
 - system configs (`etc/...`)
 - TLS material (`default.crt`, `default.key`, `dhparam.pem`)
 - Docker runtime assets (`docker/...`)
-- instance templates (`instance/create/template/...`)
+- instance templates (`instance/<type>/...`)
 - service units (`*.service`)
 
 This makes `conf/` a catch-all instead of a clear domain folder.

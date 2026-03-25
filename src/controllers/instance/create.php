@@ -91,7 +91,7 @@ function instance_create(array $data): array {
             'EQ_MEM_FREE_LIMIT' => '256M'
         ], $data);
 
-    // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create/create.bash';
+    // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create.bash';
 
     // Create specific log file for creation to record creation instance
     $log_file = BASE_DIR . '/logs/instance_create_' . $data['USERNAME'] . '-' . date('YmdHis') . '.log';
@@ -161,7 +161,7 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-	$dir = BASE_DIR . "/conf/instance/create/$INSTANCE_TYPE";
+	$dir = BASE_DIR . "/conf/instance/$INSTANCE_TYPE";
 
 	if(!is_dir($dir) || !is_file("$dir/init.sh")) {
 		throw new RuntimeException("invalid_instance_type", 500);
