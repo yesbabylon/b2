@@ -38,7 +38,20 @@ if [[ -d "$WWW_DIR" ]] && find "$WWW_DIR" -mindepth 1 -print -quit | grep -q . &
     exit 1
 fi
 
-# Placeholder init script for WordPress instances.
-# TODO: implement full provisioning workflow.
-printf "WordPress init is not implemented yet.\n"
+# build image docked-wordpress
+/root/b2/conf/docker/images/docked-wordpresss/build.sh
+
+cd "$HOME_DIR"
+
+docker compose build
+docker compose up -d
+sleep 15
+
+printf "Docker images built and containers started\n"
+
+######################
+### INIT Wordpress ###
+######################
+
+
 exit 0
