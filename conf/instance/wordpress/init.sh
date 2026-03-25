@@ -6,6 +6,12 @@ if [[ "${1:-}" == "--force" ]]; then
     FORCE=1
 fi
 
+if [[ -f .env ]]; then
+    set -a
+    source .env
+    set +a
+fi
+
 if [[ -z "${USERNAME:-}" ]]; then
     printf "Missing USERNAME environment variable.\n" >&2
     exit 1
@@ -39,7 +45,9 @@ if [[ -d "$WWW_DIR" ]] && find "$WWW_DIR" -mindepth 1 -print -quit | grep -q . &
 fi
 
 # build image docked-wordpress
-/root/b2/conf/docker/images/docked-wordpresss/build.sh
+cd /root/b2/conf/docker/images/docked-wordpresss/
+chmod +x build.sh
+./build.sh
 
 cd "$HOME_DIR"
 

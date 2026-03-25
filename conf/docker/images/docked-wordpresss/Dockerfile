@@ -18,5 +18,3 @@ RUN apt-get update \
  && docker-php-ext-configure pdo_mysql --with-pdo-mysql \
  && docker-php-ext-install pdo pdo_mysql \
  && rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
-
-COPY ./mpm_prefork.conf /etc/apache2/mods-available/
