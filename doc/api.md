@@ -100,11 +100,22 @@ Create a new instance.
 | -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
 | USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.           |
 | PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
-| INSTANCE_TYPE  |  false   |      equal       | equal \| wordpress \| equalpress \| symbiose | Defines which instance stack template/init to use. |
+| INSTANCE_TYPE  |  false   |      equal       | equal \| wordpress \| equalpress \| symbiose | Defines which instance stack template to use. |
 | CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
 | HTTPS_REDIRECT |  false   |    noredirect    | redirect \| noredirect | Noredirect is for HTTP and redirect for HTTPS.               |
 | MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                     |
 
+
+
+#### Init script safety behavior (`conf/instance/create/<type>/init.sh`)
+
+Each type has its own `init.sh` stored next to its compose/config/script assets (no `template/` subdirectory).
+
+- Refuses to run when `USERNAME` is missing.
+- Refuses to run when `/home/$USERNAME/.initialized` exists, unless `--force` is provided.
+- Refuses to run when `/home/$USERNAME/www` already contains data, unless `--force` is provided.
+- Uses a lockfile (`/home/$USERNAME/.init.lock`) to prevent concurrent init runs.
+- The lock is written on start and always deleted on exit/interruption via `trap` (`EXIT`, `INT`, `TERM`).
 
 
 ### POST _/instance/delete_
