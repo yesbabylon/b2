@@ -94,7 +94,7 @@ function instance_create(array $data): array {
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create/create.bash';
 
     // Create specific log file for creation to record creation instance
-    $log_file = BASE_DIR.'/logs/instance_create_'.$data['USERNAME'].'-'.date('YmdHis').'.log';
+    $log_file = BASE_DIR . '/logs/instance_create_' . $data['USERNAME'] . '-' . date('YmdHis') . '.log';
 
     // Execute create equal instance bash that will use previously set env variables
     // exec("bash $create_equal_instance_bash > $log_file 2>&1");
@@ -161,27 +161,15 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-    $instance_create_base_dir = BASE_DIR.'/conf/instance/create';
-    $instance_type_dir = "$instance_create_base_dir/$INSTANCE_TYPE";
-    $instance_type_init_script = "$instance_type_dir/init.sh";
+	$dir = BASE_DIR . "/conf/instance/create/$INSTANCE_TYPE";
 
-    if(!is_dir($instance_type_dir)) {
-        throw new RuntimeException("missing_instance_type_directory", 500);
-    }
+	if(!is_dir($dir) || !is_file("$dir/init.sh")) {
+		throw new RuntimeException("invalid_instance_type", 500);
+	}
 
-    if(!is_file($instance_type_init_script)) {
-        throw new RuntimeException("missing_init_script_for_instance_type", 500);
-    }
-
-    $instance_assets = glob($instance_type_dir.'/*');
-
-    if($instance_assets !== false) {
-        foreach($instance_assets as $asset_path) {
-            if(is_file($asset_path)) {
-                copy($asset_path, '/home/'.$USERNAME.'/'.basename($asset_path));
-            }
-        }
-    }
+	foreach(glob("$dir/*") ?: [] as $f) {
+		is_file($f) && copy($f, "/home/$USERNAME/" . basename($f));
+	}
 
     // replace {{db_ID}} in docker-compose.yml
     $hash = substr(md5($USERNAME), 0, 5);
