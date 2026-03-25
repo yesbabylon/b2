@@ -161,19 +161,27 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-    $instance_create_base_dir = '/root/b2/conf/instance/create';
-    $instance_type_template_dir = "$instance_create_base_dir/$INSTANCE_TYPE/template";
-    $instance_type_init_script = "$instance_create_base_dir/$INSTANCE_TYPE/init.sh";
+    $instance_create_base_dir = BASE_DIR.'/conf/instance/create';
+    $instance_type_dir = "$instance_create_base_dir/$INSTANCE_TYPE";
+    $instance_type_init_script = "$instance_type_dir/init.sh";
 
-    if(!is_dir($instance_type_template_dir)) {
-        throw new RuntimeException("missing_template_directory_for_instance_type", 500);
+    if(!is_dir($instance_type_dir)) {
+        throw new RuntimeException("missing_instance_type_directory", 500);
     }
 
     if(!is_file($instance_type_init_script)) {
         throw new RuntimeException("missing_init_script_for_instance_type", 500);
     }
 
-    exec("cp $instance_type_template_dir/* /home/$USERNAME/ 2>/dev/null");
+    $instance_assets = glob($instance_type_dir.'/*');
+
+    if($instance_assets !== false) {
+        foreach($instance_assets as $asset_path) {
+            if(is_file($asset_path)) {
+                copy($asset_path, '/home/'.$USERNAME.'/'.basename($asset_path));
+            }
+        }
+    }
 
     // replace {{db_ID}} in docker-compose.yml
     $hash = substr(md5($USERNAME), 0, 5);

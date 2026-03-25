@@ -106,19 +106,11 @@ ROOT_PASSWORD=your-root-password
 | │   │   └── `jail.local`                  | Local configuration for Fail2Ban jails.                    |
 | │   ├── `logrotate.d/nginx`               | Log rotation config for NGINX.                             |
 | │   └── `vsftpd.conf`                     | Configuration for the VSFTPD service.                      |
-| ├── `instance/create/`                    | Scripts and templates for creating instances by type.      |
-| │   ├── `equal/`                          | Assets for `equal` instances.                              |
-| │   │   ├── `init.sh`                     | Initialization script for Equal.                           |
-| │   │   └── `template/`                   | Templates for Equal instance configurations.               |
-| │   ├── `wordpress/`                      | Assets for `wordpress` instances.                          |
-| │   │   ├── `init.sh`                     | Initialization entrypoint for WordPress.                   |
-| │   │   └── `template/`                   | Templates for WordPress instance configurations.           |
-| │   ├── `equalpress/`                     | Assets for `equalpress` instances.                         |
-| │   │   ├── `init.sh`                     | Initialization entrypoint for eQualPress.                  |
-| │   │   └── `template/`                   | Templates for eQualPress instance configurations.          |
-| │   └── `symbiose/`                       | Assets for `symbiose` instances.                           |
-| │       ├── `init.sh`                     | Initialization entrypoint for Symbiose.                    |
-| │       └── `template/`                   | Templates for Symbiose instance configurations.            |
+| ├── `instance/create/`                    | Per-type assets for instance provisioning.                 |
+| │   ├── `equal/`                          | `equal` assets (compose/config/scripts + `init.sh`).       |
+| │   ├── `wordpress/`                      | `wordpress` assets (compose/config/scripts + `init.sh`).   |
+| │   ├── `equalpress/`                     | `equalpress` assets (compose/config/scripts + `init.sh`).  |
+| │   └── `symbiose/`                       | `symbiose` assets (compose/config/scripts + `init.sh`).    |
 | ├── `key-gen.conf`                        | Configuration for key generation.                          |
 | ├── `nginx.conf`                          | Main NGINX configuration file.                             |
 | ├── `ssh-login`                           | Configuration or script for SSH login setup.               |
