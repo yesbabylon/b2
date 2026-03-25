@@ -14,7 +14,7 @@
  */
 function instance_delete(array $data): array {
 
-	// #todo - handle deletino as a deferred operation (not instant, but scheduled) with a message sent to Host administrator.
+	// #todo - handle deletion as a deferred operation (not instant, but scheduled) with a message sent to Host administrator.
 
 
     if(PHP_SAPI !== 'cli') {

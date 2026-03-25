@@ -2,7 +2,7 @@ services:
   nginx-proxy:
     container_name: nginx-proxy
     restart: always
-    image: docked-nginx:latest
+    image: docked-nginx:1.9.0
     networks: 
       - proxynet
     ports:
@@ -27,7 +27,7 @@ services:
   nginx-proxy-companion:
     container_name: letsencrypt-companion
     restart: always
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion:2.6.1
     networks: 
       - proxynet      
     volumes:

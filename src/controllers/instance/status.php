@@ -29,7 +29,7 @@
   *     },
   *     config: array{
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
-  *         image: string           // The Docker image used by the container (e.g., "docked-wp:latest").
+  *         image: string           // The Docker image used by the container (e.g., "docked-wordpress:latest").
   *     }
   * }
   */

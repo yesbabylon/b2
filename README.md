@@ -141,7 +141,7 @@ ROOT_PASSWORD=your-root-password
 | ├── `listener.php`                        | Main script for the b2-listener service.                   |
 | ├── `run.php`                             | Entry point for running the application.                   |
 | └── `send.php`                            | Script to send requests or notifications.                  |
-| `utils/`                                  | Utility scripts directory.                                 |
+| `scripts/`                                | Utility scripts directory.                                 |
 | ├── `b2_listener-disable.sh`              | Script to disable the b2-listener service.                 |
 | ├── `b2_listener-enable.sh`               | Script to enable the b2-listener service.                  |
 | ├── `fail2ban-disable.sh`                 | Script to disable Fail2Ban service.                        |
