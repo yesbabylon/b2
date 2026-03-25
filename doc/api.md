@@ -91,7 +91,8 @@ Create a new instance.
 ```json
 {
   "USERNAME":"equal.local",
-  "PASSWORD":"thepassword1234"
+  "PASSWORD":"thepassword1234",
+  "INSTANCE_TYPE":"equal"
 }
 ```
 
@@ -99,13 +100,9 @@ Create a new instance.
 | -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
 | USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.           |
 | PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
-| symbiose       |  false   |      false       |                        | If true it installs Symbiose.                                |
-| equalpress     |  false   |      false       |                        | If true it installs eQualPress.                              |
+| INSTANCE_TYPE  |  false   |      equal       | equal \| wordpress \| equalpress \| symbiose | Defines which instance stack template/init to use. |
 | CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
 | HTTPS_REDIRECT |  false   |    noredirect    | redirect \| noredirect | Noredirect is for HTTP and redirect for HTTPS.               |
-| WP_VERSION     |  false   |       6.4        |                        | Version of WordPress installed. Only required if equalpress is true. |
-| WP_EMAIL       |  false   | root@equal.local |                        | Email address for WordPress. Only required if equalpress is true. |
-| WP_TITLE       |  false   |    eQualPress    |                        | Title of the WordPress app. Only required if equalpress is true. |
 | MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                     |
 
 

@@ -11,6 +11,7 @@
  * @param array{
  *          USERNAME: string,
  *          PASSWORD: string,
+ *          INSTANCE_TYPE?: string,
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
  *          MEM_LIMIT?: string
@@ -74,9 +75,16 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
+    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose'];
+
+    if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || !in_array($data['INSTANCE_TYPE'], $allowed_instance_types))) {
+        throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
+    }
+
     // assign default values for non-mandatory parameters if not provided
     $data = array_merge([
             'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
+            'INSTANCE_TYPE'     => 'equal',
             'HTTPS_REDIRECT'    => 'noredirect',
             'MEM_LIMIT'         => '1000M',
             'CPU_LIMIT'         => '1',
@@ -98,6 +106,7 @@ function instance_create(array $data): array {
     $CPU_LIMIT = $data['CPU_LIMIT'];
     $HTTPS_REDIRECT = $data['HTTPS_REDIRECT'];
     $EQ_MEM_FREE_LIMIT = $data['EQ_MEM_FREE_LIMIT'];
+    $INSTANCE_TYPE = $data['INSTANCE_TYPE'];
 
     // create a new user and set password
     exec("adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
@@ -152,7 +161,19 @@ function instance_create(array $data): array {
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
     // copy configuration files
-    exec("cp /root/b2/conf/instance/create/template/* /home/$USERNAME/");
+    $instance_create_base_dir = '/root/b2/conf/instance/create';
+    $instance_type_template_dir = "$instance_create_base_dir/$INSTANCE_TYPE/template";
+    $instance_type_init_script = "$instance_create_base_dir/$INSTANCE_TYPE/init.sh";
+
+    if(!is_dir($instance_type_template_dir)) {
+        throw new RuntimeException("missing_template_directory_for_instance_type", 500);
+    }
+
+    if(!is_file($instance_type_init_script)) {
+        throw new RuntimeException("missing_init_script_for_instance_type", 500);
+    }
+
+    exec("cp $instance_type_template_dir/* /home/$USERNAME/ 2>/dev/null");
 
     // replace {{db_ID}} in docker-compose.yml
     $hash = substr(md5($USERNAME), 0, 5);
