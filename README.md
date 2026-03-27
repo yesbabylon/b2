@@ -44,6 +44,7 @@ The `./install.sh` script :
 The script expects a `.env` file with the following values (exported as environment variables):
 
 ```env
+HOSTNAME=b2-host-01
 ADMIN_HOST=admin.local
 BACKUP_HOST=backup.local
 STATS_HOST=stats.local
@@ -52,6 +53,9 @@ GPG_PASSPHRASE=your-passphrase-here
 ROOT_PASSWORD=your-root-password
 ```
 **Variables**:
+
+- **`HOSTNAME`**  
+  Identifier/name of the host (required).
 
 - **`ADMIN_HOST`**  
   Hostname or IP address of the admin host API endpoint (required).
