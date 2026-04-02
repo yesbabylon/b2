@@ -71,7 +71,7 @@ Example:
 
 ### `/instance/create`
 - **Required parameters**:
-  - `USERNAME` *(string)*: instance FQDN.
+  - `USERNAME` *(string)*: instance FQDN (max 32 characters due to Linux username limit).
   - `PASSWORD` *(string)*: 8 to 70 characters.
 - **Optional parameters**:
   - `CIPHER_KEY` *(string)*: exactly 32 characters.

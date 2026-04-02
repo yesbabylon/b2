@@ -98,7 +98,7 @@ Create a new instance.
 
 | key            | required |     default      | values                 | Note                                                         |
 | -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
-| USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name.           |
+| USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name and cannot exceed 32 characters (Linux username limit).           |
 | PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
 | INSTANCE_TYPE  |  false   |      equal       | equal \| wordpress \| equalpress \| symbiose | Defines which instance stack template to use. |
 | CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
