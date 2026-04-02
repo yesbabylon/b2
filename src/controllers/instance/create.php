@@ -46,8 +46,16 @@ function instance_create(array $data): array {
 
     // check params validity
 
-    if( !is_string($data['USERNAME']) || empty($data['USERNAME']) || strlen($data['USERNAME']) > 32
-        || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0 ) {
+    if(!is_string($data['USERNAME']) || empty($data['USERNAME'])) {
+        throw new InvalidArgumentException("invalid_USERNAME", 400);
+    }
+
+    // Linux user names are limited to 32 characters.
+    if(strlen($data['USERNAME']) > 32) {
+        throw new InvalidArgumentException("invalid_USERNAME_length", 400);
+    }
+
+    if(preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0) {
         throw new InvalidArgumentException("invalid_USERNAME", 400);
     }
 
