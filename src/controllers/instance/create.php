@@ -108,17 +108,18 @@ function instance_create(array $data): array {
                 if(isset($data['INSTANCE_SUBTYPE']) && (!is_string($data['INSTANCE_SUBTYPE']) || !in_array($data['INSTANCE_SUBTYPE'], $allowed_instance_subtypes))) {
                     throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
                 }
+                elseif($data['INSTANCE_SUBTYPE'] === 'agency') {
+                    if(empty($data['INSTANCE_UUID']) || !is_string($data['INSTANCE_UUID'])) {
+                        throw new InvalidArgumentException("invalid_INSTANCE_UUID", 400);
+                    }
 
-                if(empty($data['INSTANCE_UUID']) || !is_string($data['INSTANCE_UUID'])) {
-                    throw new InvalidArgumentException("invalid_INSTANCE_UUID", 400);
-                }
+                    if(empty($data['GLOBAL_ACCESS_TOKEN']) || !is_string($data['GLOBAL_ACCESS_TOKEN'])) {
+                        throw new InvalidArgumentException("invalid_GLOBAL_ACCESS_TOKEN", 400);
+                    }
 
-                if(empty($data['GLOBAL_ACCESS_TOKEN']) || !is_string($data['GLOBAL_ACCESS_TOKEN'])) {
-                    throw new InvalidArgumentException("invalid_GLOBAL_ACCESS_TOKEN", 400);
-                }
-
-                if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
-                    throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+                    if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
+                        throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+                    }
                 }
                 break;
         }

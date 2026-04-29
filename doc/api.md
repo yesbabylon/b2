@@ -96,14 +96,26 @@ Create a new instance.
 }
 ```
 
-| key            | required |     default      | values                 | Note                                                         |
-| -------------- | :------: | :--------------: | ---------------------- | ------------------------------------------------------------ |
-| USERNAME       |   true   |                  |                        | Name of the instance. Must be a valid domain name and cannot exceed 32 characters (Linux username limit).           |
-| PASSWORD       |   true   |                  |                        | Password for all accesses (Must be at least 8 characters long). |
-| INSTANCE_TYPE  |  false   |      equal       | equal \| wordpress \| equalpress \| symbiose | Defines which instance stack template to use. |
-| CIPHER_KEY     |  false   |                  |                        | The default value is a 32 characters long randomly generated key. |
-| HTTPS_REDIRECT |  false   |    noredirect    | redirect \| noredirect | Noredirect is for HTTP and redirect for HTTPS.               |
-| MEM_LIMIT      |  false   |      1000M       |                        | Memory limit of the equal_svr container.                     |
+| key            | required |  default   | values                                              | Note                                                                                                      |
+|----------------|:--------:|:----------:|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| USERNAME       |   true   |            |                                                     | Name of the instance. Must be a valid domain name and cannot exceed 32 characters (Linux username limit). |
+| PASSWORD       |   true   |            |                                                     | Password for all accesses (Must be at least 8 characters long).                                           |
+| INSTANCE_TYPE  |  false   |   equal    | equal \| wordpress \| equalpress \| symbiose \| fmt | Defines which instance stack template to use.                                                             |
+| CIPHER_KEY     |  false   |            |                                                     | The default value is a 32 characters long randomly generated key.                                         |
+| HTTPS_REDIRECT |  false   | noredirect | redirect \| noredirect                              | Noredirect is for HTTP and redirect for HTTPS.                                                            |
+| MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
+| MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
+| MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
+
+
+fmt additional options :
+
+| key                 | required (fmt) | default | values           | Note                                                                                                |
+|---------------------|:--------------:|:-------:|------------------|-----------------------------------------------------------------------------------------------------|
+| INSTANCE_SUBTYPE    |     false      | agency  | agency \| global | The type of FMT instance.                                                                           |
+| INSTANCE_UUID       |     false      |         |                  | The UUID of the new agency instance. (required if INSTANCE_SUBTYPE is agency)                       |
+| GLOBAL_ACCESS_TOKEN |     false      |         |                  | The access token of the new agency instance to global API. (required if INSTANCE_SUBTYPE is agency) |
+| GLOBAL_URL          |     false      |         |                  | The url of the global instance API. (required if INSTANCE_SUBTYPE is agency)                        |
 
 
 
