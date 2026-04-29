@@ -14,9 +14,9 @@
  *          INSTANCE_TYPE?: string,
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
- *          MEM_LIMIT?: string
+ *          MEM_LIMIT?: string,
  *          CPU_LIMIT?: string
- *      }                               $data   The data for the new instance.
+ *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
  */
@@ -83,21 +83,49 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
-    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose'];
+    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose', 'fmt'];
 
     if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || !in_array($data['INSTANCE_TYPE'], $allowed_instance_types))) {
         throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
     }
 
+    $default_data = [
+        'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
+        'INSTANCE_TYPE'     => 'equal',
+        'HTTPS_REDIRECT'    => 'noredirect',
+        'MEM_LIMIT'         => '1000M',
+        'CPU_LIMIT'         => '1',
+        'EQ_MEM_FREE_LIMIT' => '256M'
+    ];
+
+    if(isset($data['INSTANCE_TYPE'])) {
+        switch($data['INSTANCE_TYPE']) {
+            case 'fmt':
+                // add default data for FMT
+                $default_data['INSTANCE_SUBTYPE'] = 'agency';
+
+                $allowed_instance_subtypes = ['global', 'agency'];
+                if(isset($data['INSTANCE_SUBTYPE']) && (!is_string($data['INSTANCE_SUBTYPE']) || !in_array($data['INSTANCE_SUBTYPE'], $allowed_instance_subtypes))) {
+                    throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
+                }
+
+                if(empty($data['INSTANCE_UUID']) || !is_string($data['INSTANCE_UUID'])) {
+                    throw new InvalidArgumentException("invalid_INSTANCE_UUID", 400);
+                }
+
+                if(empty($data['GLOBAL_ACCESS_TOKEN']) || !is_string($data['GLOBAL_ACCESS_TOKEN'])) {
+                    throw new InvalidArgumentException("invalid_GLOBAL_ACCESS_TOKEN", 400);
+                }
+
+                if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
+                    throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+                }
+                break;
+        }
+    }
+
     // assign default values for non-mandatory parameters if not provided
-    $data = array_merge([
-            'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
-            'INSTANCE_TYPE'     => 'equal',
-            'HTTPS_REDIRECT'    => 'noredirect',
-            'MEM_LIMIT'         => '1000M',
-            'CPU_LIMIT'         => '1',
-            'EQ_MEM_FREE_LIMIT' => '256M'
-        ], $data);
+    $data = array_merge($default_data, $data);
 
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create.bash';
 
@@ -142,9 +170,7 @@ function instance_create(array $data): array {
 
     $EXTERNAL_IP_ADDRESS = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
 
-    // create .env file
-    $env_file = "/home/$USERNAME/.env";
-    file_put_contents($env_file, <<<EOT
+    $env = <<<EOT
         # Username should be FQDN as defined in DNS (e.g. example.com)
         USERNAME=$USERNAME
         PASSWORD=$PASSWORD
@@ -163,8 +189,19 @@ function instance_create(array $data): array {
         CPU_LIMIT=$CPU_LIMIT
 
         EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
-        EOT
-    );
+        
+        EOT;
+
+    if($INSTANCE_TYPE === 'fmt' && $data['INSTANCE_SUBTYPE'] === 'agency') {
+        $env .= <<<EOT
+            # FMT
+            INSTANCE_UUID={$data['INSTANCE_UUID']}
+            GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
+            GLOBAL_URL={$data['GLOBAL_URL']}
+            EOT;
+    }
+    $env_file = "/home/$USERNAME/.env";
+    file_put_contents($env_file, $env);
 
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
