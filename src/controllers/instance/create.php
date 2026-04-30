@@ -248,7 +248,7 @@ function instance_create(array $data): array {
         $config_path = "/home/$USERNAME/config.json";
         $config_content = file_get_contents($config_path);
         foreach($data as $key => $value) {
-            $config_content = str_replace("{{$key}}", $value, $config_content);
+            $config_content = str_replace("{{{$key}}}", $value, $config_content);
         }
         // remove all optional {{variable}}
         $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
