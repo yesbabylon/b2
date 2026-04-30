@@ -146,7 +146,7 @@ function instance_create(array $data): array {
     $INSTANCE_TYPE = $data['INSTANCE_TYPE'];
 
     // create a new user and set password
-    exec("adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
+    exec("id -u $USERNAME >/dev/null 2>&1 || adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
     exec("echo '$USERNAME:$PASSWORD' | chpasswd");
 
     // add user to docker group
