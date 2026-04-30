@@ -199,7 +199,7 @@ function instance_create(array $data): array {
             EOT;
 
         if($data['INSTANCE_SUBTYPE'] === 'agency') {
-            $env .= <<<EOT
+            $env .= PHP_EOL.<<<EOT
             INSTANCE_UUID={$data['INSTANCE_UUID']}
             GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
             GLOBAL_URL={$data['GLOBAL_URL']}
