@@ -61,6 +61,8 @@ printf "Docker images built and containers started\n"
 ### INIT eQual ###
 ##################
 
+printf "Start initializing eQual.\n"
+
 docker exec "$USERNAME" bash -c "
 apt-get update
 apt-get install -y wget
@@ -88,9 +90,13 @@ docker exec "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
 "
 
+printf "eQual initialized.\n"
+
 ##################
 ###  INIT FMT  ###
 ##################
+
+printf "Start initializing FMT.\n"
 
 docker exec "$USERNAME" bash -c "
 mv packages packages-old
@@ -110,6 +116,6 @@ elif [ "$INSTANCE_SUBTYPE" == 'global' ]; then
 fi
 
 touch "$INITIALIZED_FILE"
-printf "eQual initialized.\n"
+printf "FMT initialized.\n"
 
 exit 0
