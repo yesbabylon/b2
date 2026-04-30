@@ -77,7 +77,6 @@ docker exec "$USERNAME" bash -c "
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
-./equal.run --do=init_package --package=core --import=true
 "
 
 # Modify default root and user login to use domain name in mail
@@ -87,7 +86,7 @@ docker exec "$USERNAME" bash -c "
 
 # Update root password with the one provided
 docker exec "$USERNAME" bash -c "
-./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$APP_PASSWORD
+./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
 "
 
 ##################
@@ -96,8 +95,8 @@ docker exec "$USERNAME" bash -c "
 
 docker exec "$USERNAME" bash -c "
 mv packages packages-old
-yes | git clone -b dev-2.0 https://github.com/fmt-saas/fmt.git packages
-cp packages-old/core packages
+yes | git clone https://github.com/fmt-saas/fmt.git packages
+cp -r packages-old/core packages
 rm -R packages-old
 "
 
