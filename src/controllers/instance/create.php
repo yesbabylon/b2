@@ -219,7 +219,17 @@ function instance_create(array $data): array {
 	}
 
 	foreach(glob("$dir/*") ?: [] as $f) {
-		is_file($f) && copy($f, "/home/$USERNAME/" . basename($f));
+        if(!is_file($f)) {
+            continue;
+        }
+
+        $dest = "/home/$USERNAME/".basename($f);
+        if(copy($f, $dest)) {
+            // if it's a .sh file, make it executable
+            if(substr($dest, -3) === '.sh') {
+                chmod($dest, 0755);
+            }
+        }
 	}
 
     // replace {{db_ID}} in docker-compose.yml
