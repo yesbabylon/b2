@@ -116,6 +116,10 @@ elif [ "$INSTANCE_SUBTYPE" == 'global' ]; then
     "
 fi
 
+docker exec "$USERNAME" bash -c "
+./equal.run --do=init_app --package=fmt --app=app --force=true
+"
+
 touch "$INITIALIZED_FILE"
 printf "FMT initialized.\n"
 
