@@ -15,7 +15,11 @@
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
  *          MEM_LIMIT?: string,
- *          CPU_LIMIT?: string
+ *          CPU_LIMIT?: string,
+ *          INSTANCE_SUBTYPE?: string,
+ *          INSTANCE_UUID?: string,
+ *          GLOBAL_ACCESS_TOKEN?: string,
+ *          GLOBAL_URL?: string
  *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
@@ -205,6 +209,17 @@ function instance_create(array $data): array {
             GLOBAL_URL={$data['GLOBAL_URL']}
             EOT;
         }
+
+        // replace {{variable}} in config.json
+        $config_path = "/home/$USERNAME/config.json";
+        $config_content = file_get_contents($config_path);
+        foreach($data as $key => $value) {
+            $config_content = str_replace("{{$key}}", $value, $config_content);
+        }
+        // remove all optional {{variable}}
+        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
+        // modify config.json
+        file_put_contents($config_path, $config_content);
     }
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, $env.PHP_EOL);
