@@ -190,16 +190,21 @@ function instance_create(array $data): array {
         CPU_LIMIT=$CPU_LIMIT
 
         EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
-        
         EOT;
 
-    if($INSTANCE_TYPE === 'fmt' && $data['INSTANCE_SUBTYPE'] === 'agency') {
+    if($INSTANCE_TYPE === 'fmt') {
         $env .= <<<EOT
             # FMT
+            INSTANCE_SUBTYPE={$data['INSTANCE_SUBTYPE']}
+            EOT;
+
+        if($data['INSTANCE_SUBTYPE'] === 'agency') {
+            $env .= <<<EOT
             INSTANCE_UUID={$data['INSTANCE_UUID']}
             GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
             GLOBAL_URL={$data['GLOBAL_URL']}
             EOT;
+        }
     }
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, $env);
