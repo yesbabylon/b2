@@ -74,6 +74,7 @@ yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
 docker cp ./config.json "$USERNAME":/var/www/html/config/config.json
+rm ./config.json
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
