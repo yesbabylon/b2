@@ -193,7 +193,7 @@ function instance_create(array $data): array {
         EOT;
 
     if($INSTANCE_TYPE === 'fmt') {
-        $env .= <<<EOT
+        $env .= PHP_EOL.PHP_EOL.<<<EOT
             # FMT
             INSTANCE_SUBTYPE={$data['INSTANCE_SUBTYPE']}
             EOT;
