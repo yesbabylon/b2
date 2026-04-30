@@ -77,6 +77,7 @@ docker exec "$USERNAME" bash -c "
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
+./equal.run --do=init_package --package=core --import=true
 "
 
 # Modify default root and user login to use domain name in mail
