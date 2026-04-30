@@ -209,17 +209,6 @@ function instance_create(array $data): array {
             GLOBAL_URL={$data['GLOBAL_URL']}
             EOT;
         }
-
-        // replace {{variable}} in config.json
-        $config_path = "/home/$USERNAME/config.json";
-        $config_content = file_get_contents($config_path);
-        foreach($data as $key => $value) {
-            $config_content = str_replace("{{$key}}", $value, $config_content);
-        }
-        // remove all optional {{variable}}
-        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
-        // modify config.json
-        file_put_contents($config_path, $config_content);
     }
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, $env.PHP_EOL);
@@ -253,6 +242,19 @@ function instance_create(array $data): array {
     $docker_compose_content = file_get_contents($docker_compose_path);
     $docker_compose_content = str_replace("{{db_ID}}", 'db_'.$hash, $docker_compose_content);
     file_put_contents($docker_compose_path, $docker_compose_content);
+
+    if($INSTANCE_TYPE === 'fmt') {
+        // replace {{variable}} in config.json
+        $config_path = "/home/$USERNAME/config.json";
+        $config_content = file_get_contents($config_path);
+        foreach($data as $key => $value) {
+            $config_content = str_replace("{{$key}}", $value, $config_content);
+        }
+        // remove all optional {{variable}}
+        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
+        // modify config.json
+        file_put_contents($config_path, $config_content);
+    }
 
     file_put_contents($log_file, "Instance successfully created.\n", FILE_APPEND | LOCK_EX);
 
