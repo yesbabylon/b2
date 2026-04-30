@@ -207,7 +207,7 @@ function instance_create(array $data): array {
         }
     }
     $env_file = "/home/$USERNAME/.env";
-    file_put_contents($env_file, $env);
+    file_put_contents($env_file, $env.PHP_EOL);
 
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
