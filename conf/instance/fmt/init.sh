@@ -17,8 +17,8 @@ if [[ -z "${USERNAME:-}" ]]; then
     exit 1
 fi
 
-if [[ -z "${INSTANCE_TYPE:-}" ]]; then
-    printf "Missing INSTANCE_TYPE environment variable.\n" >&2
+if [[ -z "${INSTANCE_SUBTYPE:-}" ]]; then
+    printf "Missing INSTANCE_SUBTYPE environment variable.\n" >&2
     exit 1
 fi
 
