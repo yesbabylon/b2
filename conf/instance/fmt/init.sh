@@ -17,6 +17,11 @@ if [[ -z "${USERNAME:-}" ]]; then
     exit 1
 fi
 
+if [[ -z "${INSTANCE_SUBTYPE:-}" ]]; then
+    printf "Missing INSTANCE_SUBTYPE environment variable.\n" >&2
+    exit 1
+fi
+
 HOME_DIR="/home/$USERNAME"
 LOCK_FILE="$HOME_DIR/.init.lock"
 INITIALIZED_FILE="$HOME_DIR/.initialized"
@@ -56,6 +61,8 @@ printf "Docker images built and containers started\n"
 ### INIT eQual ###
 ##################
 
+printf "Start initializing eQual.\n"
+
 docker exec "$USERNAME" bash -c "
 apt-get update
 apt-get install -y wget
@@ -66,9 +73,8 @@ docker exec "$USERNAME" bash -c "
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
-docker exec "$USERNAME" bash -c "
-./equal.run --do=config_generate --dbms=MYSQL --db_host=sql.$USERNAME --db_port=3306 --db_name=equal --db_username=root --db_password=$PASSWORD
-"
+docker cp ./config.json "$USERNAME":/var/www/html/config/config.json
+rm ./config.json
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_db
@@ -85,7 +91,36 @@ docker exec "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
 "
 
-touch "$INITIALIZED_FILE"
 printf "eQual initialized.\n"
+
+##################
+###  INIT FMT  ###
+##################
+
+printf "Start initializing FMT.\n"
+
+docker exec "$USERNAME" bash -c "
+mv packages packages-old
+yes | git clone https://github.com/fmt-saas/fmt.git packages
+cp -r packages-old/core packages
+rm -R packages-old
+"
+
+if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
+    docker exec "$USERNAME" bash -c "
+    ./equal.run --do=fmt_init_instance_agency --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
+    "
+elif [ "$INSTANCE_SUBTYPE" == 'global' ]; then
+    docker exec "$USERNAME" bash -c "
+    ./equal.run --do=fmt_init_instance_global
+    "
+fi
+
+docker exec "$USERNAME" bash -c "
+./equal.run --do=init_app --package=fmt --app=app --force=true
+"
+
+touch "$INITIALIZED_FILE"
+printf "FMT initialized.\n"
 
 exit 0

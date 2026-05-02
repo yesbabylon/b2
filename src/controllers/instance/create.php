@@ -14,9 +14,13 @@
  *          INSTANCE_TYPE?: string,
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
- *          MEM_LIMIT?: string
- *          CPU_LIMIT?: string
- *      }                               $data   The data for the new instance.
+ *          MEM_LIMIT?: string,
+ *          CPU_LIMIT?: string,
+ *          INSTANCE_SUBTYPE?: string,
+ *          INSTANCE_UUID?: string,
+ *          GLOBAL_ACCESS_TOKEN?: string,
+ *          GLOBAL_URL?: string
+ *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
  */
@@ -46,8 +50,16 @@ function instance_create(array $data): array {
 
     // check params validity
 
-    if( !is_string($data['USERNAME']) || empty($data['USERNAME']) || strlen($data['USERNAME']) > 32
-        || preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0 ) {
+    if(!is_string($data['USERNAME']) || empty($data['USERNAME'])) {
+        throw new InvalidArgumentException("invalid_USERNAME", 400);
+    }
+
+    // Linux user names are limited to 32 characters.
+    if(strlen($data['USERNAME']) > 32) {
+        throw new InvalidArgumentException("invalid_USERNAME_length", 400);
+    }
+
+    if(preg_match('/^(?!\-)(?:[a-zA-Z0-9\-]{1,63}\.)+[a-zA-Z]{2,}$/', $data['USERNAME']) === 0) {
         throw new InvalidArgumentException("invalid_USERNAME", 400);
     }
 
@@ -75,21 +87,50 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
-    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose'];
+    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose', 'fmt'];
 
     if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || !in_array($data['INSTANCE_TYPE'], $allowed_instance_types))) {
         throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
     }
 
+    $default_data = [
+        'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
+        'INSTANCE_TYPE'     => 'equal',
+        'HTTPS_REDIRECT'    => 'noredirect',
+        'MEM_LIMIT'         => '1000M',
+        'CPU_LIMIT'         => '1',
+        'EQ_MEM_FREE_LIMIT' => '256M'
+    ];
+
+    if(isset($data['INSTANCE_TYPE'])) {
+        switch($data['INSTANCE_TYPE']) {
+            case 'fmt':
+                // add default data for FMT
+                $default_data['INSTANCE_SUBTYPE'] = 'agency';
+
+                $allowed_instance_subtypes = ['global', 'agency'];
+                if(isset($data['INSTANCE_SUBTYPE']) && (!is_string($data['INSTANCE_SUBTYPE']) || !in_array($data['INSTANCE_SUBTYPE'], $allowed_instance_subtypes))) {
+                    throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
+                }
+                elseif($data['INSTANCE_SUBTYPE'] === 'agency') {
+                    if(empty($data['INSTANCE_UUID']) || !is_string($data['INSTANCE_UUID'])) {
+                        throw new InvalidArgumentException("invalid_INSTANCE_UUID", 400);
+                    }
+
+                    if(empty($data['GLOBAL_ACCESS_TOKEN']) || !is_string($data['GLOBAL_ACCESS_TOKEN'])) {
+                        throw new InvalidArgumentException("invalid_GLOBAL_ACCESS_TOKEN", 400);
+                    }
+
+                    if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
+                        throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+                    }
+                }
+                break;
+        }
+    }
+
     // assign default values for non-mandatory parameters if not provided
-    $data = array_merge([
-            'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
-            'INSTANCE_TYPE'     => 'equal',
-            'HTTPS_REDIRECT'    => 'noredirect',
-            'MEM_LIMIT'         => '1000M',
-            'CPU_LIMIT'         => '1',
-            'EQ_MEM_FREE_LIMIT' => '256M'
-        ], $data);
+    $data = array_merge($default_data, $data);
 
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create.bash';
 
@@ -109,7 +150,7 @@ function instance_create(array $data): array {
     $INSTANCE_TYPE = $data['INSTANCE_TYPE'];
 
     // create a new user and set password
-    exec("adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
+    exec("id -u $USERNAME >/dev/null 2>&1 || adduser --force-badname --disabled-password --gecos ',,,' $USERNAME");
     exec("echo '$USERNAME:$PASSWORD' | chpasswd");
 
     // add user to docker group
@@ -134,9 +175,7 @@ function instance_create(array $data): array {
 
     $EXTERNAL_IP_ADDRESS = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
 
-    // create .env file
-    $env_file = "/home/$USERNAME/.env";
-    file_put_contents($env_file, <<<EOT
+    $env = <<<EOT
         # Username should be FQDN as defined in DNS (e.g. example.com)
         USERNAME=$USERNAME
         PASSWORD=$PASSWORD
@@ -155,8 +194,24 @@ function instance_create(array $data): array {
         CPU_LIMIT=$CPU_LIMIT
 
         EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
-        EOT
-    );
+        EOT;
+
+    if($INSTANCE_TYPE === 'fmt') {
+        $env .= PHP_EOL.PHP_EOL.<<<EOT
+            # FMT
+            INSTANCE_SUBTYPE={$data['INSTANCE_SUBTYPE']}
+            EOT;
+
+        if($data['INSTANCE_SUBTYPE'] === 'agency') {
+            $env .= PHP_EOL.<<<EOT
+            INSTANCE_UUID={$data['INSTANCE_UUID']}
+            GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
+            GLOBAL_URL={$data['GLOBAL_URL']}
+            EOT;
+        }
+    }
+    $env_file = "/home/$USERNAME/.env";
+    file_put_contents($env_file, $env.PHP_EOL);
 
     file_put_contents($log_file, ".env file created.\n", FILE_APPEND | LOCK_EX);
 
@@ -168,7 +223,17 @@ function instance_create(array $data): array {
 	}
 
 	foreach(glob("$dir/*") ?: [] as $f) {
-		is_file($f) && copy($f, "/home/$USERNAME/" . basename($f));
+        if(!is_file($f)) {
+            continue;
+        }
+
+        $dest = "/home/$USERNAME/".basename($f);
+        if(copy($f, $dest)) {
+            // if it's a .sh file, make it executable
+            if(substr($dest, -3) === '.sh') {
+                chmod($dest, 0755);
+            }
+        }
 	}
 
     // replace {{db_ID}} in docker-compose.yml
@@ -177,6 +242,19 @@ function instance_create(array $data): array {
     $docker_compose_content = file_get_contents($docker_compose_path);
     $docker_compose_content = str_replace("{{db_ID}}", 'db_'.$hash, $docker_compose_content);
     file_put_contents($docker_compose_path, $docker_compose_content);
+
+    if($INSTANCE_TYPE === 'fmt') {
+        // replace {{variable}} in config.json
+        $config_path = "/home/$USERNAME/config.json";
+        $config_content = file_get_contents($config_path);
+        foreach($data as $key => $value) {
+            $config_content = str_replace("{{{$key}}}", $value, $config_content);
+        }
+        // remove all optional {{variable}}
+        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
+        // modify config.json
+        file_put_contents($config_path, $config_content);
+    }
 
     file_put_contents($log_file, "Instance successfully created.\n", FILE_APPEND | LOCK_EX);
 

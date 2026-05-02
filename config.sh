@@ -21,6 +21,7 @@ echo "Creating .env file..."
 touch "$ENV_FILE"
 
 # Prompt the user for values
+ask_and_save "HOSTNAME" "Enter the host identifier (hostname): "
 ask_and_save "BACKUP_HOST" "Enter the backup server IP address: "
 ask_and_save "PUBLIC_IP" "Enter the public IP address: "
 ask_and_save "GPG_PASSPHRASE" "Enter the GPG passphrase: "

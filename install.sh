@@ -32,6 +32,7 @@ print_help() {
     echo "  The file must contain the following environment variable definitions:"
     echo ""
     echo "  Variables:"
+    echo "    HOSTNAME         - Identifier/name of the host (required)"
     echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
     echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
@@ -39,6 +40,7 @@ print_help() {
     echo ""
     echo "Example of a .env file:"
     echo "  BACKUP_HOST=backup.local"
+    echo "  HOSTNAME=b2-host-01"
     echo "  GPG_PASSPHRASE=your-passphrase"
     echo "  PUBLIC_IP=192.168.1.1"
     echo "  ROOT_PASSWORD=your-root-password"
@@ -68,11 +70,6 @@ fi
 ### Env variables ###
 #####################
 
-# Define GPG mandatory constants
-GPG_NAME="$(hostname)"
-GPG_EXPIRY_DATE="0"
-GPG_EMAIL="$(hostname)@b2.host"
-
 if [ ! -f .env ]
 then
     echo ".env file is missing."
@@ -85,7 +82,7 @@ else
     # stop auto export
     set +a
 
-    REQUIRED_ENV_VARS=("GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
+    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -94,6 +91,14 @@ else
         fi
     done
 fi
+
+# Set hostname before generating GPG key material
+./scripts/set_hostname.sh "$HOSTNAME"
+
+# Define GPG mandatory constants
+GPG_NAME="$(hostname)"
+GPG_EXPIRY_DATE="0"
+GPG_EMAIL="$(hostname)@b2.host"
 
 
 ########################

@@ -47,7 +47,7 @@ function main($argv) {
     $controller = trim(str_replace('//', '/', '/'.$options['route']), '/');
     $result = exec_controller($controller, $options['params']);
 
-    echo json_encode($result['body'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    echo json_encode($result['body'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES).PHP_EOL;
 }
 
 main($argv);
