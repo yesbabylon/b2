@@ -1,0 +1,1 @@
+This type of instance expects a git project within docs directory based on https://github.com/yesbabylon/doc/
