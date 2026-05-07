@@ -70,7 +70,7 @@ git config --global credential.helper 'cache --timeout=450'
 "
 
 docker exec "$USERNAME" bash -c "
-yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
+yes | git clone -b 2.0.0 https://github.com/equalframework/equal.git .
 "
 
 docker cp ./config.json "$USERNAME":/var/www/html/config/config.json
