@@ -19,7 +19,8 @@
  *          INSTANCE_SUBTYPE?: string,
  *          INSTANCE_UUID?: string,
  *          GLOBAL_ACCESS_TOKEN?: string,
- *          GLOBAL_URL?: string
+ *          GLOBAL_URL?: string,
+ *          SYNC_LEVEL?: string
  *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
@@ -107,6 +108,7 @@ function instance_create(array $data): array {
             case 'fmt':
                 // add default data for FMT
                 $default_data['INSTANCE_SUBTYPE'] = 'agency';
+                $default_data['SYNC_LEVEL'] = 'recommended';
 
                 $allowed_instance_subtypes = ['global', 'agency'];
                 if(isset($data['INSTANCE_SUBTYPE']) && (!is_string($data['INSTANCE_SUBTYPE']) || !in_array($data['INSTANCE_SUBTYPE'], $allowed_instance_subtypes))) {
@@ -123,6 +125,10 @@ function instance_create(array $data): array {
 
                     if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
                         throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+                    }
+
+                    if(isset($data['SYNC_LEVEL']) && !in_array($data['SYNC_LEVEL'], ['required', 'recommended', 'optional', 'demo'])) {
+                        throw new InvalidArgumentException("invalid_SYNC_LEVEL", 400);
                     }
                 }
                 break;
@@ -207,6 +213,7 @@ function instance_create(array $data): array {
             INSTANCE_UUID={$data['INSTANCE_UUID']}
             GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
             GLOBAL_URL={$data['GLOBAL_URL']}
+            SYNC_LEVEL={$data['SYNC_LEVEL']}
             EOT;
         }
     }
