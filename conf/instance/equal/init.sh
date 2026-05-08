@@ -78,6 +78,7 @@ docker exec "$USERNAME" bash -c "
 # Modify default root and user login to use domain name in mail
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
+./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
 "
 
 # Update root password with the one provided
