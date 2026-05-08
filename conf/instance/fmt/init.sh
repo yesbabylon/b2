@@ -90,6 +90,7 @@ docker exec "$USERNAME" bash -c "
 # Update root password with the one provided
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
+./equal.run --do=user_pass-update --user_id=2 --password=$PASSWORD --confirm=$PASSWORD
 "
 
 printf "eQual initialized.\n"
