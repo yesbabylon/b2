@@ -80,6 +80,10 @@ docker exec "$USERNAME" bash -c "
 ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
 "
 
+docker exec "$USERNAME" bash -c "
+./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
+"
+
 # Update root password with the one provided
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
