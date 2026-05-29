@@ -102,10 +102,10 @@ printf "eQual initialized.\n"
 printf "Start initializing FMT.\n"
 
 docker exec "$USERNAME" bash -c "
-mv packages packages-old
+mv packages packages.core
 yes | git clone https://github.com/fmt-saas/fmt.git packages
-cp -r packages-old/core packages
-rm -R packages-old
+cp -r packages.core/core packages
+rm -R packages.core
 "
 
 if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
