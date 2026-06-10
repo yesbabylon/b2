@@ -77,6 +77,7 @@ docker cp ./config.json "$USERNAME":/var/www/html/config/config.json
 rm ./config.json
 
 docker exec "$USERNAME" bash -c "
+./equal.run --do=init_fs
 ./equal.run --do=init_db
 ./equal.run --do=init_package --package=core --import=true
 "
