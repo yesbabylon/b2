@@ -109,9 +109,15 @@ rm -R packages.core
 "
 
 if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
-    docker exec "$USERNAME" bash -c "
-    ./equal.run --do=fmt_init_instance_agency --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL --level=$SYNC_LEVEL
-    "
+    if [ "$SYNC" == 'true' || "$SYNC" == '1' ]; then
+        docker exec "$USERNAME" bash -c "
+        ./equal.run --do=fmt_init_instance_agency --sync=true --level=$SYNC_LEVEL --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
+        "
+    else
+        docker exec "$USERNAME" bash -c "
+        ./equal.run --do=fmt_init_instance_agency --sync=false
+        "
+    fi
 elif [ "$INSTANCE_SUBTYPE" == 'global' ]; then
     docker exec "$USERNAME" bash -c "
     ./equal.run --do=fmt_init_instance_global
