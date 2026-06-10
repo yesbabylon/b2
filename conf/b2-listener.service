@@ -4,7 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/php -S 0.0.0.0:8000 -t /root/b2/src /root/b2/src/listener.php
+Environment=LISTEN_ADDR=0.0.0.0
+EnvironmentFile=-/root/b2/conf/b2-listener.env
+ExecStart=/usr/bin/php -S ${LISTEN_ADDR}:8000 -t /root/b2/src /root/b2/src/listener.php
 WorkingDirectory=/root/b2/src
 Restart=always
 SyslogIdentifier=b2-listener
