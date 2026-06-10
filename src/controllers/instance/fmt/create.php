@@ -11,16 +11,21 @@
  * @param array{
  *          USERNAME: string,
  *          PASSWORD: string,
- *          INSTANCE_TYPE?: string,
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
  *          MEM_LIMIT?: string,
- *          CPU_LIMIT?: string
+ *          CPU_LIMIT?: string,
+ *          INSTANCE_SUBTYPE?: string,
+ *          INSTANCE_UUID?: string,
+ *          GLOBAL_ACCESS_TOKEN?: string,
+ *          GLOBAL_URL?: string,
+ *          SYNC?: boolean,
+ *          SYNC_LEVEL?: string
  *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
  */
-function instance_create(array $data): array {
+function instance_fmt_create(array $data): array {
 
     // check env for required binaries
 
@@ -83,18 +88,46 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
-    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose'];
-    if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || !in_array($data['INSTANCE_TYPE'], $allowed_instance_types))) {
+    if(isset($data['INSTANCE_TYPE']) && $data['INSTANCE_TYPE'] !== 'fmt') {
         throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
+    }
+
+    $allowed_instance_subtypes = ['global', 'agency'];
+    if(isset($data['INSTANCE_SUBTYPE']) && (!is_string($data['INSTANCE_SUBTYPE']) || !in_array($data['INSTANCE_SUBTYPE'], $allowed_instance_subtypes))) {
+        throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
+    }
+
+    if(isset($data['SYNC']) && $data['SYNC']) {
+        if(isset($data['INSTANCE_SUBTYPE']) && $data['INSTANCE_SUBTYPE'] === 'global') {
+            throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
+        }
+
+        if(empty($data['INSTANCE_UUID']) || !is_string($data['INSTANCE_UUID'])) {
+            throw new InvalidArgumentException("invalid_INSTANCE_UUID", 400);
+        }
+
+        if(empty($data['GLOBAL_ACCESS_TOKEN']) || !is_string($data['GLOBAL_ACCESS_TOKEN'])) {
+            throw new InvalidArgumentException("invalid_GLOBAL_ACCESS_TOKEN", 400);
+        }
+
+        if(empty($data['GLOBAL_URL']) || !is_string($data['GLOBAL_URL']) || !filter_var($data['GLOBAL_URL'], FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException("invalid_GLOBAL_URL", 400);
+        }
+
+        if(isset($data['SYNC_LEVEL']) && !in_array($data['SYNC_LEVEL'], ['required', 'recommended', 'optional', 'demo'])) {
+            throw new InvalidArgumentException("invalid_SYNC_LEVEL", 400);
+        }
     }
 
     $default_data = [
         'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
-        'INSTANCE_TYPE'     => 'equal',
+        'INSTANCE_TYPE'     => 'fmt',
+        'INSTANCE_SUBTYPE'  => 'agency',
         'HTTPS_REDIRECT'    => 'noredirect',
         'MEM_LIMIT'         => '1000M',
         'CPU_LIMIT'         => '1',
-        'EQ_MEM_FREE_LIMIT' => '256M'
+        'EQ_MEM_FREE_LIMIT' => '256M',
+        'SYNC'              => false
     ];
 
     // assign default values for non-mandatory parameters if not provided
@@ -103,7 +136,7 @@ function instance_create(array $data): array {
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create.bash';
 
     // Create specific log file for creation to record creation instance
-    $log_file = BASE_DIR . '/logs/instance_create_' . $data['USERNAME'] . '-' . date('YmdHis') . '.log';
+    $log_file = BASE_DIR . '/logs/instance_fmt_create_' . $data['USERNAME'] . '-' . date('YmdHis') . '.log';
 
     // Execute create equal instance bash that will use previously set env variables
     // exec("bash $create_equal_instance_bash > $log_file 2>&1");
@@ -162,7 +195,27 @@ function instance_create(array $data): array {
         CPU_LIMIT=$CPU_LIMIT
 
         EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
+
+        # FMT
+        INSTANCE_SUBTYPE={$data['INSTANCE_SUBTYPE']}
         EOT;
+
+    if($data['INSTANCE_SUBTYPE'] === 'agency') {
+        if($data['SYNC']) {
+            $env .= PHP_EOL.<<<EOT
+                SYNC=true
+                SYNC_LEVEL={$data['SYNC_LEVEL']}
+                INSTANCE_UUID={$data['INSTANCE_UUID']}
+                GLOBAL_ACCESS_TOKEN={$data['GLOBAL_ACCESS_TOKEN']}
+                GLOBAL_URL={$data['GLOBAL_URL']}
+                EOT;
+        }
+        else {
+            $env .= PHP_EOL.<<<EOT
+                SYNC=false
+                EOT;
+        }
+    }
 
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, $env.PHP_EOL);
@@ -197,7 +250,20 @@ function instance_create(array $data): array {
     $docker_compose_content = str_replace("{{db_ID}}", 'db_'.$hash, $docker_compose_content);
     file_put_contents($docker_compose_path, $docker_compose_content);
 
-    file_put_contents($log_file, "Instance successfully created.\n", FILE_APPEND | LOCK_EX);
+    if($INSTANCE_TYPE === 'fmt') {
+        // replace {{variable}} in config.json
+        $config_path = "/home/$USERNAME/config.json";
+        $config_content = file_get_contents($config_path);
+        foreach($data as $key => $value) {
+            $config_content = str_replace("{{{$key}}}", $value, $config_content);
+        }
+        // remove all optional {{variable}}
+        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
+        // modify config.json
+        file_put_contents($config_path, $config_content);
+    }
+
+    file_put_contents($log_file, "Instance fmt successfully created.\n", FILE_APPEND | LOCK_EX);
 
     return [
         'code' => 201,

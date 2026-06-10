@@ -32,6 +32,7 @@ $routes = [
 		'/instance/export-backup',          /* @link instance_export_backup() */
 		'/instance/import-backup',          /* @link instance_import_backup() */
 		'/instance/create',                 /* @link instance_create() */
+		'/instance/fmt/create',             /* @link instance_fmt_create() */
 		'/instance/delete',                 /* @link instance_delete() */
 		'/instance/restore',                /* @link instance_restore() */
 		'/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
