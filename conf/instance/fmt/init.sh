@@ -109,7 +109,7 @@ rm -R packages.core
 "
 
 if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
-    if [ "$SYNC" == 'true' || "$SYNC" == '1' ]; then
+    if [[ "$SYNC" == 'true' || "$SYNC" == '1' ]]; then
         docker exec "$USERNAME" bash -c "
         ./equal.run --do=fmt_init_instance_agency --sync=true --level=$SYNC_LEVEL --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
         "
