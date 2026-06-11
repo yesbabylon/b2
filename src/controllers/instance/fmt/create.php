@@ -256,18 +256,16 @@ function instance_fmt_create(array $data): array {
     $docker_compose_content = str_replace("{{db_ID}}", 'db_'.$hash, $docker_compose_content);
     file_put_contents($docker_compose_path, $docker_compose_content);
 
-    if($INSTANCE_TYPE === 'fmt') {
-        // replace {{variable}} in config.json
-        $config_path = "/home/$USERNAME/config.json";
-        $config_content = file_get_contents($config_path);
-        foreach($data as $key => $value) {
-            $config_content = str_replace("{{{$key}}}", $value, $config_content);
-        }
-        // remove all optional {{variable}}
-        $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
-        // modify config.json
-        file_put_contents($config_path, $config_content);
+    // replace {{variable}} in config.json
+    $config_path = "/home/$USERNAME/config.json";
+    $config_content = file_get_contents($config_path);
+    foreach($data as $key => $value) {
+        $config_content = str_replace("{{{$key}}}", $value, $config_content);
     }
+    // remove all optional {{variable}}
+    $config_content = preg_replace('/\{\{[^}]+\}\}/', '', $config_content);
+    // modify config.json
+    file_put_contents($config_path, $config_content);
 
     file_put_contents($log_file, "Instance fmt successfully created.\n", FILE_APPEND | LOCK_EX);
 
