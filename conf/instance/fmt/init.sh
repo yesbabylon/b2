@@ -140,19 +140,27 @@ rm -R packages.core
 
 if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
     if [[ "$SYNC" == 'true' || "$SYNC" == '1' ]]; then
+        printf "Start initializing of agency instance with synchronization.\n"
+
         docker exec "$USERNAME" bash -c "
         ./equal.run --do=fmt_init_instance_agency --sync=true --level=$SYNC_LEVEL --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
         "
     else
+        printf "Start initializing of agency instance.\n"
+
         docker exec "$USERNAME" bash -c "
         ./equal.run --do=fmt_init_instance_agency --sync=false
         "
     fi
 elif [ "$INSTANCE_SUBTYPE" == 'global' ]; then
+    printf "Start initializing of global instance.\n"
+
     docker exec "$USERNAME" bash -c "
     ./equal.run --do=fmt_init_instance_global
     "
 fi
+
+printf "Instance initialized.\n"
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_app --package=fmt --app=app --force=true
