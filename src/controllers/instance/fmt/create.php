@@ -20,7 +20,8 @@
  *          GLOBAL_ACCESS_TOKEN?: string,
  *          GLOBAL_URL?: string,
  *          SYNC?: boolean,
- *          SYNC_LEVEL?: string
+ *          SYNC_LEVEL?: string,
+ *          INIT?: boolean
  *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
@@ -119,6 +120,10 @@ function instance_fmt_create(array $data): array {
         }
     }
 
+    if(isset($data['INIT']) && !is_bool($data['INIT'])) {
+        throw new InvalidArgumentException("invalid_INIT", 400);
+    }
+
     $default_data = [
         'CIPHER_KEY'        => md5(bin2hex(random_bytes(32))),
         'INSTANCE_TYPE'     => 'fmt',
@@ -127,7 +132,8 @@ function instance_fmt_create(array $data): array {
         'MEM_LIMIT'         => '1000M',
         'CPU_LIMIT'         => '1',
         'EQ_MEM_FREE_LIMIT' => '256M',
-        'SYNC'              => false
+        'SYNC'              => false,
+        'INIT'              => true
     ];
 
     // assign default values for non-mandatory parameters if not provided
@@ -264,6 +270,11 @@ function instance_fmt_create(array $data): array {
     }
 
     file_put_contents($log_file, "Instance fmt successfully created.\n", FILE_APPEND | LOCK_EX);
+
+    if($data['INIT']) {
+        // init instance in background
+        exec("/home/$USERNAME/init.sh > /dev/null 2>&1 &");
+    }
 
     return [
         'code' => 201,
