@@ -1,12 +1,12 @@
 <?php
- /*
+/*
     This file is part of the B2 package <http://github.com/yesbabylon/b2>
     Some Rights Reserved, Yesbabylon, 2025
     Licensed under MIT License <https://opensource.org/licenses/MIT>
 */
 
 /**
- * Delete an instance.
+ * Deletes an instance.
  *
  * @param array{instance: string} $data
  * @return array{code: int, body: string}
@@ -16,11 +16,6 @@ function instance_delete(array $data): array {
 
 	// #todo - handle deletion as a deferred operation (not instant, but scheduled) with a message sent to Host administrator.
 
-
-    if(PHP_SAPI !== 'cli') {
-        throw new RuntimeException("deletion_limited_to_cli_only", 403);
-    }
-
     if(!isset($data['instance'])) {
         throw new InvalidArgumentException("missing_instance", 400);
     }
@@ -29,7 +24,11 @@ function instance_delete(array $data): array {
         throw new InvalidArgumentException("invalid_instance", 400);
     }
 
-	// #todo - prevent deleting a running instance
+    // Check that instance isn't running
+    exec('docker compose -f /home/'.$data['instance'].'/docker-compose.yml ps --services --filter status=running', $output);
+    if(!empty($output)) {
+        throw new Exception("instance_running", 409);
+    }
 
     // Stop and remove the instance with docker compose to /home/$data['instance']
     exec('docker compose -f /home/'.$data['instance'].'/docker-compose.yml down -v');

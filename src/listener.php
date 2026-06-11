@@ -35,6 +35,8 @@ $routes = [
 		'/instance/fmt/create',             /* @link instance_fmt_create() */
 		'/instance/delete',                 /* @link instance_delete() */
 		'/instance/restore',                /* @link instance_restore() */
+		'/instance/instance_start',         /* @link instance_start() */
+		'/instance/instance_stop',          /* @link instance_stop() */
 		'/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
 		'/instance/disable-maintenance',    /* @link instance_disable_maintenance() */
 	]
