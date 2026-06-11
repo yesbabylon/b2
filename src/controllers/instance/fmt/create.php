@@ -98,6 +98,18 @@ function instance_fmt_create(array $data): array {
         throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
     }
 
+    if(isset($data['SYNC']) && !is_bool($data['SYNC'])) {
+        if(is_string($data['SYNC'])) {
+            $data['SYNC'] = in_array(strtolower($data['SYNC']), ['1', 'true']);
+        }
+        elseif(is_int($data['SYNC'])) {
+            $data['SYNC'] = $data['SYNC'] === 1;
+        }
+        else {
+            throw new InvalidArgumentException("invalid_SYNC", 400);
+        }
+    }
+
     if(isset($data['SYNC']) && $data['SYNC']) {
         if(isset($data['INSTANCE_SUBTYPE']) && $data['INSTANCE_SUBTYPE'] === 'global') {
             throw new InvalidArgumentException("invalid_INSTANCE_SUBTYPE", 400);
@@ -121,7 +133,15 @@ function instance_fmt_create(array $data): array {
     }
 
     if(isset($data['INIT']) && !is_bool($data['INIT'])) {
-        throw new InvalidArgumentException("invalid_INIT", 400);
+        if(is_string($data['INIT'])) {
+            $data['INIT'] = in_array(strtolower($data['INIT']), ['1', 'true']);
+        }
+        elseif(is_int($data['INIT'])) {
+            $data['INIT'] = $data['INIT'] === 1;
+        }
+        else {
+            throw new InvalidArgumentException("invalid_INIT", 400);
+        }
     }
 
     $default_data = [
@@ -260,6 +280,9 @@ function instance_fmt_create(array $data): array {
     $config_path = "/home/$USERNAME/config.json";
     $config_content = file_get_contents($config_path);
     foreach($data as $key => $value) {
+        if(is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
         $config_content = str_replace("{{{$key}}}", $value, $config_content);
     }
     // remove all optional {{variable}}
