@@ -3,6 +3,7 @@ Description=Service for managing eQual user instances.
 After=network.target
 
 [Service]
+User=root
 Type=simple
 Environment=LISTEN_ADDR=0.0.0.0
 EnvironmentFile=-/root/b2/conf/b2-listener.env

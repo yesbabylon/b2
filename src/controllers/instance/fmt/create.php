@@ -274,6 +274,8 @@ function instance_fmt_create(array $data): array {
     if($data['INIT']) {
         // init instance in background
         exec("/home/$USERNAME/init.sh > /dev/null 2>&1 &");
+
+        file_put_contents($log_file, "Instance fmt init triggered.\n", FILE_APPEND | LOCK_EX);
     }
 
     return [
