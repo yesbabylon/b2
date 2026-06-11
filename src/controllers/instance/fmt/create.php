@@ -100,7 +100,7 @@ function instance_fmt_create(array $data): array {
 
     if(isset($data['SYNC']) && !is_bool($data['SYNC'])) {
         if(is_string($data['SYNC'])) {
-            $data['SYNC'] = in_array(strtolower($data['SYNC']), ['1', 'true']);
+            $data['SYNC'] = in_array(strtolower($data['SYNC']), ['1', 'true', 'yes']);
         }
         elseif(is_int($data['SYNC'])) {
             $data['SYNC'] = $data['SYNC'] === 1;
@@ -134,7 +134,7 @@ function instance_fmt_create(array $data): array {
 
     if(isset($data['INIT']) && !is_bool($data['INIT'])) {
         if(is_string($data['INIT'])) {
-            $data['INIT'] = in_array(strtolower($data['INIT']), ['1', 'true']);
+            $data['INIT'] = in_array(strtolower($data['INIT']), ['1', 'true', 'yes']);
         }
         elseif(is_int($data['INIT'])) {
             $data['INIT'] = $data['INIT'] === 1;
