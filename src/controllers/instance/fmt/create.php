@@ -279,10 +279,12 @@ function instance_fmt_create(array $data): array {
     // replace {{variable}} in config.json
     $config_path = "/home/$USERNAME/config.json";
     $config_content = file_get_contents($config_path);
+    file_put_contents($log_file, "Values: ".json_encode($data).".\n", FILE_APPEND | LOCK_EX);
     foreach($data as $key => $value) {
         if(is_bool($value)) {
             $value = $value ? 'true' : 'false';
         }
+        file_put_contents($log_file, "Value of $key: ".json_encode($value).".\n", FILE_APPEND | LOCK_EX);
         $config_content = str_replace("{{{$key}}}", $value, $config_content);
     }
     // remove all optional {{variable}}
