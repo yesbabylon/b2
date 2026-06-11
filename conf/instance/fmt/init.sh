@@ -78,9 +78,12 @@ fi
 
 cd "$HOME_DIR"
 
+printf "Trigger docker compose up\n"
 docker compose build
 docker compose up -d
-sleep 15
+
+printf "Waiting 60 seconds for containers to be properly started\n"
+sleep 60
 
 printf "Docker images built and containers started\n"
 
