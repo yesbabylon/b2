@@ -22,13 +22,30 @@ if [[ -z "${INSTANCE_SUBTYPE:-}" ]]; then
     exit 1
 fi
 
+if [[ -z "${PASSWORD:-}" ]]; then
+    printf "Missing PASSWORD environment variable.\n" >&2
+    exit 1
+fi
+
+INIT_SUCCESS=0
+SYNC="${SYNC:-false}"
 HOME_DIR="/home/$USERNAME"
 LOCK_FILE="$HOME_DIR/.init.lock"
 INITIALIZED_FILE="$HOME_DIR/.initialized"
 WWW_DIR="$HOME_DIR/www"
+CONFIG_FILE="$HOME_DIR/config.json"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    printf "Missing config.json file: %s\n" "$CONFIG_FILE" >&2
+    exit 1
+fi
 
 cleanup() {
     rm -f "$LOCK_FILE"
+
+    if [[ "$INIT_SUCCESS" -eq 1 ]]; then
+        rm -f "$CONFIG_FILE"
+    fi
 }
 trap cleanup EXIT INT TERM
 
@@ -47,6 +64,16 @@ fi
 if [[ -d "$WWW_DIR" ]] && find "$WWW_DIR" -mindepth 1 -print -quit | grep -q . && [[ "$FORCE" -ne 1 ]]; then
     printf "Directory ./www already contains data. Use --force to reinitialize.\n" >&2
     exit 1
+fi
+
+if [[ "$FORCE" -eq 1 ]]; then
+    printf "Force mode: cleaning existing www directory.\n"
+
+    if [[ -d "$WWW_DIR" ]]; then
+        find "$WWW_DIR" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+    fi
+
+    rm -f "$INITIALIZED_FILE"
 fi
 
 cd "$HOME_DIR"
@@ -73,8 +100,7 @@ docker exec "$USERNAME" bash -c "
 yes | git clone -b 2.0.1 https://github.com/equalframework/equal.git .
 "
 
-docker cp ./config.json "$USERNAME":/var/www/html/config/config.json
-rm ./config.json
+docker cp "$CONFIG_FILE" "$USERNAME":/var/www/html/config/config.json
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_fs
@@ -130,6 +156,7 @@ docker exec "$USERNAME" bash -c "
 "
 
 touch "$INITIALIZED_FILE"
+INIT_SUCCESS=1
 printf "FMT initialized.\n"
 
 exit 0
