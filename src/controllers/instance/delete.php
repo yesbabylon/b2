@@ -26,7 +26,7 @@ function instance_delete(array $data): array {
 
     // Check that instance isn't running
     exec('docker compose -f /home/'.$data['instance'].'/docker-compose.yml ps --services --filter status=running', $output);
-    if(!empty($output)) {
+    if(!empty(array_filter($output))) {
         throw new Exception("instance_running", 409);
     }
 
