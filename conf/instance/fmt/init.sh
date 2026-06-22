@@ -12,6 +12,10 @@ if [[ -f .env ]]; then
     set +a
 fi
 
+if [[ -f prepare.php ]]; then
+    php prepare.php
+fi
+
 if [[ -z "${USERNAME:-}" ]]; then
     printf "Missing USERNAME environment variable.\n" >&2
     exit 1

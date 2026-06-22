@@ -15,7 +15,8 @@
  *          CIPHER_KEY?: string,
  *          HTTPS_REDIRECT?: string,
  *          MEM_LIMIT?: string,
- *          CPU_LIMIT?: string
+ *          CPU_LIMIT?: string,
+ *          INIT?: boolean
  *        }                             $data   The data for the new instance.
  * @return array{code: int, body: string}
  * @throws Exception
@@ -83,9 +84,20 @@ function instance_create(array $data): array {
         throw new InvalidArgumentException("invalid_CPU_LIMIT", 400);
     }
 
-    $allowed_instance_types = ['equal', 'wordpress', 'equalpress', 'symbiose'];
-    if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || !in_array($data['INSTANCE_TYPE'], $allowed_instance_types))) {
+    if(isset($data['INSTANCE_TYPE']) && (!is_string($data['INSTANCE_TYPE']) || empty($data['INSTANCE_TYPE']))) {
         throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
+    }
+
+    if(isset($data['INIT']) && !is_bool($data['INIT'])) {
+        if(is_string($data['INIT'])) {
+            $data['INIT'] = in_array(strtolower($data['INIT']), ['1', 'true', 'yes']);
+        }
+        elseif(is_int($data['INIT'])) {
+            $data['INIT'] = $data['INIT'] === 1;
+        }
+        else {
+            throw new InvalidArgumentException("invalid_INIT", 400);
+        }
     }
 
     $default_data = [
@@ -94,11 +106,21 @@ function instance_create(array $data): array {
         'HTTPS_REDIRECT'    => 'noredirect',
         'MEM_LIMIT'         => '1000M',
         'CPU_LIMIT'         => '1',
-        'EQ_MEM_FREE_LIMIT' => '256M'
+        'EQ_MEM_FREE_LIMIT' => '256M',
+        'INIT'              => false
     ];
 
     // assign default values for non-mandatory parameters if not provided
     $data = array_merge($default_data, $data);
+
+    $instance_type_dir = BASE_DIR . "/conf/instance/{$data['INSTANCE_TYPE']}";
+    if(!preg_match('/^[A-Za-z0-9_-]+$/', $data['INSTANCE_TYPE']) || !is_dir($instance_type_dir)) {
+        throw new InvalidArgumentException("invalid_INSTANCE_TYPE", 400);
+    }
+
+    if($data['INIT'] && !is_file("$instance_type_dir/init.sh")) {
+        throw new InvalidArgumentException("missing_init", 400);
+    }
 
     // $create_equal_instance_bash = BASE_DIR.'/conf/instance/create.bash';
 
@@ -110,11 +132,6 @@ function instance_create(array $data): array {
 
     $USERNAME = $data['USERNAME'];
     $PASSWORD = $data['PASSWORD'];
-    $CIPHER_KEY = $data['CIPHER_KEY'];
-    $MEM_LIMIT = $data['MEM_LIMIT'];
-    $CPU_LIMIT = $data['CPU_LIMIT'];
-    $HTTPS_REDIRECT = $data['HTTPS_REDIRECT'];
-    $EQ_MEM_FREE_LIMIT = $data['EQ_MEM_FREE_LIMIT'];
     $INSTANCE_TYPE = $data['INSTANCE_TYPE'];
 
     // create a new user and set password
@@ -141,28 +158,53 @@ function instance_create(array $data): array {
 
     file_put_contents($log_file, "User created and configured.\n", FILE_APPEND | LOCK_EX);
 
-    $EXTERNAL_IP_ADDRESS = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
+    $data['EXTERNAL_IP_ADDRESS'] = trim(shell_exec("ip -4 addr show ens3 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'"));
 
-    $env = <<<EOT
-        # Username should be FQDN as defined in DNS (e.g. example.com)
-        USERNAME=$USERNAME
-        PASSWORD=$PASSWORD
+    $explicit_env_keys = [
+        'USERNAME'              => "Username should be FQDN as defined in DNS (e.g. example.com)",
+        'PASSWORD'              => "Password for the user",
+        'CIPHER_KEY'            => "Cipher key for setting secrets encryption and decryption",
+        'HTTPS_REDIRECT'        => "Whether HTTP requests should be redirected to their HTTPS equivalent",
+        'EXTERNAL_IP_ADDRESS'   => "Relay host public IP address to allow container calling itself",
+        'MEM_LIMIT'             => "Memory limit for the container",
+        'CPU_LIMIT'             => "CPU limit for the container",
+        'EQ_MEM_FREE_LIMIT'     => "Memory free limit for the container"
+    ];
 
-        # Cipher key for setting secrets encryption and decryption
-        CIPHER_KEY=$CIPHER_KEY
+    $env = '';
+    foreach($explicit_env_keys as $key => $comment) {
+        if(!array_key_exists($key, $data)) {
+            continue;
+        }
+        $env .= "# $comment" . PHP_EOL;
+        $env .= $key . '=' . $data[$key] . PHP_EOL . PHP_EOL;
+    }
 
-        # Whether HTTP requests should be redirected to their HTTPS equivalent (Possible values are: redirect, noredirect).
-        HTTPS_REDIRECT=$HTTPS_REDIRECT
+    $env .= "# ADDITIONAL VARIABLES" . PHP_EOL;
+    foreach(array_diff_key($data, $explicit_env_keys) as $key => $value) {
+        if(!preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $key)) {
+            continue;
+        }
 
-        # Relay host public IP address to allow container calling itself (enforce sending the requests to the reverse proxy).
-        EXTERNAL_IP_ADDRESS=$EXTERNAL_IP_ADDRESS
+        if(is_bool($value)) {
+            $value = $value ? 'true' : 'false';
+        }
+        elseif($value === null) {
+            $value = '';
+        }
+        elseif(is_array($value) || is_object($value)) {
+            $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if($value === false) {
+                $value = '';
+            }
+        }
+        else {
+            $value = (string) $value;
+        }
 
-        # Limits for resources allocated by docker to the container
-        MEM_LIMIT=$MEM_LIMIT
-        CPU_LIMIT=$CPU_LIMIT
-
-        EQ_MEM_FREE_LIMIT=$EQ_MEM_FREE_LIMIT
-        EOT;
+        // assign value with proper escaping for single quotes in bash
+        $env .= PHP_EOL . $key . "='" . str_replace("'", "'\"'\"'", $value) . "'";
+    }
 
     $env_file = "/home/$USERNAME/.env";
     file_put_contents($env_file, $env.PHP_EOL);
@@ -172,7 +214,7 @@ function instance_create(array $data): array {
     // copy configuration files
 	$dir = BASE_DIR . "/conf/instance/$INSTANCE_TYPE";
 
-	if(!is_dir($dir) || !is_file("$dir/init.sh")) {
+	if(!is_dir($dir)) {
 		throw new RuntimeException("invalid_instance_type", 500);
 	}
 
@@ -198,6 +240,13 @@ function instance_create(array $data): array {
     file_put_contents($docker_compose_path, $docker_compose_content);
 
     file_put_contents($log_file, "Instance successfully created.\n", FILE_APPEND | LOCK_EX);
+
+    if($data['INIT']) {
+        // init instance in background
+        exec("nohup bash -c 'cd /home/$USERNAME && ./init.sh' > /root/b2/logs/init-$USERNAME.log 2>&1 &");
+
+        file_put_contents($log_file, "Instance init triggered.\n", FILE_APPEND | LOCK_EX);
+    }
 
     return [
         'code' => 201,
