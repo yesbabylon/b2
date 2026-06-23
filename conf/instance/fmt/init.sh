@@ -38,6 +38,7 @@ LOCK_FILE="$HOME_DIR/.init.lock"
 INITIALIZED_FILE="$HOME_DIR/.initialized"
 WWW_DIR="$HOME_DIR/www"
 CONFIG_FILE="$HOME_DIR/config.json"
+UPDATE_FILE="$HOME_DIR/update.sh"
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     printf "Missing config.json file: %s\n" "$CONFIG_FILE" >&2
@@ -49,6 +50,7 @@ cleanup() {
 
     if [[ "$INIT_SUCCESS" -eq 1 ]]; then
         rm -f "$CONFIG_FILE"
+        rm -f "$UPDATE_FILE"
     fi
 }
 trap cleanup EXIT INT TERM
@@ -128,6 +130,8 @@ printf "eQual initialized.\n"
 ##################
 
 printf "Start initializing FMT.\n"
+
+docker cp "$UPDATE_FILE" "$USERNAME":/var/www/html/update.sh
 
 docker exec "$USERNAME" bash -c "
 mv packages packages.core
