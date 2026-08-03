@@ -88,6 +88,27 @@ findtime = 5m
 bantime  = 30s
 
 
+[nginx-404]
+enabled  = true
+port     = http,https
+filter   = nginx-404
+banaction = docker-action
+logpath  = /var/log/nginx/access.log*
+maxretry = 10
+findtime = 1m
+bantime  = 10m
+
+[nginx-404-recidive]
+enabled  = true
+port     = http,https
+filter   = nginx-404-recidive
+banaction = docker-action
+logpath  = /var/log/fail2ban.log*
+maxretry = 2
+findtime = 1d
+bantime  = 1w
+
+
 [wordpress]
 enabled  = true
 port     = http,https
