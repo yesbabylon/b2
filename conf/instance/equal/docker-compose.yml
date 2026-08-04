@@ -63,6 +63,8 @@ services:
       # If instance calls itself through HTTP, force sending the requests to the reverse proxy
       - "${USERNAME}:${EXTERNAL_IP_ADDRESS}"
     environment:
+      - EQ_HOST_NAME=${USERNAME}
+      - EQ_HOST_PASS=${PASSWORD}
       - EQ_DB_HOST={{db_ID}}
       - EQ_DB_USER=root
       - EQ_DB_PASS=${PASSWORD}
