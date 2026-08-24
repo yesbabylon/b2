@@ -144,7 +144,8 @@ function instance_create(array $data): array {
     // add user directories
     exec("mkdir -p /home/$USERNAME/import /home/$USERNAME/export /home/$USERNAME/www");
     exec("usermod -d /home/$USERNAME/www $USERNAME");
-    exec("chmod g+w -R /home/$USERNAME/www");
+    exec("chown root:$USERNAME /home/$USERNAME/www");
+    exec("chmod 2775 /home/$USERNAME/www");
 
     // define ssh-login as default shell for user
     // #memo - ssh-login is expected to have been installed in /usr/local/bin/ssh-login by the install script

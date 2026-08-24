@@ -56,34 +56,37 @@ printf "Docker images built and containers started\n"
 ### INIT eQual ###
 ##################
 
+INSTANCE_GID=$(id -g "$USERNAME")
+
 docker exec "$USERNAME" bash -c "
 apt-get update
 apt-get install -y wget
 git config --global credential.helper 'cache --timeout=450'
 "
 
-docker exec "$USERNAME" bash -c "
+docker exec -u "0:$INSTANCE_GID" "$USERNAME" bash -c "
+umask 0002
 yes | git clone -b dev-2.0 https://github.com/equalframework/equal.git .
 "
 
-docker exec "$USERNAME" bash -c "
+docker exec -u "0:$INSTANCE_GID" "$USERNAME" bash -c "
 ./equal.run --do=config_generate --dbms=MYSQL --db_host=sql.$USERNAME --db_port=3306 --db_name=equal --db_username=root --db_password=$PASSWORD
 "
 
-docker exec "$USERNAME" bash -c "
+docker exec -u "0:$INSTANCE_GID" "$USERNAME" bash -c "
 ./equal.run --do=init_fs
 ./equal.run --do=init_db
 ./equal.run --do=init_package --package=core --import=true
 "
 
 # Modify default root and user login to use domain name in mail
-docker exec "$USERNAME" bash -c "
+docker exec -u "0:$INSTANCE_GID" "$USERNAME" bash -c "
 ./equal.run --do=model_update --entity='core\\User' --id=1 --fields='{\"login\":\"root@$USERNAME\"}'
 ./equal.run --do=model_update --entity='core\\User' --id=2 --fields='{\"login\":\"user@$USERNAME\"}'
 "
 
 # Update root password and user with the one provided
-docker exec "$USERNAME" bash -c "
+docker exec -u "0:$INSTANCE_GID" "$USERNAME" bash -c "
 ./equal.run --do=user_pass-update --user_id=1 --password=$PASSWORD --confirm=$PASSWORD
 ./equal.run --do=user_pass-update --user_id=2 --password=$PASSWORD --confirm=$PASSWORD
 "

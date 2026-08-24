@@ -1,3 +1,4 @@
 #!/bin/bash
 container_name=`whoami`
-docker exec -it -u root $container_name /bin/bash
+instance_gid=$(id -g)
+docker exec -it -u "0:${instance_gid}" $container_name /bin/bash
