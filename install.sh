@@ -197,6 +197,12 @@ gpg --output ./keyring/gpg-public-key.pgp --armor --export "$GPG_NAME"
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
 
+# Configure Docker daemon defaults
+mkdir -p /etc/docker
+cp "$INSTALL_DIR"/conf/etc/docker/daemon.json /etc/docker/daemon.json
+
+# Restart Docker to apply daemon configuration
+systemctl restart docker
 
 # Make sure docker starts on boot
 systemctl enable docker
