@@ -1,4 +1,4 @@
-## Start of configuration add by letsencrypt container
+## B2 permanent ACME HTTP-01 configuration
 location ^~ /.well-known/acme-challenge/ {
     auth_basic off;
     auth_request off;
@@ -7,4 +7,4 @@ location ^~ /.well-known/acme-challenge/ {
     try_files $uri =404;
     break;
 }
-## End of configuration add by letsencrypt container
+## End B2 permanent ACME HTTP-01 configuration

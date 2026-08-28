@@ -197,7 +197,7 @@ gpg --output ./keyring/gpg-public-key.pgp --armor --export "$GPG_NAME"
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
 
-# Configure Docker daemon defaults
+# Configure Docker daemon defaults (logs limits)
 mkdir -p /etc/docker
 cp "$INSTALL_DIR"/conf/etc/docker/daemon.json /etc/docker/daemon.json
 
