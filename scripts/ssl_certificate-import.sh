@@ -3,6 +3,7 @@
 set -Eeuo pipefail
 
 DEFAULT_CERTIFICATES_DIR="/srv/docker/nginx/certs"
+NGINX_PROXY_CONTAINER="nginx-proxy"
 
 usage() {
     cat <<EOF
@@ -11,7 +12,9 @@ Usage: $0 USERNAME archive.tar.gz [certificates-directory]
 Imports only the NGINX certificate files belonging to USERNAME. USERNAME must
 be the instance's fully qualified domain name (for example: doc.fmtsolutions.be).
 Unrelated certificates in the archive and destination are left untouched.
-Existing files for USERNAME are backed up before they are replaced.
+Existing files for USERNAME are backed up in /home/USERNAME/export before they
+are replaced. With the default certificates directory, nginx-proxy is restarted
+after the import so docker-gen regenerates and activates its configuration.
 
 Default certificates-directory: ${DEFAULT_CERTIFICATES_DIR}
 EOF
@@ -182,9 +185,13 @@ for entry in \
 done
 
 if [ ${#existing_entries[@]} -gt 0 ]; then
-    parent_dir="$(dirname "$certificates_dir")"
-    directory_name="$(basename "$certificates_dir")"
-    backup="${parent_dir}/${directory_name}-${username}-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+    backup_dir="/home/${username}/export"
+    if [ ! -d "$backup_dir" ]; then
+        echo "Error: instance export directory not found: $backup_dir" >&2
+        exit 1
+    fi
+    backup_dir="$(cd "$backup_dir" && pwd -P)"
+    backup="${backup_dir}/backup-certificates-${username}-$(date +%Y%m%d-%H%M%S).tar.gz"
     if [ -e "$backup" ]; then
         backup="${backup%.tar.gz}-$$.tar.gz"
     fi
@@ -212,5 +219,33 @@ for entry in "${certificate_entries[@]}"; do
     cp -a -- "$staging_dir/$entry" "$certificates_dir/"
 done
 
-echo "Certificate import successful for instance '$username': $certificates_dir"
-echo "Reload or restart nginx-proxy to use the imported certificate."
+if [ "$certificates_dir" = "$DEFAULT_CERTIFICATES_DIR" ]; then
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "Error: required command not found: docker" >&2
+        exit 1
+    fi
+
+    echo "Restarting $NGINX_PROXY_CONTAINER to regenerate its configuration..."
+    if ! docker restart "$NGINX_PROXY_CONTAINER" >/dev/null; then
+        echo "Error: unable to restart Docker container '$NGINX_PROXY_CONTAINER'." >&2
+        exit 1
+    fi
+
+    if ! docker exec "$NGINX_PROXY_CONTAINER" nginx -t; then
+        echo "Error: invalid NGINX configuration after certificate import." >&2
+        exit 1
+    fi
+
+    if ! docker exec "$NGINX_PROXY_CONTAINER" \
+        grep -R -F -q "/etc/nginx/certs/$username.crt" /etc/nginx/conf.d || \
+       ! docker exec "$NGINX_PROXY_CONTAINER" \
+        grep -R -F -q "/etc/nginx/certs/$username.key" /etc/nginx/conf.d; then
+        echo "Error: regenerated NGINX configuration does not activate the certificate for '$username'." >&2
+        exit 1
+    fi
+
+    echo "Certificate imported and activated for instance '$username': $certificates_dir"
+else
+    echo "Certificate import successful for instance '$username': $certificates_dir"
+    echo "NGINX activation skipped because a custom certificates directory was used."
+fi
