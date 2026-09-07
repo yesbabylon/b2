@@ -127,6 +127,13 @@ done
 
 # Relative links in nginx-proxy's layout must resolve inside the archive.
 staging_root="$(realpath "$staging_dir")"
+shared_dhparam_path="$staging_root/dhparam.pem"
+if [ -L "$staging_dir/$username.dhparam.pem" ] && \
+   resolved_dhparam="$(realpath -e "$staging_dir/$username.dhparam.pem" 2>/dev/null)" && \
+   [ "$resolved_dhparam" = "$shared_dhparam_path" ]; then
+    certificate_entries=("dhparam.pem" "${certificate_entries[@]}")
+fi
+
 for entry in "${certificate_entries[@]}"; do
     while IFS= read -r -d '' link; do
         link_target="$(readlink "$link")"
@@ -140,6 +147,12 @@ for entry in "${certificate_entries[@]}"; do
         fi
         case "$resolved_target" in
             "$staging_root/$username"|"$staging_root/$username"/*) ;;
+            "$shared_dhparam_path")
+                if [ "$link" != "$staging_dir/$username.dhparam.pem" ]; then
+                    echo "Error: unexpected symlink to shared DH parameters: $link -> $link_target" >&2
+                    exit 1
+                fi
+                ;;
             *)
                 echo "Error: certificate symlink escapes the instance directory: $link -> $link_target" >&2
                 exit 1
@@ -187,6 +200,15 @@ if [ ${#existing_entries[@]} -gt 0 ]; then
 fi
 
 for entry in "${certificate_entries[@]}"; do
+    if [ "$entry" = "dhparam.pem" ] && \
+       { [ -e "$certificates_dir/$entry" ] || [ -L "$certificates_dir/$entry" ]; }; then
+        if [ ! -f "$certificates_dir/$entry" ]; then
+            echo "Error: shared DH-parameter path is not a usable file: $certificates_dir/$entry" >&2
+            exit 1
+        fi
+        echo "Keeping existing shared DH parameters: $certificates_dir/$entry"
+        continue
+    fi
     cp -a -- "$staging_dir/$entry" "$certificates_dir/"
 done
 

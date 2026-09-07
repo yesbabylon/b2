@@ -119,6 +119,16 @@ for entry in \
     fi
 done
 
+# Some nginx-proxy installations use one shared DH-parameter file and link
+# <USERNAME>.dhparam.pem to ./dhparam.pem. Include that dependency so the
+# exported archive remains self-contained.
+shared_dhparam_path="$certificates_dir/dhparam.pem"
+if [ -L "$certificates_dir/$username.dhparam.pem" ] && \
+   resolved_dhparam="$(realpath -e "$certificates_dir/$username.dhparam.pem" 2>/dev/null)" && \
+   [ "$resolved_dhparam" = "$shared_dhparam_path" ]; then
+    certificate_entries+=("dhparam.pem")
+fi
+
 # Ensure exported symlinks are usable and stay inside the certificates tree.
 for entry in "${certificate_entries[@]}"; do
     while IFS= read -r -d '' link; do
@@ -133,6 +143,12 @@ for entry in "${certificate_entries[@]}"; do
         fi
         case "$resolved_target" in
             "$certificates_dir/$username"|"$certificates_dir/$username"/*) ;;
+            "$shared_dhparam_path")
+                if [ "$link" != "$certificates_dir/$username.dhparam.pem" ]; then
+                    echo "Error: unexpected symlink to shared DH parameters: $link -> $link_target" >&2
+                    exit 1
+                fi
+                ;;
             *)
                 echo "Error: certificate symlink escapes the instance directory: $link -> $link_target" >&2
                 exit 1
