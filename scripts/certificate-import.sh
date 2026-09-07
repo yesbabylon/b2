@@ -6,14 +6,30 @@ DEFAULT_CERTIFICATES_DIR="/srv/docker/nginx/certs"
 
 usage() {
     cat <<EOF
-Usage: $0 archive.tar.gz [certificates-directory]
+Usage: $0 USERNAME archive.tar.gz [certificates-directory]
 
-Imports an archive produced by certificate-export.sh. Existing files with the
-same names are replaced; unrelated files are kept. A backup of a non-empty
-destination is created next to the certificates directory before import.
+Imports only the NGINX certificate files belonging to USERNAME. USERNAME must
+be the instance's fully qualified domain name (for example: doc.fmtsolutions.be).
+Unrelated certificates in the archive and destination are left untouched.
+Existing files for USERNAME are backed up before they are replaced.
 
 Default certificates-directory: ${DEFAULT_CERTIFICATES_DIR}
 EOF
+}
+
+is_valid_username() {
+    local username="$1"
+    local label
+    local -a labels
+
+    [ ${#username} -le 253 ] || return 1
+    [[ "$username" == *.* ]] || return 1
+    [[ "$username" != .* && "$username" != *. ]] || return 1
+    IFS='.' read -r -a labels <<< "$username"
+    for label in "${labels[@]}"; do
+        [ ${#label} -le 63 ] || return 1
+        [[ "$label" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$ ]] || return 1
+    done
 }
 
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
@@ -21,15 +37,21 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     exit 0
 fi
 
-if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
     usage >&2
     exit 1
 fi
 
-archive="$1"
-certificates_dir="${2:-$DEFAULT_CERTIFICATES_DIR}"
+username="$1"
+archive="$2"
+certificates_dir="${3:-$DEFAULT_CERTIFICATES_DIR}"
 
-for command_name in tar find grep cp mktemp realpath readlink; do
+if ! is_valid_username "$username"; then
+    echo "Error: invalid USERNAME (expected a fully qualified domain name): $username" >&2
+    exit 1
+fi
+
+for command_name in tar find cp mktemp realpath readlink; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
         echo "Error: required command not found: $command_name" >&2
         exit 1
@@ -73,44 +95,58 @@ if [ -n "$unexpected_type" ]; then
     exit 1
 fi
 
-has_certificate_file=false
-while IFS= read -r -d '' candidate; do
-    case "$candidate" in
-        *.crt|*.key|*.pem)
-            has_certificate_file=true
-            break
-            ;;
-    esac
-done < <(find "$staging_dir" -mindepth 1 \( -type f -o -type l \) -print0)
+certificate_found=false
+if [ -f "$staging_dir/$username.crt" ] || \
+   [ -f "$staging_dir/$username/fullchain.pem" ] || \
+   [ -f "$staging_dir/$username/cert.pem" ]; then
+    certificate_found=true
+fi
 
-if [ "$has_certificate_file" != true ]; then
-    echo "Error: archive does not contain any .crt, .key or .pem file." >&2
+if [ "$certificate_found" != true ]; then
+    echo "Error: archive does not contain a certificate for instance '$username'." >&2
     exit 1
 fi
 
-# The relative links in nginx-proxy's certificate layout must resolve inside
-# the archive and must not be broken.
+if [ -L "$staging_dir/$username" ] || \
+   { [ -e "$staging_dir/$username" ] && [ ! -d "$staging_dir/$username" ]; }; then
+    echo "Error: invalid certificate directory for instance '$username' in archive." >&2
+    exit 1
+fi
+
+certificate_entries=()
+for entry in \
+    "$username" \
+    "$username.crt" \
+    "$username.key" \
+    "$username.chain.pem" \
+    "$username.dhparam.pem"; do
+    if [ -e "$staging_dir/$entry" ] || [ -L "$staging_dir/$entry" ]; then
+        certificate_entries+=("$entry")
+    fi
+done
+
+# Relative links in nginx-proxy's layout must resolve inside the archive.
 staging_root="$(realpath "$staging_dir")"
-while IFS= read -r -d '' link; do
-    link_target="$(readlink "$link")"
-    if [[ "$link_target" = /* ]]; then
-        echo "Error: absolute symlink is not allowed: $link -> $link_target" >&2
-        exit 1
-    fi
-
-    if ! resolved_target="$(realpath -e "$link")"; then
-        echo "Error: broken symlink in archive: $link -> $link_target" >&2
-        exit 1
-    fi
-
-    case "$resolved_target" in
-        "$staging_root"/*) ;;
-        *)
-            echo "Error: symlink escapes the archive: $link -> $link_target" >&2
+for entry in "${certificate_entries[@]}"; do
+    while IFS= read -r -d '' link; do
+        link_target="$(readlink "$link")"
+        if [[ "$link_target" = /* ]]; then
+            echo "Error: absolute symlink is not allowed: $link -> $link_target" >&2
             exit 1
-            ;;
-    esac
-done < <(find "$staging_dir" -type l -print0)
+        fi
+        if ! resolved_target="$(realpath -e "$link")"; then
+            echo "Error: broken symlink in archive: $link -> $link_target" >&2
+            exit 1
+        fi
+        case "$resolved_target" in
+            "$staging_root/$username"|"$staging_root/$username"/*) ;;
+            *)
+                echo "Error: certificate symlink escapes the instance directory: $link -> $link_target" >&2
+                exit 1
+                ;;
+        esac
+    done < <(find "$staging_dir/$entry" -type l -print0)
+done
 
 if [ -e "$certificates_dir" ] && [ ! -d "$certificates_dir" ]; then
     echo "Error: destination exists but is not a directory: $certificates_dir" >&2
@@ -120,21 +156,39 @@ fi
 mkdir -p -- "$certificates_dir"
 certificates_dir="$(cd "$certificates_dir" && pwd -P)"
 
-if find "$certificates_dir" -mindepth 1 -print -quit | grep -q .; then
+existing_entries=()
+for entry in \
+    "$username" \
+    "$username.crt" \
+    "$username.key" \
+    "$username.chain.pem" \
+    "$username.dhparam.pem"; do
+    if [ -e "$certificates_dir/$entry" ] || [ -L "$certificates_dir/$entry" ]; then
+        existing_entries+=("$entry")
+    fi
+done
+
+if [ ${#existing_entries[@]} -gt 0 ]; then
     parent_dir="$(dirname "$certificates_dir")"
     directory_name="$(basename "$certificates_dir")"
-    backup="${parent_dir}/${directory_name}-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
+    backup="${parent_dir}/${directory_name}-${username}-backup-$(date +%Y%m%d-%H%M%S).tar.gz"
     if [ -e "$backup" ]; then
         backup="${backup%.tar.gz}-$$.tar.gz"
     fi
 
     umask 077
-    tar -C "$certificates_dir" -czf "$backup" .
+    tar -C "$certificates_dir" -czf "$backup" -- "${existing_entries[@]}"
     chmod 600 "$backup"
-    echo "Current certificates backed up to: $backup"
+    echo "Current certificate for '$username' backed up to: $backup"
+
+    for entry in "${existing_entries[@]}"; do
+        rm -rf -- "$certificates_dir/$entry"
+    done
 fi
 
-cp -a -- "$staging_dir/." "$certificates_dir/"
+for entry in "${certificate_entries[@]}"; do
+    cp -a -- "$staging_dir/$entry" "$certificates_dir/"
+done
 
-echo "Certificate import successful: $certificates_dir"
-echo "Reload or restart nginx-proxy to use the imported certificates."
+echo "Certificate import successful for instance '$username': $certificates_dir"
+echo "Reload or restart nginx-proxy to use the imported certificate."

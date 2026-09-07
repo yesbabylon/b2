@@ -6,31 +6,54 @@ DEFAULT_CERTIFICATES_DIR="/srv/docker/nginx/certs"
 
 usage() {
     cat <<EOF
-Usage: $0 [output.tar.gz] [certificates-directory]
+Usage: $0 USERNAME [output.tar.gz] [certificates-directory]
 
-Exports the NGINX certificates directory to a gzip-compressed tar archive.
-Symlinks, file modes and the directory structure are preserved.
+Exports only the NGINX certificate files belonging to USERNAME. USERNAME must
+be the instance's fully qualified domain name (for example: doc.fmtsolutions.be).
+Symlinks, file modes and the instance directory structure are preserved.
 
 Defaults:
-  output                    ./certificates-<host>-<date>.tar.gz
+  output                    ./certificates-<USERNAME>-<date>.tar.gz
   certificates-directory   ${DEFAULT_CERTIFICATES_DIR}
 EOF
 }
 
-if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ] || [ $# -gt 2 ]; then
+is_valid_username() {
+    local username="$1"
+    local label
+    local -a labels
+
+    [ ${#username} -le 253 ] || return 1
+    [[ "$username" == *.* ]] || return 1
+    [[ "$username" != .* && "$username" != *. ]] || return 1
+    IFS='.' read -r -a labels <<< "$username"
+    for label in "${labels[@]}"; do
+        [ ${#label} -le 63 ] || return 1
+        [[ "$label" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$ ]] || return 1
+    done
+}
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     usage
-    [ $# -le 2 ] && exit 0
+    exit 0
+fi
+
+if [ $# -lt 1 ] || [ $# -gt 3 ]; then
+    usage >&2
     exit 1
 fi
 
-host_name="$(hostname -s 2>/dev/null || hostname)"
-host_name="${host_name//[^a-zA-Z0-9._-]/_}"
-default_output="certificates-${host_name}-$(date +%Y%m%d-%H%M%S).tar.gz"
+username="$1"
+if ! is_valid_username "$username"; then
+    echo "Error: invalid USERNAME (expected a fully qualified domain name): $username" >&2
+    exit 1
+fi
 
-output="${1:-$default_output}"
-certificates_dir="${2:-$DEFAULT_CERTIFICATES_DIR}"
+default_output="certificates-${username}-$(date +%Y%m%d-%H%M%S).tar.gz"
+output="${2:-$default_output}"
+certificates_dir="${3:-$DEFAULT_CERTIFICATES_DIR}"
 
-for command_name in tar find grep mktemp; do
+for command_name in tar find mktemp realpath readlink; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
         echo "Error: required command not found: $command_name" >&2
         exit 1
@@ -66,10 +89,57 @@ case "$output" in
         ;;
 esac
 
-if ! find "$certificates_dir" -mindepth 1 \( -type f -o -type l \) -print -quit | grep -q .; then
-    echo "Error: certificates directory is empty: $certificates_dir" >&2
+certificate_found=false
+if [ -f "$certificates_dir/$username.crt" ] || \
+   [ -f "$certificates_dir/$username/fullchain.pem" ] || \
+   [ -f "$certificates_dir/$username/cert.pem" ]; then
+    certificate_found=true
+fi
+
+if [ "$certificate_found" != true ]; then
+    echo "Error: no certificate found for instance '$username' in $certificates_dir" >&2
     exit 1
 fi
+
+if [ -L "$certificates_dir/$username" ] || \
+   { [ -e "$certificates_dir/$username" ] && [ ! -d "$certificates_dir/$username" ]; }; then
+    echo "Error: expected certificate directory for '$username': $certificates_dir/$username" >&2
+    exit 1
+fi
+
+certificate_entries=()
+for entry in \
+    "$username" \
+    "$username.crt" \
+    "$username.key" \
+    "$username.chain.pem" \
+    "$username.dhparam.pem"; do
+    if [ -e "$certificates_dir/$entry" ] || [ -L "$certificates_dir/$entry" ]; then
+        certificate_entries+=("$entry")
+    fi
+done
+
+# Ensure exported symlinks are usable and stay inside the certificates tree.
+for entry in "${certificate_entries[@]}"; do
+    while IFS= read -r -d '' link; do
+        link_target="$(readlink "$link")"
+        if [[ "$link_target" = /* ]]; then
+            echo "Error: absolute certificate symlink is not allowed: $link -> $link_target" >&2
+            exit 1
+        fi
+        if ! resolved_target="$(realpath -e "$link")"; then
+            echo "Error: broken certificate symlink: $link -> $link_target" >&2
+            exit 1
+        fi
+        case "$resolved_target" in
+            "$certificates_dir/$username"|"$certificates_dir/$username"/*) ;;
+            *)
+                echo "Error: certificate symlink escapes the instance directory: $link -> $link_target" >&2
+                exit 1
+                ;;
+        esac
+    done < <(find "$certificates_dir/$entry" -type l -print0)
+done
 
 # Certificate archives contain private keys. Restrict newly created files even
 # if the calling shell has a permissive umask.
@@ -81,16 +151,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "Exporting certificates from: $certificates_dir"
+echo "Exporting certificate for instance: $username"
+echo "Certificates directory: $certificates_dir"
 echo "Archive: $output"
 
-# Archive the directory contents instead of its absolute path. tar preserves
-# the relative symlinks used by nginx-proxy.
-tar -C "$certificates_dir" -czf "$temporary_archive" .
+tar -C "$certificates_dir" -czf "$temporary_archive" -- "${certificate_entries[@]}"
 tar -tzf "$temporary_archive" >/dev/null
 chmod 600 "$temporary_archive"
 mv -- "$temporary_archive" "$output"
 trap - EXIT
 
 echo "Certificate export successful: $output"
-echo "Keep this archive secure: it contains private keys."
+echo "Keep this archive secure: it contains a private key."
