@@ -13,7 +13,7 @@ be the instance's fully qualified domain name (for example: doc.fmtsolutions.be)
 Symlinks, file modes and the instance directory structure are preserved.
 
 Defaults:
-  output                    ./certificates-<USERNAME>-<date>.tar.gz
+  output                    /home/<USERNAME>/export/certificates-<USERNAME>-<date>.tar.gz
   certificates-directory   ${DEFAULT_CERTIFICATES_DIR}
 EOF
 }
@@ -49,7 +49,7 @@ if ! is_valid_username "$username"; then
     exit 1
 fi
 
-default_output="certificates-${username}-$(date +%Y%m%d-%H%M%S).tar.gz"
+default_output="/home/${username}/export/certificates-${username}-$(date +%Y%m%d-%H%M%S).tar.gz"
 output="${2:-$default_output}"
 certificates_dir="${3:-$DEFAULT_CERTIFICATES_DIR}"
 
