@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# File: public_ip_firewall-disable.sh
+# File: host-public_ip_firewall-disable.sh
 # Description: Removes iptables rules configured for the failover IP.
 
 # Get the IPs associated with veth0

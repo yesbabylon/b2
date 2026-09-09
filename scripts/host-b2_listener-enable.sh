@@ -6,8 +6,8 @@ if [[ ! -f "$SERVICE_FILE" ]]; then
     ln -s /root/b2/conf/b2-listener.service "$SERVICE_FILE"
 fi
 
-# Make sure fail2ban starts on boot
+# Make sure b2-listener starts on boot
 systemctl enable b2-listener.service
 
-# Restart fail2ban service
+# Restart the b2-listener service
 systemctl restart b2-listener.service

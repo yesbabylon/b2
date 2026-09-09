@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Usage:
-#   ./rotate_equal_log.sh USERNAME [MAX_SIZE_MB] [KEEP_ARCHIVES]
+#   ./instance-eq_logs-rotate.sh USERNAME [MAX_SIZE_MB] [KEEP_ARCHIVES]
 #
 # Examples:
-#   ./rotate_equal_log.sh kaleo.discope.run
-#   ./rotate_equal_log.sh kaleo.discope.run 200
-#   ./rotate_equal_log.sh kaleo.discope.run 200 10
+#   ./instance-eq_logs-rotate.sh kaleo.discope.run
+#   ./instance-eq_logs-rotate.sh kaleo.discope.run 200
+#   ./instance-eq_logs-rotate.sh kaleo.discope.run 200 10
 #
 # Behavior:
 #   equal.log   = latest complete JSONL lines, up to roughly MAX_SIZE_MB

@@ -93,7 +93,7 @@ else
 fi
 
 # Set hostname before generating GPG key material
-./scripts/set_hostname.sh "$HOSTNAME"
+./scripts/host-hostname-set.sh "$HOSTNAME"
 
 # Define GPG mandatory constants
 GPG_NAME="$(hostname)"

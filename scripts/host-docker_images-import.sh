@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage:
-# ./docker-import-images.sh file.tar[.gz]
+# ./host-docker_images-import.sh file.tar[.gz]
 
 INPUT=$1
 

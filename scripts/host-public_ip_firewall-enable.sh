@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# File: public_ip_firewall-enable.sh
+# File: host-public_ip_firewall-enable.sh
 # Description: Configures iptables to limit INPUT access to HTTP(S) on the failover IP.
 
 # Get the IPs associated with veth0

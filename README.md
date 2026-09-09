@@ -144,12 +144,24 @@ ROOT_PASSWORD=your-root-password
 | ├── `run.php`                             | Entry point for running the application.                   |
 | └── `send.php`                            | Script to send requests or notifications.                  |
 | `scripts/`                                | Utility scripts directory.                                 |
-| ├── `b2_listener-disable.sh`              | Script to disable the b2-listener service.                 |
-| ├── `b2_listener-enable.sh`               | Script to enable the b2-listener service.                  |
-| ├── `fail2ban-disable.sh`                 | Script to disable Fail2Ban service.                        |
-| ├── `fail2ban-enable.sh`                  | Script to activate Fail2Ban service.                       |
-| ├── `public_ip_firewall-disable.sh`       | Script to disable the public IP firewall (IP tables).      |
-| └── `public_ip_firewall-enable.sh`        | Script to enable the public IP firewall (IP tables).       |
+| ├── `host-b2_listener-disable.sh`         | Disable the b2-listener service.                           |
+| ├── `host-b2_listener-enable.sh`          | Enable the b2-listener service.                            |
+| ├── `host-docker_images-export.sh`        | Export Docker images to an archive.                        |
+| ├── `host-docker_images-import.sh`        | Import Docker images from an archive.                      |
+| ├── `host-fail2ban-disable.sh`            | Disable the Fail2Ban service.                              |
+| ├── `host-fail2ban-enable.sh`             | Enable the Fail2Ban service.                               |
+| ├── `host-hostname-set.sh`                | Set the host name.                                         |
+| ├── `host-private_ip-set.sh`              | Configure the host private IP address.                     |
+| ├── `host-public_ip-add.sh`               | Add a public IP address to the host.                        |
+| ├── `host-public_ip-remove.sh`            | Remove a public IP address from the host.                   |
+| ├── `host-public_ip_firewall-disable.sh`  | Disable firewall rules for public IP addresses.            |
+| ├── `host-public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
+| ├── `host-ssl_certificates-export.sh`     | Export instance certificates from the host.                |
+| ├── `host-ssl_certificates-import.sh`     | Import instance certificates into the host.                |
+| ├── `instance-eq_logs-rotate.sh`          | Rotate the eQual logs for an instance.                      |
+| ├── `instance-eq_version-get.sh`          | Return the eQual version of an instance.                    |
+| ├── `instance-php_version-get.sh`         | Return the PHP version of an instance.                      |
+| └── `instance-wp_version-get.sh`          | Return the WordPress version of an instance.                |
 
 
 
