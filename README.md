@@ -77,6 +77,44 @@ ROOT_PASSWORD=your-root-password
 
 **Note:** `GPG_PASSPHRASE` and `ROOT_PASSWORD` are automatically removed from the `.env` file after the successful execution of the `install.sh` script.
 
+## Instance secrets
+
+The `secrets/` directory is the host-local store for secrets required while initializing an instance. Secret files are named after the corresponding `INSTANCE_TYPE`. For example, FMT secrets are stored in:
+
+```text
+/root/b2/secrets/fmt.json
+```
+
+The directory itself is present in the repository through `secrets/.gitkeep`, but every other file in it is ignored by Git. Secret files must be created manually on the target host after B2 has been installed.
+
+**Never add a secret file, real credentials, or an encoded copy of them directly to the repository.** Do not bypass the ignore rule with `git add -f`, and do not send these values through the instance creation API or command-line arguments. Base64 encoding does not protect a secret.
+
+Create and protect the FMT secret file on the target host with:
+
+```bash
+mkdir -p /root/b2/secrets
+chown root:root /root/b2/secrets
+chmod 700 /root/b2/secrets
+
+touch /root/b2/secrets/fmt.json
+chown root:root /root/b2/secrets/fmt.json
+chmod 600 /root/b2/secrets/fmt.json
+```
+
+The file must contain a JSON object whose values are strings. For example, using placeholder values only:
+
+```json
+{
+  "GOOGLE_GMAIL_CLIENT_ID": "replace-on-target-host",
+  "GOOGLE_GMAIL_CLIENT_SECRET": "replace-on-target-host",
+  "MS_TENANT_ID": "replace-on-target-host",
+  "MS_OUTLOOK_CLIENT_ID": "replace-on-target-host",
+  "MS_OUTLOOK_CLIENT_SECRET": "replace-on-target-host"
+}
+```
+
+During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/root/b2/secrets/fmt.json`. Only explicitly allowed FMT keys are injected into the generated instance configuration; unknown keys are ignored. When the file is absent, initialization continues without host-provided FMT secrets. When it exists but is unreadable, contains invalid JSON, or contains a non-string value, initialization stops with an error.
+
 ## Repository structure
 
 
@@ -85,6 +123,7 @@ ROOT_PASSWORD=your-root-password
 | ----------------------------------------- | ---------------------------------------------------------- |
 | `install.sh`                              | Installation script for the project (see Install section). |
 | `README.md`                               | Main documentation for the project (this file).            |
+| `secrets/`                                | Host-local instance secret files; only `.gitkeep` is committed. |
 | `conf/`                                   | Directory containing configuration files.                  |
 | ├── `b2-listener.service`                 | Systemd service file for the `b2-listener`.                |
 | ├── `default.crt`                         | Default SSL certificate.                                   |

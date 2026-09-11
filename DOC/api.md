@@ -117,6 +117,8 @@ fmt additional options :
 | GLOBAL_ACCESS_TOKEN |     false      |         |                  | The access token of the new agency instance to global API. (required if INSTANCE_SUBTYPE is agency) |
 | GLOBAL_URL          |     false      |         |                  | The url of the global instance API. (required if INSTANCE_SUBTYPE is agency)                        |
 
+FMT credentials must not be included in the API payload, including as Base64-encoded data. They must be installed manually on the B2 host in `/root/b2/secrets/fmt.json`; `conf/instance/fmt/prepare.php` reads this optional file during initialization. See [Instance secrets](../README.md#instance-secrets) for its format, permissions, validation behavior, and repository rules.
+
 
 
 #### Init script safety behavior (`conf/instance/<type>/init.sh`)
