@@ -148,7 +148,7 @@ if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
         ./equal.run --do=fmt_init_instance_agency --sync=true --level=$SYNC_LEVEL --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
         "
     else
-        printf "Start initializing of agency instance.\n"
+        printf "Start initializing of agency instance (no sync from platform).\n"
 
         docker exec "$USERNAME" bash -c "
         ./equal.run --do=fmt_init_instance_agency --sync=false
