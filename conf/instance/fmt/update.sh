@@ -16,3 +16,4 @@ git pull
 ./equal.run --do=init_package --package=fmt --force=true
 ./equal.run --do=init_app --app=app --package=fmt --force=true
 ./equal.run --do=init_app --app=portal --package=fmt --force=true
+./equal.run --do=init_updates --package=fmt

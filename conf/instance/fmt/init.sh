@@ -166,6 +166,7 @@ printf "Instance initialized.\n"
 
 docker exec "$USERNAME" bash -c "
 ./equal.run --do=init_app --package=fmt --app=app --force=true
+./equal.run --do=init_app --package=fmt --app=portal --force=true
 "
 
 touch "$INITIALIZED_FILE"
