@@ -85,7 +85,7 @@ if(isset($data['SYNC']) && $data['SYNC']) {
     }
 }
 
-// inject FMT secrets from SECRETS variable, if present
+// Inject FMT secrets from the host secrets file, if present.
 $secrets = [
 	"GOOGLE_DOCAI_PRIVATE_KEY",
 	"GOOGLE_DOCAI_CLIENT_EMAIL",
@@ -107,15 +107,38 @@ $secrets = [
 	"GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY"
 ];
 
-if(!empty($data['SECRETS'])) {
-    $decoded = base64_decode($data['SECRETS'], true);
-    $secret_values = $decoded !== false ? json_decode($decoded, true) : null;
+$secrets_file = '/root/b2/secrets/fmt.json';
+if(file_exists($secrets_file)) {
+    if(!is_file($secrets_file) || !is_readable($secrets_file)) {
+        throw new RuntimeException("unreadable_secrets_file", 500);
+    }
+
+    $secrets_content = file_get_contents($secrets_file);
+    if($secrets_content === false) {
+        throw new RuntimeException("unreadable_secrets_file", 500);
+    }
+
+    try {
+        $secret_values = json_decode(
+            $secrets_content,
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+    }
+    catch(JsonException $e) {
+        throw new RuntimeException("invalid_secrets_file", 500, $e);
+    }
+
     if(!is_array($secret_values)) {
-        throw new InvalidArgumentException("invalid_SECRETS", 400);
+        throw new RuntimeException("invalid_secrets_map", 500);
     }
 
     foreach($secrets as $key) {
         if(array_key_exists($key, $secret_values)) {
+            if(!is_string($secret_values[$key])) {
+                throw new RuntimeException("invalid_secret_{$key}", 500);
+            }
             $data[$key] = $secret_values[$key];
         }
     }
