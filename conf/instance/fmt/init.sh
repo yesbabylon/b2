@@ -88,8 +88,8 @@ printf "Trigger docker compose up\n"
 docker compose build
 docker compose up -d
 
-printf "Waiting 60 seconds for containers to be properly started\n"
-sleep 60
+printf "Waiting 30 seconds for containers to be properly started\n"
+sleep 30
 
 printf "Docker images built and containers started\n"
 
