@@ -22,7 +22,7 @@ $parse_env_value = function(string $value): string {
 $data = [];
 foreach(file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
     $line = trim($line);
-    if($line === '' || str_starts_with($line, '#') || !str_contains($line, '=')) {
+    if($line === '' || strpos($line, '#') === 0 || strpos($line, '=') === false) {
         continue;
     }
 
@@ -40,6 +40,10 @@ if(empty($data['USERNAME']) || !is_string($data['USERNAME'])) {
 }
 
 $USERNAME = $data['USERNAME'];
+
+if(empty($data['AUTH_SECRET_KEY'])) {
+    $data['AUTH_SECRET_KEY'] = bin2hex(random_bytes(32));
+}
 
 
 $allowed_instance_subtypes = ['global', 'agency'];
@@ -83,15 +87,24 @@ if(isset($data['SYNC']) && $data['SYNC']) {
 
 // inject FMT secrets from SECRETS variable, if present
 $secrets = [
-	"GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", 
-	"GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL", 
-	"GOOGLE_PROJECT_NUMBER", 
-	"GOOGLE_DOCUMENT_AI_PROCESSOR_ID", 
-	"GOOGLE_OAUTH_CLIENT_ID", 
-	"GOOGLE_OAUTH_CLIENT_SECRET", 
-	"MS_TENANT_ID", 
-	"MS_OUTLOOK_CLIENT_ID", 
-	"MS_OUTLOOK_CLIENT_SECRET"
+	"GOOGLE_DOCAI_PRIVATE_KEY",
+	"GOOGLE_DOCAI_CLIENT_EMAIL",
+	"GOOGLE_DOCAI_PROJECT_ID",
+	"GOOGLE_DOCAI_PROCESSOR_ID",
+	"GOOGLE_GMAIL_CLIENT_ID",
+	"GOOGLE_GMAIL_CLIENT_SECRET",
+	"MS_TENANT_ID",
+	"MS_OUTLOOK_CLIENT_ID",
+	"MS_OUTLOOK_CLIENT_SECRET",
+	"GOOGLE_PROJECT_ID",
+	"GOOGLE_PROJECT_NUMBER",
+	"GOOGLE_OAUTH_CLIENT_ID",
+	"GOOGLE_OAUTH_CLIENT_SECRET",
+	"GOOGLE_DOCUMENT_AI_PROCESSOR_ID",
+	"GOOGLE_SERVICE_ACCOUNT_CLIENT_ID",
+	"GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL",
+	"GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY_ID",
+	"GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY"
 ];
 
 if(!empty($data['SECRETS'])) {

@@ -88,8 +88,8 @@ printf "Trigger docker compose up\n"
 docker compose build
 docker compose up -d
 
-printf "Waiting 60 seconds for containers to be properly started\n"
-sleep 60
+printf "Waiting 30 seconds for containers to be properly started\n"
+sleep 30
 
 printf "Docker images built and containers started\n"
 
@@ -148,7 +148,7 @@ if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
         ./equal.run --do=fmt_init_instance_agency --sync=true --level=$SYNC_LEVEL --instance_uuid=$INSTANCE_UUID --global_access_token=$GLOBAL_ACCESS_TOKEN --global_instance_url=$GLOBAL_URL
         "
     else
-        printf "Start initializing of agency instance.\n"
+        printf "Start initializing of agency instance (no sync from platform).\n"
 
         docker exec "$USERNAME" bash -c "
         ./equal.run --do=fmt_init_instance_agency --sync=false
