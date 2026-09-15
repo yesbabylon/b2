@@ -105,6 +105,13 @@ The file must contain a JSON object whose values are strings. For example, using
 
 ```json
 {
+  "EMAIL_SMTP_HOST": "smtp.example.com",
+  "EMAIL_SMTP_PORT": "587",
+  "EMAIL_SMTP_ENCRYPT": "tls",
+  "EMAIL_SMTP_ACCOUNT_DISPLAYNAME": "Example application",
+  "EMAIL_SMTP_ACCOUNT_USERNAME": "noreply@example.com",
+  "EMAIL_SMTP_ACCOUNT_PASSWORD": "replace-on-target-host",
+  "EMAIL_SMTP_ACCOUNT_EMAIL": "noreply@example.com",
   "GOOGLE_GMAIL_CLIENT_ID": "replace-on-target-host",
   "GOOGLE_GMAIL_CLIENT_SECRET": "replace-on-target-host",
   "MS_TENANT_ID": "replace-on-target-host",
