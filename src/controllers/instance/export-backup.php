@@ -52,7 +52,7 @@ function instance_export_backup(array $data): array {
             throw new Exception("error_requesting_token", 500);            
         }
         $retry_count++;
-        sleep(60 * $retry_count); 
+        sleep(60 * $retry_count);
     }
 
     // Get token and created user ftp credentials
@@ -87,6 +87,10 @@ function instance_export_backup(array $data): array {
 
     ftp_close($ftp_connection_id);
     release_token($backup_host_url, $data['instance'], $token);
+
+    if(!unlink($backup_file)) {
+        throw new Exception("error_while_deleting_exported_backup_file", 500);
+    }
 
     return [
         'code' => 200,

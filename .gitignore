@@ -2,3 +2,5 @@
 .vscode
 desktop.ini
 .env
+/secrets/*
+!/secrets/.gitkeep
