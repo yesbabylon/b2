@@ -81,6 +81,7 @@ services:
       # by convention we leave www.DOMAIN_NAME HTTP only, it will be redirected to https://DOMAIN_NAME
       - LETSENCRYPT_HOST=${USERNAME}
       - LETSENCRYPT_EMAIL=contact@${USERNAME}
+      - LD_LIBRARY_PATH=/opt/bin
     networks:
       - internal_{{db_ID}}
       - proxynet
