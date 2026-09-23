@@ -8,9 +8,17 @@ LABEL Description="WordPress 6.1.1 with Apache UID and GID injection" \
 ARG apache_uid
 ARG apache_gid
 
-RUN rm -rf /var/lib/apt/lists/* \
-    && apt-get -o Acquire::Retries=3 update \
-    && apt-get -o Acquire::Retries=3 install -y --no-install-recommends \
+# Debian 11 Bullseye is archived.
+RUN sed -i \
+        -e 's|http://deb.debian.org/debian-security|https://archive.debian.org/debian-security|g' \
+        -e 's|http://security.debian.org/debian-security|https://archive.debian.org/debian-security|g' \
+        -e 's|http://deb.debian.org/debian|https://archive.debian.org/debian|g' \
+        /etc/apt/sources.list \
+    && printf 'Acquire::Check-Valid-Until "false";\n' \
+        > /etc/apt/apt.conf.d/99archive \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
         git \
         procps \
         netcat-traditional \
