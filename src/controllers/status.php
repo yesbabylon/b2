@@ -12,12 +12,12 @@
  * Required system binaries:
  *
  * standard: ps, awk, grep, head, tail, cut, wc, free, vmstat, df, w, hostname, xargs, cat
- * extra: ip, vnstat, iptables-save, hostnamectl
+ * extra: ip, vnstat, iptables, hostnamectl
  *
  * Notes:
  * - hostnamectl requires systemd
  * - vnstat is required for network statistics
- * - iptables-save is required for firewall inspection
+ * - iptables is required for firewall inspection
  *
  *
  * @return array{
@@ -167,10 +167,11 @@ function status(array $data): array {
             ],
             'fw_secured' => [
                 'description' => "Flag telling if public IP is secured by firewall.",
-                'command'     => 'IP=$(ip addr show veth0 | grep \'inet \' | awk \'{print $2}\' | cut -d/ -f1) && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 443 -j ACCEPT" && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -p tcp -m tcp --dport 80 -j ACCEPT" && \
-                    iptables-save | grep -qE "\-A INPUT -d $IP -j DROP" && echo "true" || echo "false"',
+                'command'     => 'IP=$(ip -4 -o addr show dev veth0 | awk \'NR == 1 {sub(/\/.*/, "", $4); print $4}\') && \
+                    [ -n "$IP" ] && \
+                    iptables -C INPUT -d "$IP" -p tcp --dport 443 -j ACCEPT && \
+                    iptables -C INPUT -d "$IP" -p tcp --dport 80 -j ACCEPT && \
+                    iptables -C INPUT -d "$IP" -j DROP && echo "true" || echo "false"',
                 'adapt'       => function ($res) {
                     return ($res === 'true');
                 }
