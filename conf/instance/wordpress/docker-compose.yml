@@ -6,8 +6,8 @@
 #
 # This setup includes:
 # - A MySQL database container (mysql/mysql:5.7)
-# - A phpMyAdmin container (phpmyadmin/phpmyadmin:latest)
-# - An eQual container (equalframework/equal:latest)
+# - A phpMyAdmin container (phpmyadmin/phpmyadmin:5.2.1)
+# - An WordPress container (docked-wordpress:7.1.1)
 #
 # Networks:
 # - "internal_{{db_ID}}": Used for communication between services of the stack (segregation between instances on a same host)
@@ -50,7 +50,7 @@ services:
     depends_on:
       - {{db_ID}}
   wordpress:
-    image: docked-wordpress:6.9.4
+    image: docked-wordpress:7.1.1
     container_name: ${USERNAME}
     restart: always
     volumes:
