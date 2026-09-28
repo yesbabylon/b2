@@ -11,10 +11,18 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-if [[ "$1" == */* ]]; then
-    echo "Error: provide the IPv4 address without a prefix. /$PREFIX is added automatically."
+if ! [[ "$1" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
+    echo "Error: provide a valid IPv4 address without a prefix. /$PREFIX is added automatically."
     exit 1
 fi
+
+IFS='.' read -r -a OCTETS <<< "$1"
+for OCTET in "${OCTETS[@]}"; do
+    if ((10#$OCTET > 255)) || { [ "$OCTET" != "0" ] && [[ "$OCTET" == 0* ]]; }; then
+        echo "Error: provide a valid IPv4 address without a prefix. /$PREFIX is added automatically."
+        exit 1
+    fi
+done
 
 # Check privileges
 if [ "$(id -u)" -ne 0 ]; then
