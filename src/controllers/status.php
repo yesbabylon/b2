@@ -169,9 +169,9 @@ function status(array $data): array {
                 'description' => "Flag telling if public IP is secured by firewall.",
                 'command'     => 'IP=$(ip -4 -o addr show dev veth0 | awk \'NR == 1 {sub(/\/.*/, "", $4); print $4}\') && \
                     [ -n "$IP" ] && \
-                    iptables -C INPUT -d "$IP" -p tcp --dport 443 -j ACCEPT && \
-                    iptables -C INPUT -d "$IP" -p tcp --dport 80 -j ACCEPT && \
-                    iptables -C INPUT -d "$IP" -j DROP && echo "true" || echo "false"',
+                    iptables -C INPUT -d "$IP" -p tcp --dport 443 -j ACCEPT 2>/dev/null && \
+                    iptables -C INPUT -d "$IP" -p tcp --dport 80 -j ACCEPT 2>/dev/null && \
+                    iptables -C INPUT -d "$IP" -j DROP 2>/dev/null && echo "true" || echo "false"',
                 'adapt'       => function ($res) {
                     return ($res === 'true');
                 }
