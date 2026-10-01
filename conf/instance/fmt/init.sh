@@ -141,6 +141,8 @@ rm -R packages.core
 "
 
 if [ "$INSTANCE_SUBTYPE" == 'agency' ]; then
+    # fmt_init_instance_agency adds SERVICE_ORM_COLLECTION_CLASS and
+    # SERVICE_ACCESS_ACCESSCONTROLLER to config/config.json after initializing the FMT package.
     if [[ "$SYNC" == 'true' || "$SYNC" == '1' ]]; then
         printf "Start initializing of agency instance with synchronization.\n"
 
