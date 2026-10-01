@@ -196,6 +196,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-docker_images-import.sh`        | Import Docker images from an archive.                      |
 | ├── `host-fail2ban-disable.sh`            | Disable the Fail2Ban service.                              |
 | ├── `host-fail2ban-enable.sh`             | Enable the Fail2Ban service.                               |
+| ├── `host-fail2ban-unbanip.sh`            | Unban an IP address from a Fail2Ban jail.                  |
 | ├── `host-hostname-set.sh`                | Set the host name.                                         |
 | ├── `host-private_ip-set.sh`              | Configure the host private IP address.                     |
 | ├── `host-public_ip-add.sh`               | Add a public IP address to the host.                        |
