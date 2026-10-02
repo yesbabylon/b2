@@ -115,7 +115,19 @@ function instance_backup(array $data): array {
     exec($create_configs_archive);
 
     // Create filestore.tar.gz for www files
-    $compress_filestore = "cd /home/$instance && tar --exclude='./.*' --exclude='*/.git' --exclude='./log/equal.log' -cvzf $tmp_backup_dir/filestore.tar.gz www";
+    $filestore_excludes = [
+        './.*',
+        '*/.git',
+        './log/equal.log',
+        './log/equal.log.*',
+    ];
+    $filestore_exclude_options = implode(' ', array_map(
+        function(string $path): string {
+            return '--exclude=' . escapeshellarg($path);
+        },
+        $filestore_excludes
+    ));
+    $compress_filestore = "cd /home/$instance && tar $filestore_exclude_options -cvzf $tmp_backup_dir/filestore.tar.gz www";
     exec($compress_filestore);
 
     // (commented - see above) Restart docker containers
