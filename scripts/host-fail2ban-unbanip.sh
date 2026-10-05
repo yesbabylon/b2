@@ -79,15 +79,16 @@ for jail in "${jails[@]}"; do
     if ((unbanned_count > 0)); then
         escaped_jail=${jail//\\/\\\\}
         escaped_jail=${escaped_jail//\"/\\\"}
-        json_entries+=("\"$escaped_jail\":$unbanned_count")
+        json_entries+=("\"$escaped_jail\": $unbanned_count")
     fi
 done
 
-printf '{'
+printf '{\n'
 if ((${#json_entries[@]} > 0)); then
-    printf '%s' "${json_entries[0]}"
+    printf '    %s' "${json_entries[0]}"
     for entry in "${json_entries[@]:1}"; do
-        printf ',%s' "$entry"
+        printf ',\n    %s' "$entry"
     done
+    printf '\n'
 fi
 printf '}\n'
