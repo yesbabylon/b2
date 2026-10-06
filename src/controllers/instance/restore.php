@@ -48,8 +48,7 @@ function instance_restore(array $data): array {
     $encrypted = isset($data['passphrase']);
 
     $possible_backup_files = [
-        "/home/$instance/import/{$instance}_$backup_id.tar",
-        "/home/$instance/export/{$instance}_$backup_id.tar"
+        "/home/$instance/import/{$instance}_$backup_id.tar"
     ];
 
     if($encrypted) {
@@ -119,7 +118,7 @@ function instance_restore(array $data): array {
 
     // Restore config
     exec("cd $tmp_restore_dir && tar -xvf config.tar");
-    $config_files = [".env", "docker-compose.yml", "php.ini", "mysql.cnf", "mpm_prefork.conf"];
+    $config_files = [".env", "docker-compose.yml", "php.ini", "mysql.cnf"];
     foreach($config_files as $file) {
         exec("mv -f $tmp_restore_dir/$file /home/$instance");
     }
