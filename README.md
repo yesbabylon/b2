@@ -205,10 +205,36 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
 | ├── `host-ssl_certificates-export.sh`     | Export instance certificates from the host.                |
 | ├── `host-ssl_certificates-import.sh`     | Import instance certificates into the host.                |
+| ├── `host-swap-disable.sh`                | Disable the host swap file while retaining it on disk.     |
+| ├── `host-swap-enable.sh`                 | Create or enable the persistent host swap file.            |
 | ├── `instance-eq_logs-rotate.sh`          | Rotate the eQual logs for an instance.                      |
 | ├── `instance-eq_version-get.sh`          | Return the eQual version of an instance.                    |
 | ├── `instance-php_version-get.sh`         | Return the PHP version of an instance.                      |
 | └── `instance-wp_version-get.sh`          | Return the WordPress version of an instance.                |
+
+## Swap management
+
+Hosts with limited RAM can use a persistent swap file. The default size is
+2 GiB; another size such as `4G` can be passed explicitly when the file is
+created:
+
+```bash
+sudo ./scripts/host-swap-enable.sh
+sudo ./scripts/host-swap-enable.sh 4G
+```
+
+The enable script is idempotent, creates a backup of `/etc/fstab` before
+changing it, and refuses to overwrite an existing file that is not a valid
+swap file. The size argument does not resize an existing `/swapfile`.
+
+To disable the swap and remove its persistent `/etc/fstab` entry:
+
+```bash
+sudo ./scripts/host-swap-disable.sh
+```
+
+The disable script keeps `/swapfile` on disk so that disabling swap does not
+implicitly delete data. Use `swapon --show` to inspect the active swap areas.
 
 
 
