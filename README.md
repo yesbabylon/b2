@@ -207,6 +207,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-ssl_certificates-import.sh`     | Import instance certificates into the host.                |
 | ├── `host-swap-disable.sh`                | Disable the host swap file while retaining it on disk.     |
 | ├── `host-swap-enable.sh`                 | Create or enable the persistent host swap file.            |
+| ├── `host-swap-resize.sh`                 | Safely resize the persistent host swap file.               |
 | ├── `instance-eq_logs-rotate.sh`          | Rotate the eQual logs for an instance.                      |
 | ├── `instance-eq_version-get.sh`          | Return the eQual version of an instance.                    |
 | ├── `instance-php_version-get.sh`         | Return the PHP version of an instance.                      |
@@ -235,6 +236,16 @@ sudo ./scripts/host-swap-disable.sh
 
 The disable script keeps `/swapfile` on disk so that disabling swap does not
 implicitly delete data. Use `swapon --show` to inspect the active swap areas.
+
+To resize an existing swap file and leave it enabled persistently:
+
+```bash
+sudo ./scripts/host-swap-resize.sh 4G
+```
+
+The resize script restores the previous swap file and `/etc/fstab` if the
+operation fails. Enough free disk space must be available to hold the old and
+new swap files temporarily.
 
 
 
