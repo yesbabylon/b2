@@ -88,20 +88,20 @@ findtime = 5m
 bantime  = 30s
 
 
-[nginx-404]
+[nginx-suspicious]
 enabled  = true
 port     = http,https
-filter   = nginx-404
+filter   = nginx-suspicious
 banaction = docker-action
 logpath  = /var/log/nginx/access.log*
 maxretry = 15
 findtime = 1m
 bantime  = 1h
 
-[nginx-404-recidive]
+[nginx-suspicious-recidive]
 enabled  = true
 port     = http,https
-filter   = nginx-404-recidive
+filter   = nginx-suspicious-recidive
 banaction = docker-action
 logpath  = /var/log/fail2ban.log*
 maxretry = 10

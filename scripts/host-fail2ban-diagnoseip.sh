@@ -31,12 +31,24 @@ for part in "${ip_parts[@]}"; do
     fi
 done
 
-for command_name in zgrep awk; do
+for command_name in zgrep awk fail2ban-regex mktemp; do
     if ! command -v "$command_name" >/dev/null 2>&1; then
         echo "Error: $command_name is not installed or is not available in PATH." >&2
         exit 1
     fi
 done
+
+script_directory=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+filter_directory="$script_directory/../conf/etc/fail2ban/filter.d"
+
+if [ ! -d "$filter_directory" ]; then
+    filter_directory=/etc/fail2ban/filter.d
+fi
+
+if [ ! -d "$filter_directory" ]; then
+    echo "Error: Fail2Ban filter directory not found." >&2
+    exit 1
+fi
 
 declare -a sudo_command=()
 if [ "${EUID:-$(id -u)}" -ne 0 ]; then
@@ -69,7 +81,7 @@ else
 fi
 
 echo
-echo "NGINX requests from $IP"
+echo "NGINX requests matching Fail2Ban filters for $IP"
 echo "========================================"
 
 if nginx_requests=$("${sudo_command[@]}" zgrep -hF "$IP" /var/log/nginx/access.log* 2>&1); then
@@ -83,9 +95,92 @@ else
     nginx_requests=
 fi
 
+matched_nginx_requests=
+
 if [ -n "$nginx_requests" ]; then
+    requests_file=
+    matches_file=
+
+    cleanup_temp_files() {
+        if [ -n "$requests_file" ]; then
+            rm -f -- "$requests_file"
+        fi
+        if [ -n "$matches_file" ]; then
+            rm -f -- "$matches_file"
+        fi
+    }
+
+    trap cleanup_temp_files EXIT
+    requests_file=$(mktemp)
+    matches_file=$(mktemp)
+    printf '%s\n' "$nginx_requests" > "$requests_file"
+
+    filter_count=0
+    for filter_file in "$filter_directory"/*.conf; do
+        if [ ! -f "$filter_file" ]; then
+            continue
+        fi
+
+        filter_count=$((filter_count + 1))
+        filter_name=${filter_file##*/}
+        filter_name=${filter_name%.conf}
+
+        if filter_output=$(LC_ALL=C fail2ban-regex --print-all-matched "$requests_file" "$filter_file" 2>&1); then
+            :
+        else
+            filter_status=$?
+            echo "Error: unable to apply Fail2Ban filter: $filter_file" >&2
+            printf '%s\n' "$filter_output" >&2
+            exit "$filter_status"
+        fi
+
+        printf '%s\n' "$filter_output" | awk -v filter="$filter_name" '
+            /^\|- Matched line\(s\):$/ {
+                print_matches = 1
+                next
+            }
+            print_matches && /^`-$/ {
+                print_matches = 0
+                next
+            }
+            print_matches {
+                sub(/^\|  /, "")
+                print filter "\t" $0
+            }
+        ' >> "$matches_file"
+    done
+
+    if [ "$filter_count" -eq 0 ]; then
+        echo "Error: no Fail2Ban filter found in $filter_directory." >&2
+        exit 1
+    fi
+
+    if [ -s "$matches_file" ]; then
+        matched_nginx_requests=$(awk '
+            NR == FNR {
+                separator = index($0, "\t")
+                filter = substr($0, 1, separator - 1)
+                line = substr($0, separator + 1)
+                match_number = ++matches_by_filter[filter SUBSEP line]
+                if (match_number > wanted_matches[line]) {
+                    wanted_matches[line] = match_number
+                }
+                next
+            }
+            emitted_matches[$0] < wanted_matches[$0] {
+                print
+                emitted_matches[$0]++
+            }
+        ' "$matches_file" "$requests_file")
+    fi
+
+    cleanup_temp_files
+    trap - EXIT
+fi
+
+if [ -n "$matched_nginx_requests" ]; then
     if [ "$SHOW_DETAILS" = "full" ]; then
-        printf '%s\n' "$nginx_requests" | awk -F'"' '{
+        printf '%s\n' "$matched_nginx_requests" | awk -F'"' '{
             print "Date/IP : " $1
             print "Requête : " $2
             print "Referer : " $4
@@ -93,7 +188,7 @@ if [ -n "$nginx_requests" ]; then
             print ""
         }'
     else
-        printf '%s\n' "$nginx_requests" | awk '
+        printf '%s\n' "$matched_nginx_requests" | awk '
             match($0, /\[[^:]+/) {
                 date = substr($0, RSTART + 1, RLENGTH - 1)
                 if (!(date in request_count)) {
@@ -112,5 +207,5 @@ if [ -n "$nginx_requests" ]; then
         '
     fi
 else
-    echo "No request found in /var/log/nginx/access.log*."
+    echo "No request matching a Fail2Ban filter found in /var/log/nginx/access.log*."
 fi
