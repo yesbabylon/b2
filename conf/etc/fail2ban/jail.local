@@ -1,5 +1,5 @@
 # Fail2Ban Jail configuration file
-# 
+#
 # Author: Cedric Francoys
 #
 
@@ -10,13 +10,13 @@
 [DEFAULT]
 # Reminder
 # By default durations are an amount of seconds
-#     3600   = 1 hour  
-#     86400  = 1 day 
+#     3600   = 1 hour
+#     86400  = 1 day
 #     604800 = 1 week
-# 
+#
 # Supported duration suffixes: 'm' for minute(s), 'h' for hour(s), 'd' for day(s), 'w' for week(s)
 # Regex: \d+[m|h|d|w]
-# Examples: 3600 , 2h , 10m , 1d 
+# Examples: 3600 , 2h , 10m , 1d
 
 
 # number of failures before a host get banned.
@@ -37,7 +37,7 @@ backend = auto
 #
 
 # We use *-recidive jails to limit to 10 failed attempts a week.
-# Which allows around 520 failed attempts a year 
+# Which allows around 520 failed attempts a year
 # (resulting in 10 years for having 50% chances of successfully discovering a weak top 10k password using brute-force)
 
 
@@ -107,6 +107,19 @@ logpath  = /var/log/fail2ban.log*
 maxretry = 10
 findtime = 1d
 bantime  = 1w
+
+
+[mediawiki]
+enabled   = true
+port      = http,https
+filter    = mediawiki
+banaction = docker-action
+logpath   = /var/log/nginx/access.log*
+backend   = auto
+usedns    = no
+maxretry  = 5
+findtime  = 10m
+bantime   = 1h
 
 
 [wordpress]
