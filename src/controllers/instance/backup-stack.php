@@ -34,14 +34,8 @@ function instance_backup_stack(array $data): array {
         throw new Exception('export_directory_not_writable', 500);
     }
 
-    $timestamp = date('Ymd-His');
-    $backup_file = "$export_directory/stack-$instance-$timestamp.tar.gz";
-    $suffix = 1;
-
-    while(file_exists($backup_file)) {
-        $backup_file = "$export_directory/stack-$instance-$timestamp-$suffix.tar.gz";
-        $suffix++;
-    }
+    $timestamp = date('Ymd').sprintf('%05d', time() - strtotime('today'));
+    $backup_file = "$export_directory/{$instance}_{$timestamp}_stack.tar.gz";
 
     $temporary_file = $backup_file.'.tmp.'.bin2hex(random_bytes(6));
     $escaped_images = implode(' ', array_map('escapeshellarg', $images));

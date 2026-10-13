@@ -30,7 +30,7 @@ function instance_export_backup_stack(array $data): array {
     }
 
     $instance = $data['instance'];
-    $backup_file = "/home/$instance/export/stack-$instance-{$data['backup_id']}.tar.gz";
+    $backup_file = "/home/$instance/export/{$instance}_{$data['backup_id']}_stack.tar.gz";
 
     if(!is_file($backup_file)) {
         throw new Exception('backup_not_found', 404);

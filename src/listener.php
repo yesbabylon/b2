@@ -71,14 +71,14 @@ function check_basic_auth() {
 
 function check_password($password) {
 	static $hash = null;
-	
+
 	if($hash === null) {
 		if(!is_readable(HOST_SECRET_FILE)) {
 			return false;
 		}
 		$hash = trim(file_get_contents(HOST_SECRET_FILE));
 	}
-	
+
     return $hash !== '' && password_verify($password, $hash);
 }
 
@@ -96,7 +96,7 @@ function parse_basic_auth(): array {
 
     $decoded = base64_decode($matches[1], true);
 
-    if($decoded === false || !str_contains($decoded, ':')) {
+    if($decoded === false || strpos($decoded, ':') === false) {
         return [null, null];
     }
 
