@@ -264,6 +264,32 @@ Import a backup from the configured backup host.
 
 The `BACKUP_HOST` env var needs to be correctly set for the export to work.
 
+### POST _/instance/integrate-backup-stack_
+
+Add the missing Docker images from a stack backup previously imported into the
+instance's `import` directory. Image references already returned by `get_images()`
+are skipped.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{
+  "instance":"equal.local",
+  "backup_id":"2026101300001"
+}
+```
+
+| key       | required | default | values | Note                                                   |
+|-----------|:--------:|:-------:|--------|--------------------------------------------------------|
+| instance  |   true   |         |        | Must be a valid instance installed on the host.        |
+| backup_id |   true   |         |        | Must identify a stack backup in the import directory.  |
+
 ### GET _/instance/backups_
 
 Get the list of backups of an instance.
