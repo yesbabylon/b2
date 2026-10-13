@@ -5,17 +5,12 @@ LABEL Description="WordPress 7.1 with Apache UID and GID injection" \
       License="Apache License 2.0" \
       Version="1.0"
 
-ARG apache_uid
-ARG apache_gid
-
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     git \
     procps \
     netcat-traditional \
     vim \
- && /usr/sbin/usermod -u "$apache_uid" www-data \
- && /usr/sbin/groupmod -g "$apache_gid" www-data \
  && docker-php-ext-configure pdo_mysql --with-pdo-mysql \
  && docker-php-ext-install pdo pdo_mysql \
  && rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
