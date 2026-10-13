@@ -36,12 +36,12 @@ function instance_integrate_backup_stack(array $data): array {
         throw new Exception('backup_not_found', 404);
     }
 
-    $image_archives = instance_integrate_backup_stack_archives($backup_file);
+    $archive_images = instance_integrate_backup_stack_getArchiveImages($backup_file);
     $installed_images = get_images();
     $integrated = [];
     $skipped = [];
 
-    foreach(array_keys($image_archives) as $image) {
+    foreach(array_keys($archive_images) as $image) {
         if(in_array($image, $installed_images, true)) {
             $skipped[] = $image;
         }
@@ -52,7 +52,7 @@ function instance_integrate_backup_stack(array $data): array {
 
     if(!empty($integrated)) {
         foreach($integrated as $reference) {
-            $archive_name = $image_archives[$reference];
+            $archive_name = $archive_images[$reference];
             $pipeline = 'set -o pipefail; tar -xOzf '.escapeshellarg($backup_file)
                 .' -- '.escapeshellarg($archive_name).' | docker image load';
             $output = [];
@@ -100,7 +100,7 @@ function instance_integrate_backup_stack(array $data): array {
  * @return array<string, string> Map of image references to archive member names.
  * @throws Exception
  */
-function instance_integrate_backup_stack_archives(string $backup_file): array {
+function instance_integrate_backup_stack_getArchiveImages(string $backup_file): array {
     $output = [];
     $exit_code = 0;
     $command = 'tar -tzf '.escapeshellarg($backup_file).' 2>/dev/null';
@@ -129,7 +129,7 @@ function instance_integrate_backup_stack_archives(string $backup_file): array {
             throw new Exception('invalid_stack_backup', 422);
         }
 
-        $reference = instance_integrate_backup_stack_normalize_reference($decoded_reference);
+        $reference = instance_integrate_backup_stack_getNormalizedReference($decoded_reference);
 
         if(isset($image_archives[$reference])) {
             throw new Exception('invalid_stack_backup', 422);
@@ -148,7 +148,7 @@ function instance_integrate_backup_stack_archives(string $backup_file): array {
  * @param string $reference
  * @return string
  */
-function instance_integrate_backup_stack_normalize_reference(string $reference): string {
+function instance_integrate_backup_stack_getNormalizedReference(string $reference): string {
     if(strpos($reference, '@') !== false) {
         return $reference;
     }
