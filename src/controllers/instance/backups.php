@@ -31,7 +31,11 @@ function instance_backups(array $data): array {
 
     foreach($backup_files as $backup_file) {
         $backup_id = null;
-        if(preg_match('/_(.*?)\./', $backup_file, $matches)) {
+        $stack_pattern = '/^stack-'.preg_quote($data['instance'], '/').'-(\d{8}-\d{6}(?:-\d+)?)\.tar\.gz$/';
+        if(preg_match($stack_pattern, $backup_file, $matches)) {
+            $backup_id = $matches[1];
+        }
+        elseif(preg_match('/_(.*?)\./', $backup_file, $matches)) {
             $backup_id = $matches[1];
         }
         $export[] = [

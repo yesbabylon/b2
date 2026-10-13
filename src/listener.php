@@ -31,7 +31,9 @@ $routes = [
 		'/reboot',                          /* @link reboot() */
 		'/ip',                              /* @link ip() */
 		'/instance/backup',                 /* @link instance_backup() */
+		'/instance/backup-stack',           /* @link instance_backup_stack() */
 		'/instance/export-backup',          /* @link instance_export_backup() */
+		'/instance/export-backup-stack',    /* @link instance_export_backup_stack() */
 		'/instance/import-backup',          /* @link instance_import_backup() */
 		'/instance/create',                 /* @link instance_create() */
 		'/instance/fmt/create',             /* @link instance_fmt_create() */
