@@ -4,17 +4,12 @@ LABEL   Description="Latest version of Wordpress with Apache UID and GUID inject
         License="Apache License 2.0" \
         Version="1.0"
 
-ARG apache_uid
-ARG apache_gid
-
 RUN apt-get update && apt-get install -y \
     git \
     procps \
     netcat \
     vim \
     libicu-dev \
-    && /usr/sbin/usermod -u $apache_uid www-data \
-    && /usr/sbin/groupmod -g $apache_gid www-data \
     && docker-php-ext-configure intl \
     && docker-php-ext-configure pdo_mysql --with-pdo-mysql \
     && docker-php-ext-install intl pdo pdo_mysql \
