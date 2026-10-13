@@ -128,6 +128,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 
 | **Path**                                  | **Description**                                            |
 | ----------------------------------------- | ---------------------------------------------------------- |
+| `AGENTS.md`                               | Guidance and safety rules for repository agents.           |
 | `install.sh`                              | Installation script for the project (see Install section). |
 | `README.md`                               | Main documentation for the project (this file).            |
 | `secrets/`                                | Host-local instance secret files; only `.gitkeep` is committed. |
@@ -189,7 +190,8 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `listener.php`                        | Main script for the b2-listener service.                   |
 | ├── `run.php`                             | Entry point for running the application.                   |
 | └── `send.php`                            | Script to send requests or notifications.                  |
-| `scripts/`                                | Utility scripts directory.                                 |
+| `tools/`                                  | Host and instance administration tools.                    |
+| ├── `README.md`                           | Usage, access requirements and safety notes for tools.      |
 | ├── `host-b2_listener-disable.sh`         | Disable the b2-listener service.                           |
 | ├── `host-b2_listener-enable.sh`          | Enable the b2-listener service.                            |
 | ├── `host-docker_images-export.sh`        | Export Docker images to an archive.                        |
@@ -199,6 +201,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-fail2ban-enable.sh`             | Enable the Fail2Ban service.                               |
 | ├── `host-fail2ban-unbanip.sh`            | Unban an IP address from a Fail2Ban jail.                  |
 | ├── `host-hostname-set.sh`                | Set the host name.                                         |
+| ├── `host-nginx-reload.sh`                | Reload the NGINX service.                                  |
 | ├── `host-private_ip-set.sh`              | Configure the host private IP address.                     |
 | ├── `host-public_ip-add.sh`               | Add a public IP address to the host.                        |
 | ├── `host-public_ip-remove.sh`            | Remove a public IP address from the host.                   |
@@ -206,13 +209,16 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
 | ├── `host-ssl_certificates-export.sh`     | Export instance certificates from the host.                |
 | ├── `host-ssl_certificates-import.sh`     | Import instance certificates into the host.                |
+| ├── `host-ssl_certificates-renew.sh`      | Renew instance certificates on the host.                   |
 | ├── `host-swap-disable.sh`                | Disable the host swap file while retaining it on disk.     |
 | ├── `host-swap-enable.sh`                 | Create or enable the persistent host swap file.            |
 | ├── `host-swap-resize.sh`                 | Safely resize the persistent host swap file.               |
-| ├── `instance-eq_logs-rotate.sh`          | Rotate the eQual logs for an instance.                      |
-| ├── `instance-eq_version-get.sh`          | Return the eQual version of an instance.                    |
-| ├── `instance-php_version-get.sh`         | Return the PHP version of an instance.                      |
-| └── `instance-wp_version-get.sh`          | Return the WordPress version of an instance.                |
+| ├── `instance-eq-logrotate.sh`            | Rotate the eQual logs for an instance.                      |
+| ├── `instance-eq-version.sh`              | Return the eQual version of an instance.                    |
+| ├── `instance-php-version.sh`             | Return the PHP version of an instance.                      |
+| ├── `instance-wp-lock.sh`                  | Lock WordPress, optionally including uploaded media.        |
+| ├── `instance-wp-unlock.sh`                | Grant the instance owner and www-data WordPress access.     |
+| └── `instance-wp-version.sh`              | Return the WordPress version of an instance.                |
 
 ## Swap management
 
@@ -221,8 +227,8 @@ Hosts with limited RAM can use a persistent swap file. The default size is
 created:
 
 ```bash
-sudo ./scripts/host-swap-enable.sh
-sudo ./scripts/host-swap-enable.sh 4G
+sudo ./tools/host-swap-enable.sh
+sudo ./tools/host-swap-enable.sh 4G
 ```
 
 The enable script is idempotent, creates a backup of `/etc/fstab` before
@@ -232,7 +238,7 @@ swap file. The size argument does not resize an existing `/swapfile`.
 To disable the swap and remove its persistent `/etc/fstab` entry:
 
 ```bash
-sudo ./scripts/host-swap-disable.sh
+sudo ./tools/host-swap-disable.sh
 ```
 
 The disable script keeps `/swapfile` on disk so that disabling swap does not
@@ -241,7 +247,7 @@ implicitly delete data. Use `swapon --show` to inspect the active swap areas.
 To resize an existing swap file and leave it enabled persistently:
 
 ```bash
-sudo ./scripts/host-swap-resize.sh 4G
+sudo ./tools/host-swap-resize.sh 4G
 ```
 
 The resize script restores the previous swap file and `/etc/fstab` if the

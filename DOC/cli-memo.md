@@ -109,6 +109,20 @@ Example:
   ./run.sh --route=/instance/backup --instance=example.com --encrypt=true
   ```
 
+### `/instance/backup-stack`
+- **Purpose**: create a `.tar.gz` backup containing one independent Docker archive
+  per image used by the instance stack.
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/backup-stack --instance=example.com
+  ```
+
+The returned filename uses `{instance}_{backup_id}_stack.tar.gz`, where `backup_id`
+is a 13-digit value. The outer archive contains URL-encoded image references such as
+`mysql%3A5.7.44.tar` directly at its root; it does not contain `stack.json`.
+
 ### `/instance/backups`
 - **Parameters**:
   - `instance` *(string, required)*.
@@ -126,6 +140,17 @@ Example:
   ./run.sh --route=/instance/export-backup --instance=example.com --backup_id=20241210091621
   ```
 
+### `/instance/export-backup-stack`
+- **Purpose**: send a stack backup to the configured backup host and remove the local
+  export after a successful transfer.
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*: exactly 13 digits.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/export-backup-stack --instance=example.com --backup_id=2026101300001
+  ```
+
 ### `/instance/import-backup`
 - **Parameters**:
   - `instance` *(string, required)*.
@@ -134,6 +159,30 @@ Example:
   ```bash
   ./run.sh --route=/instance/import-backup --instance=example.com --backup_id=20241210091621
   ```
+
+### `/instance/import-backup-stack`
+- **Purpose**: retrieve a stack backup into the instance's `import` directory without
+  loading its images.
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*: exactly 13 digits.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/import-backup-stack --instance=example.com --backup_id=2026101300001
+  ```
+
+### `/instance/integrate-backup-stack`
+- **Purpose**: load only stack-backup image tags that are absent from `get_images()`.
+- **Parameters**:
+  - `instance` *(string, required)*.
+  - `backup_id` *(string, required)*: exactly 13 digits.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/integrate-backup-stack --instance=example.com --backup_id=2026101300001
+  ```
+
+The result contains `integrated` and `skipped` image-reference lists. References
+without an explicit tag are compared as `:latest`.
 
 ### `/instance/restore`
 - **Parameters**:

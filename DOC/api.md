@@ -204,6 +204,66 @@ The related controller will create 3 files: `backup.sql.gz`, `config.tar`, `file
 
 **encrypt**: not mandatory, default value `true`
 
+### Docker stack backup workflow
+
+Docker stack backups are separate from instance data backups. They preserve the
+Docker images used by an instance and follow this workflow:
+
+1. `/instance/backup-stack` creates the archive in the instance's `export` directory.
+2. `/instance/export-backup-stack` sends it to the configured backup host.
+3. `/instance/import-backup-stack` retrieves it into the target instance's `import`
+   directory.
+4. `/instance/integrate-backup-stack` loads only image tags that are not already
+   returned by `get_images()` on the target host.
+
+A stack backup is named:
+
+```text
+{instance}_{backup_id}_stack.tar.gz
+```
+
+`backup_id` contains exactly 13 digits: the date in `YYYYMMDD` format followed by
+the zero-padded number of seconds elapsed since midnight (`SSSSS`).
+
+The compressed outer archive contains one Docker archive per image directly at its
+root and does not contain a `stack.json` file. Each filename is the image reference
+encoded with `rawurlencode()`:
+
+```text
+mysql%3A5.7.44.tar
+phpmyadmin%2Fphpmyadmin%3A5.2.1.tar
+equalframework%2Fequal%3A2.0.0.tar
+```
+
+Each inner `.tar` is produced independently by `docker save`, allowing missing
+images to be extracted and loaded without passing already installed image tags to
+Docker.
+
+### POST _/instance/backup-stack_
+
+Create a compressed backup containing the Docker images used by an instance stack.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{
+  "instance":"equal.local"
+}
+```
+
+| key      | required | default | values | Note                                            |
+|----------|:--------:|:-------:|--------|-------------------------------------------------|
+| instance |   true   |         |        | Must be a valid instance installed on the host. |
+
+The archive is created in `/home/{instance}/export` and its filename is returned in
+`result`.
+
 ### POST _/instance/export-backup_
 
 Export the backup of an instance to the configured backup host.
@@ -234,6 +294,33 @@ Export the backup of an instance to the configured backup host.
 
 The `BACKUP_HOST` env var needs to be correctly set for the export to work.
 
+### POST _/instance/export-backup-stack_
+
+Export a stack backup from the instance's `export` directory to the configured
+backup host. The local archive is deleted after a successful transfer.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{
+  "instance":"equal.local",
+  "backup_id":"2026101300001"
+}
+```
+
+| key       | required | default | values | Note                                              |
+|-----------|:--------:|:-------:|--------|---------------------------------------------------|
+| instance  |   true   |         |        | Must be a valid instance installed on the host.   |
+| backup_id |   true   |         |        | Must contain exactly 13 digits.                   |
+
+The `BACKUP_HOST` environment variable must be configured.
+
   
 
 ### POST _/instance/import-backup_
@@ -262,13 +349,44 @@ Import a backup from the configured backup host.
 
 **Notes**:
 
-The `BACKUP_HOST` env var needs to be correctly set for the export to work.
+The `BACKUP_HOST` env var needs to be correctly set for the import to work.
+
+### POST _/instance/import-backup-stack_
+
+Import a stack backup from the configured backup host into the instance's `import`
+directory. Importing the archive does not load its images into Docker.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{
+  "instance":"equal.local",
+  "backup_id":"2026101300001"
+}
+```
+
+| key       | required | default | values | Note                                              |
+|-----------|:--------:|:-------:|--------|---------------------------------------------------|
+| instance  |   true   |         |        | Must be a valid instance installed on the host.   |
+| backup_id |   true   |         |        | Must contain exactly 13 digits.                   |
+
+The `BACKUP_HOST` environment variable must be configured.
 
 ### POST _/instance/integrate-backup-stack_
 
 Add the missing Docker images from a stack backup previously imported into the
-instance's `import` directory. Image references already returned by `get_images()`
-are skipped.
+instance's `import` directory. The image reference is decoded from each inner `.tar`
+filename and references without an explicit tag are normalized to `:latest`.
+
+Image references already returned by `get_images()` are skipped and their inner
+archives are never sent to Docker. Each missing archive is streamed independently to
+`docker image load`, then the resulting tags are verified with `get_images()`.
 
 #### Request Headers
 
@@ -288,7 +406,22 @@ are skipped.
 | key       | required | default | values | Note                                                   |
 |-----------|:--------:|:-------:|--------|--------------------------------------------------------|
 | instance  |   true   |         |        | Must be a valid instance installed on the host.        |
-| backup_id |   true   |         |        | Must identify a stack backup in the import directory.  |
+| backup_id |   true   |         |        | Must contain exactly 13 digits and identify an imported stack backup. |
+
+Example response:
+
+```json
+{
+  "result": "backup_stack_integrated",
+  "integrated": [
+    "equalframework/equal:2.0.0"
+  ],
+  "skipped": [
+    "mysql:5.7.44",
+    "phpmyadmin/phpmyadmin:5.2.1"
+  ]
+}
+```
 
 ### GET _/instance/backups_
 
