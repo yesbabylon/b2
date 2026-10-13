@@ -25,7 +25,7 @@ function instance_import_backup_stack(array $data): array {
         throw new InvalidArgumentException('missing_backup_id', 400);
     }
 
-    if(!is_string($data['backup_id']) || preg_match('/^\d{8}-\d{6}(?:-\d+)?$/', $data['backup_id']) !== 1) {
+    if(!is_string($data['backup_id']) || preg_match('/^\d{13}$/', $data['backup_id']) !== 1) {
         throw new InvalidArgumentException('invalid_backup_id', 400);
     }
 
