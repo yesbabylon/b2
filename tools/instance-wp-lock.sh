@@ -55,6 +55,7 @@ find . -type f -exec chmod 444 {} +
 
 # Unless a full lock was requested, keep uploads writable by the owner and www-data group (GID 33 in the Docker container).
 if [ "$LOCK_MODE" != "full" ] && [ -d wp-content/uploads ]; then
+    chown -R "$USERNAME:33" wp-content/uploads
     find wp-content/uploads -type d -exec chmod 2775 {} +
     find wp-content/uploads -type f -exec chmod 664 {} +
 fi
