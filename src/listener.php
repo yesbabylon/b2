@@ -22,6 +22,8 @@ $routes = [
 	'GET' 	=> [
 		'/status',                          /* @link status() */
 		'/instances',                       /* @link instances() */
+		'/images',                          /* @link images() */
+		'/stacks',                          /* @link stacks() */
 		'/instance/status',                 /* @link instance_status() */
 		'/instance/backups',                /* @link instance_backups() */
 	],

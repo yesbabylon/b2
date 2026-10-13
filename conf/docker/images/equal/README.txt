@@ -1,0 +1,1 @@
+For standard Docker containers, please use official image from dockerhub: equalframework/equal
