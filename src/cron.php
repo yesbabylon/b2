@@ -9,7 +9,13 @@ include_once './boot.lib.php';
 
 $cron_jobs = [
     [
-        'description'   => "Create new backups for all active instances of the host every day at 2 AM.",
+        'description'   => "Rotate logs for all host instances every day at 1 AM.",
+        'crontab'       => '0 1 * * *',
+        'controller'    => 'logrotate',
+        'data'          => []
+    ],
+    [
+        'description'   => "Create and export new backups for all active instances of the host every day at 2 AM.",
         'crontab'       => '0 2 * * *',
         'controller'    => 'backup',
         'data'          => []
