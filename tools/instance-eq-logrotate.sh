@@ -10,7 +10,7 @@
 #
 # Behavior:
 #   equal.log   = latest complete JSONL lines, up to roughly MAX_SIZE_MB
-#   equal.log.1 = old part removed during the latest rotation
+#   equal.log.1 = latest complete lines from the removed part, also capped at MAX_SIZE_MB
 #   equal.log.2 = previous archive
 #   etc.
 
@@ -78,20 +78,55 @@ fi
 TMP_SNAPSHOT=$(mktemp "$LOG_DIR/.equal.log.snapshot.XXXXXX")
 TMP_KEEP=$(mktemp "$LOG_DIR/.equal.log.keep.XXXXXX")
 TMP_ARCHIVE=$(mktemp "$LOG_DIR/.equal.log.archive.XXXXXX")
+TMP_ARCHIVE_TRIM=$(mktemp "$LOG_DIR/.equal.log.archive-trim.XXXXXX")
 TMP_DELTA=$(mktemp "$LOG_DIR/.equal.log.delta.XXXXXX")
 
 cleanup() {
-    rm -f "$TMP_SNAPSHOT" "$TMP_KEEP" "$TMP_ARCHIVE" "$TMP_DELTA"
+    rm -f "$TMP_SNAPSHOT" "$TMP_KEEP" "$TMP_ARCHIVE" "$TMP_ARCHIVE_TRIM" "$TMP_DELTA"
 }
 
 trap cleanup EXIT
+
+# === CAP EXISTING ARCHIVES ===
+
+TRUNCATED_ARCHIVE_COUNT=0
+
+for ((i = 1; i <= KEEP_ARCHIVES; i++)); do
+    EXISTING_ARCHIVE="$LOG_FILE.$i"
+
+    if [ ! -f "$EXISTING_ARCHIVE" ]; then
+        continue
+    fi
+
+    EXISTING_ARCHIVE_SIZE=$(stat -c%s "$EXISTING_ARCHIVE")
+    if [ "$EXISTING_ARCHIVE_SIZE" -le "$MAX_SIZE_BYTES" ]; then
+        continue
+    fi
+
+    tail -c "$MAX_SIZE_BYTES" "$EXISTING_ARCHIVE" | sed '1d' > "$TMP_ARCHIVE_TRIM"
+    chmod --reference="$EXISTING_ARCHIVE" "$TMP_ARCHIVE_TRIM" 2>/dev/null || true
+    chown --reference="$EXISTING_ARCHIVE" "$TMP_ARCHIVE_TRIM" 2>/dev/null || true
+    mv "$TMP_ARCHIVE_TRIM" "$EXISTING_ARCHIVE"
+
+    TRIMMED_ARCHIVE_SIZE=$(stat -c%s "$EXISTING_ARCHIVE")
+    echo "Oversized archive truncated: $EXISTING_ARCHIVE"
+    echo "Previous size: $EXISTING_ARCHIVE_SIZE bytes"
+    echo "Final size: $TRIMMED_ARCHIVE_SIZE bytes"
+    TRUNCATED_ARCHIVE_COUNT=$((TRUNCATED_ARCHIVE_COUNT + 1))
+
+    TMP_ARCHIVE_TRIM=$(mktemp "$LOG_DIR/.equal.log.archive-trim.XXXXXX")
+done
 
 # === SIZE CHECK ===
 
 CURRENT_SIZE=$(stat -c%s "$LOG_FILE")
 
 if [ "$CURRENT_SIZE" -le "$MAX_SIZE_BYTES" ]; then
-    echo "No action needed."
+    if [ "$TRUNCATED_ARCHIVE_COUNT" -eq 0 ]; then
+        echo "No action needed."
+    else
+        echo "Active log does not need rotation."
+    fi
     echo "File: $LOG_FILE"
     echo "Current size: $CURRENT_SIZE bytes"
     echo "Limit: $MAX_SIZE_BYTES bytes"
@@ -119,10 +154,18 @@ tail -c "$MAX_SIZE_BYTES" "$TMP_SNAPSHOT" | sed '1d' > "$TMP_KEEP"
 KEEP_SIZE=$(stat -c%s "$TMP_KEEP")
 ARCHIVE_BYTES=$((CURRENT_SIZE - KEEP_SIZE))
 
-# The old part removed from equal.log becomes equal.log.1.
+# Keep only the latest MAX_SIZE_BYTES bytes from the part removed from equal.log.
+# Drop the first potentially incomplete line when that removed part is too large.
+# This prevents a very large active log from producing a very large archive.
 
 if [ "$ARCHIVE_BYTES" -gt 0 ]; then
-    head -c "$ARCHIVE_BYTES" "$TMP_SNAPSHOT" > "$TMP_ARCHIVE"
+    if [ "$ARCHIVE_BYTES" -gt "$MAX_SIZE_BYTES" ]; then
+        head -c "$ARCHIVE_BYTES" "$TMP_SNAPSHOT" \
+            | tail -c "$MAX_SIZE_BYTES" \
+            | sed '1d' > "$TMP_ARCHIVE"
+    else
+        head -c "$ARCHIVE_BYTES" "$TMP_SNAPSHOT" > "$TMP_ARCHIVE"
+    fi
 else
     : > "$TMP_ARCHIVE"
 fi

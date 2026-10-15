@@ -55,9 +55,16 @@ the host's local time:
 The `logrotate` controller reads `INSTANCE_TYPE` from each instance's
 `/home/INSTANCE/.env` file and dispatches to a type-specific function. Currently,
 only `equal` is supported: `logrotate_equal()` runs
-`tools/instance-eq-logrotate.sh`. Unsupported types are reported as
-`logrotate_not_supported` and do not prevent other instances from being
-processed. Failures are likewise reported per instance.
+`tools/instance-eq-logrotate.sh`. By default, no action is taken while
+`equal.log` is at most 100 MiB (`100 * 1024 * 1024` bytes). Above that limit,
+the active log is truncated to its latest complete JSONL lines, up to roughly
+100 MiB. The archive created from the removed older portion is also limited to
+roughly 100 MiB and keeps the lines closest to the active log; anything older
+is discarded. Existing oversized archives are truncated in the same way on the
+next run, even when the active log is already below the limit. Five archives are
+kept by default. Unsupported types are reported as `logrotate_not_supported`
+and do not prevent other instances from being processed. Failures are likewise
+reported per instance.
 
 To support another instance type, add its handler function to
 `src/controllers/logrotate.php` and register it in the controller's

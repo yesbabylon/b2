@@ -74,8 +74,13 @@ Example:
 - **Current support**: `equal` instances are handled by `logrotate_equal()`,
   which runs `tools/instance-eq-logrotate.sh`. Other types return
   `logrotate_not_supported` without stopping the remaining instances.
-- **Effect**: this action can rewrite `equal.log` and rotate its archives when
-  the configured size limit is exceeded.
+- **Effect**: the default limit is 100 MiB (`100 * 1024 * 1024` bytes). Above
+  that limit, the action keeps the latest complete JSONL lines in `equal.log`,
+  up to roughly 100 MiB. The new archive is likewise capped at roughly 100 MiB
+  and retains the lines closest to the active log; older excess data is
+  discarded. Existing oversized archives are truncated on the next run as
+  well, even if the active log is below the limit. Five archives are kept by
+  default.
 - **Example**:
   ```bash
   ./run.sh --route=/logrotate

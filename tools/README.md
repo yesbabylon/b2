@@ -48,7 +48,7 @@ require access to the Docker daemon.
 
 | Tool | Arguments | Purpose | Access |
 | --- | --- | --- | --- |
-| `instance-eq-logrotate.sh` | `USERNAME [MAX_MB] [KEEP]` | Rotate an instance's `equal.log`; defaults are 100 MB and five archives. | filesystem write |
+| `instance-eq-logrotate.sh` | `USERNAME [MAX_MB] [KEEP]` | Cap `equal.log` and retained archives near 100 MiB by default; keep five archives. | filesystem write |
 | `instance-eq-version.sh` | `USERNAME` | Print the installed eQual version. | read |
 | `instance-php-version.sh` | `USERNAME` | Print the PHP version from the instance container. | Docker/read |
 | `instance-wp-lock.sh` | `USERNAME [full]` | Remove write permission from WordPress; uploads remain writable unless `full` is used. | root |
