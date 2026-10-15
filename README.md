@@ -41,6 +41,28 @@ The `./install.sh` script :
 ./install.sh
 ```
 
+### Scheduled maintenance
+
+The installer adds a root crontab entry that runs `src/cron.php` every minute.
+The PHP cron handler then evaluates the schedules declared in that file, using
+the host's local time:
+
+| Schedule | Controller | Operation |
+| --- | --- | --- |
+| `0 1 * * *` | `logrotate` | Rotate logs for every supported instance type. |
+| `0 2 * * *` | `backup` | Create and attempt to export a backup for every active instance. |
+
+The `logrotate` controller reads `INSTANCE_TYPE` from each instance's
+`/home/INSTANCE/.env` file and dispatches to a type-specific function. Currently,
+only `equal` is supported: `logrotate_equal()` runs
+`tools/instance-eq-logrotate.sh`. Unsupported types are reported as
+`logrotate_not_supported` and do not prevent other instances from being
+processed. Failures are likewise reported per instance.
+
+To support another instance type, add its handler function to
+`src/controllers/logrotate.php` and register it in the controller's
+`$handlers_by_instance_type` map.
+
 The script expects a `.env` file with the following values (exported as environment variables):
 
 ```env
@@ -183,10 +205,12 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | │   │   ├── `create.php`                  | Controller to create instances.                            |
 | │   │   ├── `delete.php`                  | Controller to delete instances.                            |
 | │   │   └── `status.php`                  | Controller to get the status of instances.                 |
+| │   └── `logrotate.php`                   | Dispatch log rotation for all instances by instance type.  |
 | ├── `helpers/`                            | Helper functions for various operations.                   |
 | │   ├── `backup.php`                      | Helper for managing backups.                               |
 | │   ├── `cron-handler.php`                | Helper to handle cron jobs.                                |
 | │   └── `request-handler.php`             | Helper for handling HTTP requests.                         |
+| ├── `cron.php`                            | Declare and run scheduled controller jobs.                 |
 | ├── `listener.php`                        | Main script for the b2-listener service.                   |
 | ├── `run.php`                             | Entry point for running the application.                   |
 | └── `send.php`                            | Script to send requests or notifications.                  |

@@ -14,7 +14,8 @@
 function logrotate(): array {
     $result = [];
     $handlers_by_instance_type = [
-        'equal' => 'logrotate_equal'
+        'equal' => 'logrotate_equal',
+        'fmt'   => 'logrotate_equal'
     ];
 
     foreach(get_instances() as $instance) {

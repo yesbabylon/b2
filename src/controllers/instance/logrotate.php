@@ -23,7 +23,8 @@ function instance_logrotate(array $data): array {
 
     $instance_type = instance_logrotate_getType($data['instance']);
     $tools_by_instance_type = [
-        'equal' => 'instance-eq-logrotate.sh'
+        'equal' => 'instance-eq-logrotate.sh',
+        'fmt'   => 'instance-eq-logrotate.sh'
     ];
 
     if(!isset($tools_by_instance_type[$instance_type])) {

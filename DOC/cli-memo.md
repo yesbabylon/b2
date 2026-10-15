@@ -67,6 +67,24 @@ Example:
   ./run.sh --route=/backup
   ```
 
+### `/logrotate` *(CLI only)*
+
+- **Purpose**: rotate logs for all instances according to their `INSTANCE_TYPE`.
+- **Parameters**: none.
+- **Current support**: `equal` instances are handled by `logrotate_equal()`,
+  which runs `tools/instance-eq-logrotate.sh`. Other types return
+  `logrotate_not_supported` without stopping the remaining instances.
+- **Effect**: this action can rewrite `equal.log` and rotate its archives when
+  the configured size limit is exceeded.
+- **Example**:
+  ```bash
+  ./run.sh --route=/logrotate
+  ```
+
+The same controller runs automatically every day at `01:00` in the host's local
+time. The system crontab invokes `src/cron.php` every minute; `src/cron.php`
+decides when the controller is due.
+
 ## Instance actions
 
 ### `/instance/create`
@@ -213,5 +231,5 @@ without an explicit tag are compared as `:latest`.
 ## Practical notes
 
 - HTTP routes exposed by `listener.php` include `/status`, `/instances`, `/ip`, `/reboot`, and all `/instance/*` routes listed above.
-- `/backup` is available in CLI (direct controller execution), but it is not part of the HTTP listener route list.
+- `/backup` and `/logrotate` are available in CLI (direct controller execution), but they are not part of the HTTP listener route list.
 - `run.sh` forwards arguments to `src/run.php`; `--method` exists in the parser but is not used to choose the controller.
