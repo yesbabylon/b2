@@ -23,6 +23,11 @@ function backup(): array {
             if(preg_match('/_(.*?)\./', $backup_file, $matches)) {
                 $backup_id = $matches[1];
                 $res_export = exec_controller('instance/export-backup', ['instance' => $instance, 'backup_id' => $backup_id]);
+                $backup_path = "/home/$instance/export/$backup_file";
+                // remove backup, whatever the result of the export
+                if(file_exists($backup_path)) {
+                    unlink($backup_path);
+                }
             }
         }
         $result[$instance] = [
