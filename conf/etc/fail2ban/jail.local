@@ -121,6 +121,18 @@ maxretry  = 5
 findtime  = 10m
 bantime   = 1h
 
+[mediawiki-recidive]
+enabled   = true
+port      = http,https
+filter    = mediawiki
+banaction = docker-action
+logpath   = /var/log/nginx/access.log*
+backend   = auto
+usedns    = no
+maxretry  = 10
+findtime  = 1d
+bantime   = 15d
+
 
 [wordpress]
 enabled  = true
