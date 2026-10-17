@@ -119,7 +119,7 @@ backend   = auto
 usedns    = no
 maxretry  = 5
 findtime  = 10m
-bantime   = 1h
+bantime   = 1d
 
 [mediawiki-recidive]
 enabled   = true
@@ -130,8 +130,8 @@ logpath   = /var/log/nginx/access.log*
 backend   = auto
 usedns    = no
 maxretry  = 10
-findtime  = 1d
-bantime   = 15d
+findtime  = 5d
+bantime   = 30d
 
 
 [wordpress]
