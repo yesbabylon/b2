@@ -228,6 +228,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-b2_listener-enable.sh`          | Enable the b2-listener service.                            |
 | ├── `host-docker_images-export.sh`        | Export Docker images to an archive.                        |
 | ├── `host-docker_images-import.sh`        | Import Docker images from an archive.                      |
+| ├── `host-docker_images-unused.sh`        | List Docker images unused by any container.                |
 | ├── `host-fail2ban-disable.sh`            | Disable the Fail2Ban service.                              |
 | ├── `host-fail2ban-diagnoseip.sh`         | Show why an IP address was banned by Fail2Ban.             |
 | ├── `host-fail2ban-enable.sh`             | Enable the Fail2Ban service.                               |

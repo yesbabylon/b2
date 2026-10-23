@@ -26,6 +26,7 @@ require access to the Docker daemon.
 | `host-b2_listener-enable.sh` | none | Install, enable and restart the B2 listener service. | root |
 | `host-docker_images-export.sh` | `OUTPUT IMAGE...` | Export and gzip one or more Docker images. | Docker |
 | `host-docker_images-import.sh` | `ARCHIVE` | Import Docker images from a tar or gzip archive. | Docker |
+| `host-docker_images-unused.sh` | none | List Docker images unused by any container. | Docker/read |
 | `host-fail2ban-diagnoseip.sh` | `IP [full]` | Diagnose which Fail2Ban filters match an IPv4 address. | root/read |
 | `host-fail2ban-disable.sh` | none | Stop and disable Fail2Ban. | root |
 | `host-fail2ban-enable.sh` | none | Deploy repository configuration and enable Fail2Ban. | root |
