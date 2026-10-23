@@ -1,5 +1,5 @@
 ###############################################################################
-# Image: PHP 8.5 + Apache Debian 12 Bookworm
+# Image: PHP 8.5 + Apache Debian 13 Trixie
 #
 # Validation environment:
 # - Host OS        : Ubuntu 24.06 LTS
@@ -11,11 +11,11 @@
 # - This image is intended for production-like environments
 # - Apache + mod_php is used intentionally (no php-fpm)
 ###############################################################################
-FROM php:8.5-apache-bookworm
+FROM php:8.5.12-apache-trixie
 LABEL   Description="Debian with Apache and PHP + opcache with eQual dependencies" \
                 Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
                 License="Apache License 2.0" \
-                Version="1.0"
+                Version="b2-equal-2.1-r1"
 RUN apt-get update && apt-get install -y \
         gnupg2 \
         git \
@@ -31,7 +31,7 @@ RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
         | gpg --dearmor \
         | tee /usr/share/keyrings/microsoft.gpg > /dev/null
 RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] \
-https://packages.microsoft.com/debian/12/prod bookworm main" \
+https://packages.microsoft.com/debian/13/prod trixie main" \
 > /etc/apt/sources.list.d/microsoft-prod.list
 
 RUN apt-get update
@@ -39,8 +39,9 @@ RUN apt-get update
 RUN ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
         msodbcsql17 \
         unixodbc \
-        unixodbc-dev
-RUN pecl install sqlsrv pdo_sqlsrv
+        unixodbc-dev \
+        libgssapi-krb5-2
+RUN pecl install sqlsrv-5.13.3
 
 # install required PHP extensions
 RUN set -ex; \
@@ -57,6 +58,7 @@ RUN set -ex; \
                                 libwebp-dev \
                                 libzip-dev \
                                 libicu-dev \
+                                libpq-dev \
                                 zip \
                                 unzip \
                 ; \
@@ -68,8 +70,9 @@ RUN set -ex; \
                         zip \
                         intl \
                         ftp \
-                        mysqli; \
-                docker-php-ext-enable sqlsrv pdo_sqlsrv; \
+                        mysqli \
+                        pgsql; \
+                docker-php-ext-enable sqlsrv; \
                 \
                 apt-mark auto '.*' > /dev/null; \
                 apt-mark manual $savedAptMark; \

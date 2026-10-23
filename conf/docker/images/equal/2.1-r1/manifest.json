@@ -1,0 +1,41 @@
+{
+  "components": {
+    "linux": {
+      "distribution": "debian",
+      "version": "13",
+      "packages": {
+        "msodbcsql": "17"
+      }
+    },
+    "php": {
+      "version": "8.5.12",
+      "extensions": [
+        "dom",
+        "ftp",
+        "gd",
+        "intl",
+        "mbstring",
+        "mysqli",
+        "opcache",
+        "pgsql",
+        "sqlsrv",
+        "zip"
+      ]
+    },
+    "apache": {
+      "version": "2.4",
+      "modules": [
+        "expires",
+        "rewrite"
+      ]
+    },
+    "equal": {
+      "version": "2.1"
+    }
+  },
+  "paths": {
+    "application": "/var/www/html",
+    "public": "/var/www/html/public",
+    "bin": "/opt/bin"
+  }
+}

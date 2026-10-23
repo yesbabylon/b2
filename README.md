@@ -195,9 +195,10 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `nginx.conf`                          | Main NGINX configuration file.                             |
 | ├── `ssh-login`                           | Configuration or script for SSH login setup.               |
 | └── `vhost.d/default`                     | Default virtual host configuration.                        |
-| `doc/`                                    | Documentation files directory.                             |
+| `DOC/`                                    | Documentation files directory.                             |
 | ├── `api.md`                              | API documentation.                                         |
-| └── `cli-memo.md`                         | CLI memo for `run.sh` routes/actions and examples.         |
+| ├── `cli-memo.md`                         | CLI memo for `run.sh` routes/actions and examples.         |
+| └── `docker-image-versioning.md`          | Docker image versioning and lifecycle policy.              |
 | `keyring/`                                | Directory containing cryptographic keys.                   |
 | ├── `gpg-private-key.pgp`                 | Private GPG key.                                           |
 | └── `gpg-public-key.pgp`                  | Public GPG key.                                            |

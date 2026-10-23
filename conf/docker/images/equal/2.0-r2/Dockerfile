@@ -1,8 +1,8 @@
-FROM php:8.3-apache
-LABEL   Description="Debian with Apache and PHP + opcache with eQual dependencies" \
+FROM php:8.3.36-apache-trixie
+LABEL   Description="Debian with Apache and PHP+opcache with eQual dependencies" \
 		Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
 		License="Apache License 2.0" \
-		Version="1.0"
+		Version="b2-equal-2.0-r2"
 RUN apt-get update && apt-get install -y \
 	gnupg2 \
 	git \
@@ -12,11 +12,18 @@ RUN apt-get update && apt-get install -y \
 	wget
 COPY ./000-default.conf /etc/apache2/sites-available/
 # install sqlsrv drivers
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get -y --no-install-recommends install msodbcsql17 odbcinst=2.3.7 odbcinst1debian2=2.3.7 unixodbc-dev=2.3.7 unixodbc=2.3.7
-RUN pecl install sqlsrv pdo_sqlsrv
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+		| gpg --dearmor \
+		> /usr/share/keyrings/microsoft-prod.gpg \
+	&& curl -fsSL https://packages.microsoft.com/config/debian/13/prod.list \
+		> /etc/apt/sources.list.d/microsoft-prod.list \
+	&& apt-get update \
+	&& ACCEPT_EULA=Y apt-get install -y --no-install-recommends \
+		msodbcsql17 \
+		unixodbc-dev \
+		libgssapi-krb5-2 \
+	&& rm -rf /var/lib/apt/lists/*
+RUN pecl install sqlsrv-5.13.3
 # install required PHP extensions
 RUN set -ex; \
 		\
@@ -25,7 +32,6 @@ RUN set -ex; \
 		apt-get update; \
 		apt-get install -y --no-install-recommends \
 				libfreetype6-dev \
-				libjpeg62-turbo-dev \
 				libxml2-dev \
 				libjpeg-dev \
 				libpng-dev \
@@ -33,16 +39,19 @@ RUN set -ex; \
 				libzip-dev \
 				libicu-dev \
 				libonig-dev \
+				libpq-dev \
 				zip \
 				unzip \
 		; \
 		\
-		docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
-		docker-php-ext-configure intl; \
-		docker-php-ext-install -j$(nproc) gd; \
-		docker-php-ext-install opcache dom mbstring zip dom intl; \
-		docker-php-ext-install mysqli; \
-		docker-php-ext-enable sqlsrv pdo_sqlsrv mbstring; \
+        docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp; \
+        docker-php-ext-install -j"$(nproc)" \
+            gd \
+            intl \
+            mysqli \
+            pgsql \
+            zip; \
+		docker-php-ext-enable sqlsrv; \
 		\
 		apt-mark auto '.*' > /dev/null; \
 		apt-mark manual $savedAptMark; \

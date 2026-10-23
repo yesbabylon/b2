@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://yesbabylon.com/schemas/b2-manifest.schema.json",
+  "title": "B2 Image Manifest",
+  "description": "Description des composants et des chemins d'une image B2, independamment de son identite et de sa construction Docker.",
+  "type": "object",
+  "required": ["components"],
+  "additionalProperties": false,
+  "properties": {
+    "components": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "linux": {
+          "$ref": "#/$defs/linux"
+        },
+        "php": {
+          "$ref": "#/$defs/php"
+        },
+        "apache": {
+          "$ref": "#/$defs/apache"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/component"
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "application": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "public": {
+          "$ref": "#/$defs/absolutePath"
+        },
+        "bin": {
+          "$ref": "#/$defs/absolutePath"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "absolutePath": {
+      "type": "string",
+      "pattern": "^/"
+    },
+    "component": {
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version"
+        }
+      },
+      "additionalProperties": true
+    },
+    "linux": {
+      "type": "object",
+      "required": ["distribution", "version"],
+      "properties": {
+        "distribution": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifiant de la distribution, par exemple debian, ubuntu ou alpine."
+        },
+        "version": {
+          "$ref": "#/$defs/version",
+          "description": "Version complete de la distribution, par exemple 13.7 pour Debian."
+        },
+        "packages": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/version"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "php": {
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "extensions": {
+          "$ref": "#/$defs/nameList"
+        }
+      },
+      "additionalProperties": true
+    },
+    "apache": {
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "modules": {
+          "$ref": "#/$defs/nameList"
+        }
+      },
+      "additionalProperties": true
+    },
+    "nameList": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
