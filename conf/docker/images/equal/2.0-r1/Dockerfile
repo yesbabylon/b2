@@ -2,7 +2,7 @@ FROM php:8.3.1-apache-bookworm
 LABEL   Description="Debian with Apache and PHP+opcache with eQual dependencies" \
 		Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
 		License="Apache License 2.0" \
-		Version="b2-equal-2.0-r1"
+		Version="b2-equal:2.0-r1"
 RUN apt-get update && apt-get install -y \
 	gnupg2 \
 	git \

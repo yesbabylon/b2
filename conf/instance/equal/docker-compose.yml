@@ -50,7 +50,7 @@ services:
     depends_on:
       - {{db_ID}}
   equal:
-    image: equalframework/equal:2.0.0
+    image: b2-equal:2.0-r2
     container_name: ${USERNAME}
     restart: always
     volumes:

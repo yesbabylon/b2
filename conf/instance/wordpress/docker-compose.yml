@@ -50,7 +50,7 @@ services:
     depends_on:
       - {{db_ID}}
   wordpress:
-    image: docked-wordpress:7.1.1
+    image: b2-wordpress:7.1-r1
     container_name: ${USERNAME}
     restart: always
     volumes:

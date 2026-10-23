@@ -15,7 +15,7 @@ FROM php:8.5.12-apache-trixie
 LABEL   Description="Debian with Apache and PHP + opcache with eQual dependencies" \
                 Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
                 License="Apache License 2.0" \
-                Version="b2-equal-2.1-r1"
+                Version="b2-equal:2.1-r1"
 RUN apt-get update && apt-get install -y \
         gnupg2 \
         git \
