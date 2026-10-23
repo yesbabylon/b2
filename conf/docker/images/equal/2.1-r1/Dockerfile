@@ -27,7 +27,7 @@ COPY ./mpm_prefork.conf /etc/apache2/mods-available/
 COPY ./000-default.conf /etc/apache2/sites-available/
 
 # install sqlsrv drivers
-RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft-2025.asc \
         | gpg --dearmor \
         | tee /usr/share/keyrings/microsoft.gpg > /dev/null
 RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] \

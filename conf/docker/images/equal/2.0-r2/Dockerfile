@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 	wget
 COPY ./000-default.conf /etc/apache2/sites-available/
 # install sqlsrv drivers
-RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft-2025.asc \
 		| gpg --dearmor \
 		> /usr/share/keyrings/microsoft-prod.gpg \
 	&& curl -fsSL https://packages.microsoft.com/config/debian/13/prod.list \
