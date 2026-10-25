@@ -1,0 +1,23 @@
+{
+  "components": {
+    "linux": {
+      "distribution": "debian",
+      "version": "13"
+    },
+    "nginx": {
+      "version": "1.29.2"
+    },
+    "nginx-proxy": {
+      "version": "1.9.0"
+    },
+    "docker-gen": {
+      "version": "0.16.0"
+    },
+    "forego": {
+      "version": "0.18.4"
+    }
+  },
+  "paths": {
+    "public": "/usr/share/nginx/html"
+  }
+}

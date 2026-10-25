@@ -1,0 +1,14 @@
+{
+  "components": {
+    "mkdocs-material": {
+      "version": "9.8.0"
+    },
+    "yq": {
+      "version": "4.54.1"
+    }
+  },
+  "paths": {
+    "application": "/docs",
+    "public": "/docs/site"
+  }
+}
