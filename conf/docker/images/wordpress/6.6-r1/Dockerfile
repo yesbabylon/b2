@@ -1,8 +1,8 @@
 FROM wordpress:6.6.1-php8.3
-LABEL   Description="WordPress 6.6 with Apache UID and GID injection" \
+LABEL   Description="WordPress 6.6" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
-        Version="1.0"
+        Version="b2-wordpress:6.6-r1"
 
 RUN apt-get update && apt-get install -y \
     git \
