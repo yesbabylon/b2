@@ -1,5 +1,5 @@
 FROM wordpress:6.6.1-php8.3
-LABEL   Description="Latest version of Wordpress with Apache UID and GUID injection" \
+LABEL   Description="WordPress 6.6 with Apache UID and GID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
         Version="1.0"

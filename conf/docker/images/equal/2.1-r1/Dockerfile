@@ -1,5 +1,5 @@
 FROM php:8.5.12-apache-trixie
-LABEL   Description="Debian with Apache and PHP + opcache with eQual dependencies" \
+LABEL   Description="eQual 2.1 with Apache, PHP, OPcache, and required dependencies" \
                 Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
                 License="Apache License 2.0" \
                 Version="b2-equal:2.1-r1"

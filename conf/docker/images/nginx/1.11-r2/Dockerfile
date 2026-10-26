@@ -1,5 +1,5 @@
 FROM nginxproxy/nginx-proxy:1.11.6
-LABEL   Description="nginx proxy with custom template and additional editor (vi)" \
+LABEL   Description="NGINX Proxy 1.11 with a custom template, maintenance page, and Vim" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
         Version="b2-nginx:1.11-r2"

@@ -1,0 +1,41 @@
+{
+  "components": {
+    "linux": {
+      "distribution": "debian",
+      "version": "13.7"
+    },
+    "php": {
+      "version": "8.5.12",
+      "extensions": [
+        "bcmath",
+        "dom",
+        "exif",
+        "ftp",
+        "gd",
+        "imagick",
+        "intl",
+        "mbstring",
+        "mysqli",
+        "opcache",
+        "pdo",
+        "pdo_mysql",
+        "zip"
+      ]
+    },
+    "apache": {
+      "version": "2.4.69",
+      "modules": [
+        "expires",
+        "remoteip",
+        "rewrite"
+      ]
+    },
+    "wordpress": {
+      "version": "7.1"
+    }
+  },
+  "paths": {
+    "application": "/var/www/html",
+    "public": "/var/www/html"
+  }
+}

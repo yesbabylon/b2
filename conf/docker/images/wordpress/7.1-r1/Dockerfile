@@ -1,6 +1,6 @@
-FROM wordpress:7.1.3-php8.5-apache
+FROM wordpress:7.1.1-php8.5-apache
 
-LABEL Description="WordPress 7.1 with Apache UID and GID injection" \
+LABEL Description="WordPress 7.1" \
       Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
       License="Apache License 2.0" \
       Version="b2-wordpress:7.1-r1"

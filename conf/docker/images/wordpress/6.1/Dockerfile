@@ -1,6 +1,6 @@
 FROM wordpress:6.1.1-php8.1
 
-LABEL   Description="Latest version of Wordpress with Apache UID and GUID injection" \
+LABEL   Description="WordPress 6.1 with Apache UID and GID injection" \
         Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
         License="Apache License 2.0" \
         Version="1.0"

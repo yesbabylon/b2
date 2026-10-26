@@ -1,6 +1,6 @@
 FROM squidfunk/mkdocs-material:9.8.0
 
-LABEL Description="MkDocs + yq" \
+LABEL Description="Material for MkDocs 9.8 with yq" \
       Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
       License="Apache License 2.0" \
       Version="b2-mkdocs:9.8-r1"
