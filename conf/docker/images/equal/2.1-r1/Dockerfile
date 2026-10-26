@@ -1,16 +1,3 @@
-###############################################################################
-# Image: PHP 8.5 + Apache Debian 13 Trixie
-#
-# Validation environment:
-# - Host OS        : Ubuntu 24.06 LTS
-# - Docker Engine  : 27.5.1
-# - eQual version  : 2.0.1
-# - Build date     : 2026-08-19
-#
-# Notes:
-# - This image is intended for production-like environments
-# - Apache + mod_php is used intentionally (no php-fpm)
-###############################################################################
 FROM php:8.5.12-apache-trixie
 LABEL   Description="Debian with Apache and PHP + opcache with eQual dependencies" \
                 Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
