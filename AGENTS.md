@@ -39,6 +39,8 @@ The production checkout is expected at `/root/b2`.
   unless their usage text states otherwise.
 - Validate all arguments and required paths before changing system state.
 - Quote variable expansions used as paths or command arguments.
+- Ensure every shell script (`*.sh`) is tracked with the executable bit set
+  (Git mode `100755`), including Docker image build scripts.
 - New privileged tools must fail clearly when not run as root.
 - Keep the root `README.md` inventory and `tools/README.md` synchronized when a
   tool is added, removed or renamed.
