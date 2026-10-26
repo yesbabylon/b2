@@ -1,4 +1,17 @@
-## B2 permanent ACME HTTP-01 configuration
+## B2 compatibility configuration for ACME HTTP-01
+##
+## This block is required by b2-nginx:1.9-r1 & b2-nginx:1.11-r1 because its legacy nginx.tmpl
+## does not generate the ACME HTTP-01 location itself.
+##
+## Keep ACME_HTTP_CHALLENGE_LOCATION unset on acme-companion while this block
+## exists. acme-companion only recognizes blocks carrying its own markers; if
+## enabled, it would prepend another location during certificate issuance or
+## renewal and could make NGINX fail with a duplicate location error.
+##
+## Migration to b2-nginx:1.11-r2:
+## Remove this entire location block and continue to leave the companion
+## variable unset. The nginx-proxy 1.11.6 template bundled in 1.11-r2 generates
+## and manages the required HTTP-01 locations by default.
 location ^~ /.well-known/acme-challenge/ {
     auth_basic off;
     auth_request off;
@@ -7,4 +20,4 @@ location ^~ /.well-known/acme-challenge/ {
     try_files $uri =404;
     break;
 }
-## End B2 permanent ACME HTTP-01 configuration
+## End B2 compatibility configuration for ACME HTTP-01

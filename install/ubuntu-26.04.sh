@@ -65,6 +65,17 @@ if [ "$INSTALL_DIR" != "/root/b2" ]; then
     exit 1
 fi
 
+NGINX_IMAGE_VERSION="1.11-r1"
+NGINX_IMAGE_DIR="$INSTALL_DIR/conf/docker/images/nginx/$NGINX_IMAGE_VERSION"
+NGINX_COMPOSE_FILE="$INSTALL_DIR/conf/docker/nginx-proxy/docker-compose.yml"
+
+for required_file in "$NGINX_IMAGE_DIR/build.sh" "$NGINX_IMAGE_DIR/maintenance.html" "$NGINX_COMPOSE_FILE"; do
+    if [ ! -f "$required_file" ]; then
+        echo "Error: Required NGINX file is missing: $required_file"
+        exit 1
+    fi
+done
+
 
 #####################
 ### Env variables ###
@@ -213,8 +224,7 @@ systemctl restart docker
 # Make sure docker starts on boot
 systemctl enable docker
 
-# Prepare directory structure
-cp -r "$INSTALL_DIR"/conf/docker /home/docker
+# Install SSH login shell
 cp "$INSTALL_DIR"/conf/ssh-login /usr/local/bin/ssh-login
 chmod +x /usr/local/bin/ssh-login
 
@@ -235,26 +245,30 @@ docker network create proxynet
 # Create portainer volume
 docker volume create portainer_data
 
-# Build docked-nginx image
-cd /home/docker/images/docked-nginx/
-chmod +x ./build.sh
-./build.sh
+# Build the NGINX image selected for Ubuntu 26.04
+(
+    cd "$NGINX_IMAGE_DIR" || exit 1
+    bash ./build.sh
+)
 
 # Start reverse proxy and let's encrypt companion
-docker compose -f /home/docker/nginx-proxy/docker-compose.yml up -d
+docker compose -f "$NGINX_COMPOSE_FILE" up -d
 
 # wait for the services to be fully started (to prevent following files to be overwritten)
 echo -e "${GREEN}(Waiting for services to be fully started)${NC}\n"
 sleep 30
 
 # make sure a default maintenance page is available
-mkdir -p /srv/docker/nginx/html && cp /home/docker/images/docked-nginx/maintenance.html /srv/docker/nginx/html
+mkdir -p /srv/docker/nginx/html && cp "$NGINX_IMAGE_DIR/maintenance.html" /srv/docker/nginx/html
 
 # add custom nginx conf in the newly created dir env
 mkdir -p /srv/docker/nginx/conf.d && cp "$INSTALL_DIR"/conf/nginx.conf /srv/docker/nginx/conf.d/custom.conf
 
-# (#memo - in latest deployments, file was not created automatically by letsencrypt-companion)
-mkdir -p /usr/share/nginx/html
+# B2 ACME HTTP-01 compatibility for b2-nginx:1.9-r1 & b2-nginx:1.11-r1:
+# - /srv/docker/nginx/html, created above, is the host directory mounted as /usr/share/nginx/html inside nginx-proxy and acme-companion.
+# - The legacy nginx.tmpl does not generate the HTTP-01 location, so install conf/vhost.d/default and keep ACME_HTTP_CHALLENGE_LOCATION unset on the
+#   companion to prevent it from prepending a duplicate location block.
+# Migration to b2-nginx:1.11-r2: stop creating file from conf/vhost.d/default; nginx-proxy 1.11.6 generates it by default.
 mkdir -p /srv/docker/nginx/vhost.d
 cp "$INSTALL_DIR"/conf/vhost.d/default /srv/docker/nginx/vhost.d/default
 
@@ -334,7 +348,7 @@ systemctl daemon-reload
 ### Remove sensitive data from .env  ###
 ########################################
 
-# Store hash version of the password 
+# Store hash version of the password
 php -r 'echo password_hash($argv[1], PASSWORD_DEFAULT), PHP_EOL;' "$ROOT_PASSWORD" > "$INSTALL_DIR/host.secrets"
 chmod 600 "$INSTALL_DIR/host.secrets"
 chown root:root "$INSTALL_DIR/host.secrets"

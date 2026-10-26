@@ -1,0 +1,11 @@
+FROM nginxproxy/nginx-proxy:1.11.6
+LABEL   Description="nginx proxy with custom template and additional editor (vi)" \
+        Maintainer="Cedric Francoys <cedricfrancoys@gmail.com>" \
+        License="Apache License 2.0" \
+        Version="b2-nginx:1.11-r2"
+USER root
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends vim \
+ && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives
+COPY nginx.tmpl /app/
+ADD maintenance.html /usr/share/nginx/html/

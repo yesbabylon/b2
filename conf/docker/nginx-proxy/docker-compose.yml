@@ -2,8 +2,8 @@ services:
   nginx-proxy:
     container_name: nginx-proxy
     restart: always
-    image: docked-nginx:1.9.0
-    networks: 
+    image: b2-nginx:1.11-r1
+    networks:
       - proxynet
     ports:
       - "80:80"
@@ -14,6 +14,8 @@ services:
       # nginx configuration
       - /srv/docker/nginx/conf.d:/etc/nginx/conf.d:rw
       # folder holding default file with virtual host for .well-known/acme-challenge
+      # B2 compatibility configuration for ACME HTTP-01
+      # Migration to b2-nginx:1.11-r2: stop mapping file location; nginx-proxy 1.11.6 handles it internally.
       - /srv/docker/nginx/vhost.d:/etc/nginx/vhost.d:rw
       # nginx BASIC AUTH if any
       - /srv/docker/nginx/htpasswd:/etc/nginx/htpasswd
@@ -27,12 +29,15 @@ services:
   nginx-proxy-companion:
     container_name: letsencrypt-companion
     restart: always
+    # #todo - use nginxproxy/acme-companion:2.6.1
     image: jrcs/letsencrypt-nginx-proxy-companion:2.6.1
-    networks: 
-      - proxynet      
+    networks:
+      - proxynet
     volumes:
       - /srv/docker/nginx/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock
+      # #todo - persist acme.sh
+      # - /srv/docker/nginx/acme:/etc/acme.sh:rw
     volumes_from:
       - nginx-proxy
 

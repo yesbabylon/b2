@@ -3,7 +3,7 @@ Description=Start console script on boot
 After=network.target
 
 [Service]
-ExecStart=/bin/bash /home/docker/portainer_start.sh
+ExecStart=/bin/bash /root/b2/conf/docker/portainer_start.sh
 Restart=always
 
 [Install]
