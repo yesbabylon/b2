@@ -1,0 +1,35 @@
+{
+  "components": {
+    "linux": {
+      "distribution": "debian",
+      "version": "10"
+    },
+    "php": {
+      "version": "7.4.33",
+      "extensions": [
+        "dom",
+        "gd",
+        "intl",
+        "mbstring",
+        "mysqli",
+        "opcache",
+        "tidy",
+        "zip"
+      ]
+    },
+    "apache": {
+      "version": "2.4",
+      "modules": [
+        "expires",
+        "rewrite"
+      ]
+    },
+    "equal": {
+      "version": "2.0"
+    }
+  },
+  "paths": {
+    "application": "/var/www/html",
+    "public": "/var/www/html/public"
+  }
+}
