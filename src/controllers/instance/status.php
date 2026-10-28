@@ -8,7 +8,7 @@
  /**
   * Retrieves Docker container statistics as an associative array.
   *
-  * @param array{instance: string} $data
+  * @param array{instance: string, scope: string} $data
   *
   * @throws Exception
   *
@@ -29,7 +29,8 @@
   *     },
   *     config: array{
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
-  *         image: string           // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         type: string            // The instance stack type (e.g., "equal").
   *     }
   * }
   */
@@ -150,6 +151,13 @@ function instance_status(array $data): array {
                     return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
                 }
             ],
+            'type' => [
+                'description' => "Instance stack type.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return getTypeOfInstance($data['instance']);
+                }
+            ],
             'mem_limit' => [
                 'description' => "Amount of memory allocated to the container (in MB).",
                 'command'     => 'true',
@@ -185,6 +193,33 @@ function instance_status(array $data): array {
         'code' => 200,
         'body' => $result
     ];
+}
+
+function getTypeOfInstance(string $instance): string {
+    $env_file = "/home/$instance/.env";
+    if(!is_readable($env_file)) {
+        throw new Exception('could_not_read_instance_env', 500);
+    }
+
+    $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if($lines === false) {
+        throw new Exception('could_not_read_instance_env', 500);
+    }
+
+    foreach($lines as $line) {
+        if(!preg_match('/^\s*INSTANCE_TYPE\s*=\s*(.+?)\s*$/', $line, $matches)) {
+            continue;
+        }
+
+        $instance_type = trim($matches[1], "'\"");
+        if(!preg_match('/^[A-Za-z0-9_-]+$/', $instance_type)) {
+            throw new Exception('invalid_instance_type', 500);
+        }
+
+        return strtolower($instance_type);
+    }
+
+    throw new Exception('missing_instance_type', 500);
 }
 
 function fetchDockerStats(string $instance): array {
