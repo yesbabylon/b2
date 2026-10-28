@@ -30,7 +30,11 @@
   *     config: array{
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
   *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
-  *         type: string            // The instance stack type (e.g., "equal").
+  *         type: string,           // The instance stack type (e.g., "equal").
+  *         branches: array{
+  *             root: string|null,
+  *             packages?: string|null // Present for equal, symbiose and fmt instances.
+  *         }
   *     }
   * }
   */
@@ -158,6 +162,18 @@ function instance_status(array $data): array {
                     return getTypeOfInstance($data['instance']);
                 }
             ],
+            'branches' => [
+                'description' => "Current Git branches of the project repositories.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    $instance_type = getTypeOfInstance($data['instance']);
+
+                    return getBranchesOfInstance(
+                        $data['instance'],
+                        in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)
+                    );
+                }
+            ],
             'mem_limit' => [
                 'description' => "Amount of memory allocated to the container (in MB).",
                 'command'     => 'true',
@@ -220,6 +236,59 @@ function getTypeOfInstance(string $instance): string {
     }
 
     throw new Exception('missing_instance_type', 500);
+}
+
+function getBranchesOfInstance(string $instance, bool $with_packages): array {
+    $project_dir = "/home/$instance/www";
+    $branches = [
+        'root' => getGitBranch($project_dir)
+    ];
+
+    if($with_packages) {
+        $branches['packages'] = getGitBranch("$project_dir/packages");
+    }
+
+    return $branches;
+}
+
+function getGitBranch(string $repository): ?string {
+    $real_repository = realpath($repository);
+    if($real_repository === false || !is_dir($real_repository)) {
+        return null;
+    }
+
+    $output = [];
+    $exit_code = 0;
+    $git_command = 'git -c '
+        .escapeshellarg('safe.directory='.$real_repository)
+        .' -C '.escapeshellarg($real_repository);
+    exec(
+        $git_command.' rev-parse --show-toplevel 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    $repository_root = realpath(end($output));
+    if($repository_root === false || $repository_root !== $real_repository) {
+        return null;
+    }
+
+    $output = [];
+    exec(
+        $git_command.' symbolic-ref --quiet --short HEAD 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    return end($output);
 }
 
 function fetchDockerStats(string $instance): array {
