@@ -30,6 +30,7 @@
   *     config: array{
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
   *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         php: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
   *         type: string,           // The instance stack type (e.g., "equal").
   *         branches: array{
   *             root: string|null,
@@ -172,6 +173,25 @@ function instance_status(array $data): array {
                         $data['instance'],
                         in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)
                     );
+                }
+            ],
+            'php' => [
+                'description' => "PHP version installed in the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    $output = [];
+                    $exit_code = 0;
+                    $php_version = exec(
+                        'docker exec '.escapeshellarg($container_id)
+                        .' php -r '.escapeshellarg('echo PHP_VERSION;')
+                        .' 2>/dev/null',
+                        $output,
+                        $exit_code
+                    );
+
+                    return $exit_code === 0 && $php_version !== false && $php_version !== ''
+                        ? $php_version
+                        : null;
                 }
             ],
             'mem_limit' => [
