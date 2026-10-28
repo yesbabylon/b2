@@ -31,6 +31,7 @@
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
   *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
   *         php: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
+  *         php_build_date: string|null, // The PHP build date (e.g., "Jul 30 2026 15:39:15").
   *         type: string,           // The instance stack type (e.g., "equal").
   *         branches: array{
   *             root: string|null,
@@ -179,19 +180,9 @@ function instance_status(array $data): array {
                 'description' => "PHP version installed in the container.",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
-                    $output = [];
-                    $exit_code = 0;
-                    $php_version = exec(
-                        'docker exec '.escapeshellarg($container_id)
-                        .' php -r '.escapeshellarg('echo PHP_VERSION;')
-                        .' 2>/dev/null',
-                        $output,
-                        $exit_code
-                    );
+                    $php_info = getContainerPhpInfo($container_id);
 
-                    return $exit_code === 0 && $php_version !== false && $php_version !== ''
-                        ? $php_version
-                        : null;
+                    return "{$php_info['version']} ({$php_info['build_date']})";
                 }
             ],
             'mem_limit' => [
@@ -309,6 +300,48 @@ function getGitBranch(string $repository): ?string {
     }
 
     return end($output);
+}
+
+/**
+ * @return array{version: string|null, build_date: string|null}
+ */
+function getContainerPhpInfo(string $container_id): array {
+    static $cache = [];
+
+    if(isset($cache[$container_id])) {
+        return $cache[$container_id];
+    }
+
+    $php_info = [
+        'version'    => null,
+        'build_date' => null
+    ];
+    $output = [];
+    $exit_code = 0;
+    exec(
+        'docker exec '.escapeshellarg($container_id).' php -i 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code === 0) {
+        foreach($output as $line) {
+            if(
+                $php_info['version'] === null
+                && preg_match('/^PHP Version\s*=>\s*(.+)$/', $line, $matches)
+            ) {
+                $php_info['version'] = trim($matches[1]);
+            }
+
+            if(preg_match('/^Build Date\s*=>\s*(.+)$/', $line, $matches)) {
+                $php_info['build_date'] = trim($matches[1]);
+            }
+        }
+    }
+
+    $cache[$container_id] = $php_info;
+
+    return $php_info;
 }
 
 function fetchDockerStats(string $instance): array {
