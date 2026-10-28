@@ -9,7 +9,7 @@
   },
   "components": {
     "debian": "12",
-    "php": "8.0",
+    "php": "7.4",
     "wordpress": "5.6.2",
     "apache": "2.4"
   },
