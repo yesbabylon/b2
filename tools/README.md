@@ -33,11 +33,11 @@ require access to the Docker daemon.
 | `host-fail2ban-unbanip.sh` | `IP_PATTERN` | Unban an IPv4 address or wildcard pattern. | root |
 | `host-hostname-set.sh` | `HOSTNAME` | Change the host name and update `/etc/hosts`. | root |
 | `host-nginx-reload.sh` | none | Validate and reload NGINX in `nginx-proxy`. | Docker |
-| `host-private_ip-set.sh` | `PRIVATE_IP MAC_ADDRESS` | Replace the host Netplan configuration for its private network. | root |
-| `host-public_ip-add.sh` | `PUBLIC_IP` | Add a public IPv4 address to the failover Netplan configuration. | root |
-| `host-public_ip-remove.sh` | `PUBLIC_IP` | Remove a public IPv4 address from the failover Netplan configuration. | root |
-| `host-public_ip_firewall-disable.sh` | none | Remove failover-IP firewall rules from `iptables`. | root |
-| `host-public_ip_firewall-enable.sh` | none | Restrict failover-IP input traffic to HTTP and HTTPS. | root |
+| `host-network_private_ip-set.sh` | `PRIVATE_IP MAC_ADDRESS` | Replace the host Netplan configuration for its private network. | root |
+| `host-network_public_ip-add.sh` | `PUBLIC_IP` | Add a public IPv4 address to the failover Netplan configuration. | root |
+| `host-network_public_ip-remove.sh` | `PUBLIC_IP` | Remove a public IPv4 address from the failover Netplan configuration. | root |
+| `host-network_public_ip_firewall-disable.sh` | none | Remove failover-IP firewall rules from `iptables`. | root |
+| `host-network_public_ip_firewall-enable.sh` | none | Restrict failover-IP input traffic to HTTP and HTTPS. | root |
 | `host-ssl_certificates-export.sh` | `USERNAME [OUTPUT] [CERT_DIR]` | Export one instance's NGINX certificates. | root/read |
 | `host-ssl_certificates-import.sh` | `USERNAME ARCHIVE [CERT_DIR]` | Back up and replace one instance's NGINX certificates. | root, Docker |
 | `host-ssl_certificates-renew.sh` | none | Trigger certificate renewal in `letsencrypt-companion`. | Docker |

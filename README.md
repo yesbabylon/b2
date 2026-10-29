@@ -235,11 +235,11 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-fail2ban-unbanip.sh`            | Unban an IP address from a Fail2Ban jail.                  |
 | ├── `host-hostname-set.sh`                | Set the host name.                                         |
 | ├── `host-nginx-reload.sh`                | Reload the NGINX service.                                  |
-| ├── `host-private_ip-set.sh`              | Configure the host private IP address.                     |
-| ├── `host-public_ip-add.sh`               | Add a public IP address to the host.                        |
-| ├── `host-public_ip-remove.sh`            | Remove a public IP address from the host.                   |
-| ├── `host-public_ip_firewall-disable.sh`  | Disable firewall rules for public IP addresses.            |
-| ├── `host-public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
+| ├── `host-network_private_ip-set.sh`              | Configure the host private IP address.                     |
+| ├── `host-network_public_ip-add.sh`               | Add a public IP address to the host.                        |
+| ├── `host-network_public_ip-remove.sh`            | Remove a public IP address from the host.                   |
+| ├── `host-network_public_ip_firewall-disable.sh`  | Disable firewall rules for public IP addresses.            |
+| ├── `host-network_public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
 | ├── `host-ssl_certificates-export.sh`     | Export instance certificates from the host.                |
 | ├── `host-ssl_certificates-import.sh`     | Import instance certificates into the host.                |
 | ├── `host-ssl_certificates-renew.sh`      | Renew instance certificates on the host.                   |

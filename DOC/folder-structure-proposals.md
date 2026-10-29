@@ -75,8 +75,8 @@ Examples:
 ```text
 host-ssl_certificates-export.sh
 host-docker_images-import.sh
-host-private_ip-set.sh
-host-public_ip_firewall-enable.sh
+host-network_private_ip-set.sh
+host-network_public_ip_firewall-enable.sh
 host-b2_listener-disable.sh
 instance-wp-version.sh
 instance-php-version.sh
@@ -114,12 +114,12 @@ to help migrate external automation and operator documentation.
 | `instance-php_version-get.sh` | `instance-php-version.sh` |
 | `get_wp_version.sh` | `instance-wp-version.sh` |
 | `instance-wp_version-get.sh` | `instance-wp-version.sh` |
-| `public_ip-add.sh` | `host-public_ip-add.sh` |
-| `public_ip-remove.sh` | `host-public_ip-remove.sh` |
-| `public_ip_firewall-disable.sh` | `host-public_ip_firewall-disable.sh` |
-| `public_ip_firewall-enable.sh` | `host-public_ip_firewall-enable.sh` |
+| `public_ip-add.sh` | `host-network_public_ip-add.sh` |
+| `public_ip-remove.sh` | `host-network_public_ip-remove.sh` |
+| `public_ip_firewall-disable.sh` | `host-network_public_ip_firewall-disable.sh` |
+| `public_ip_firewall-enable.sh` | `host-network_public_ip_firewall-enable.sh` |
 | `set_hostname.sh` | `host-hostname-set.sh` |
-| `set_private_ip.sh` | `host-private_ip-set.sh` |
+| `set_private_ip.sh` | `host-network_private_ip-set.sh` |
 | `ssl_certificate-export.sh` | `host-ssl_certificates-export.sh` |
 | `ssl_certificate-import.sh` | `host-ssl_certificates-import.sh` |
 
