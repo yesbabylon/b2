@@ -315,7 +315,25 @@ systemctl restart fail2ban
 ### Install listener ###
 ########################
 
-# Add a symbolic link for the eQual instance listener service
+# Bind the listener to the first global IPv4 address assigned to the private
+# network interface. The systemd unit reads this host-specific value from its
+# optional environment file.
+LISTEN_ADDR=$(
+    ip -4 -o addr show dev ens4 scope global 2>/dev/null \
+        | awk 'NR == 1 { sub(/\/.*/, "", $4); print $4 }'
+)
+
+if [[ -z "$LISTEN_ADDR" ]]; then
+    echo "Error: Cannot configure the B2 listener because ens4 has no global IPv4 address."
+    exit 1
+fi
+
+printf 'LISTEN_ADDR=%s\n' "$LISTEN_ADDR" > "$INSTALL_DIR/conf/b2-listener.env"
+chmod 644 "$INSTALL_DIR/conf/b2-listener.env"
+
+echo "B2 listener will listen on $LISTEN_ADDR:8000."
+
+# Add a symbolic link for the b2 listener service
 ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service
 
 # Reload daemon to update after symlink added
