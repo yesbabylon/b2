@@ -35,10 +35,12 @@
   *             build_date: string|null     // The PHP build date in ISO 8601 format (e.g., "2026-07-30T15:39:15+00:00").
   *         },
   *         type: string,                   // The instance stack type (e.g., "equal").
-  *         branches: array{
-  *             root: string|null,
-  *             packages?: string|null      // Present for equal, symbiose and fmt instances.
-  *         },
+  *         framework: string|null,         // The installed framework ("equal" or "wordpress").
+  *         version: string|null,           // The installed framework version.
+  *         sources: array<int, array{
+  *             path: string,
+  *             branch: string|null
+  *         }>,
   *         mem_limit: float,               // Memory limit in MB.
   *         cpu_limit: float                // CPU limit.
   *     }
@@ -58,6 +60,14 @@ function instance_status(array $data): array {
     if($container_id === '') {
         throw new Exception("instance_not_found", 404);
     }
+
+    $instance_type = null;
+    $get_instance_type = static function () use($data, &$instance_type): string {
+        if($instance_type === null) {
+            $instance_type = getTypeOfInstance($data['instance']);
+        }
+        return $instance_type;
+    };
 
     $commands = [
         'instant' => [
@@ -164,19 +174,34 @@ function instance_status(array $data): array {
             'type' => [
                 'description' => "Instance stack type.",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($data) {
-                    return getTypeOfInstance($data['instance']);
+                'adapt'       => function ($res) use($get_instance_type) {
+                    return $get_instance_type();
                 }
             ],
-            'branches' => [
-                'description' => "Current Git branches of the project repositories.",
+            'framework' => [
+                'description' => "Framework installed by the instance stack.",
                 'command'     => 'true',
-                'adapt'       => function ($res) use($data) {
-                    $instance_type = getTypeOfInstance($data['instance']);
-
-                    return getBranchesOfInstance(
-                        $data['instance'],
-                        in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)
+                'adapt'       => function ($res) use($get_instance_type) {
+                    return getFrameworkFromInstanceType($get_instance_type());
+                }
+            ],
+            'version' => [
+                'description' => "Version of the framework installed by the instance stack.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id, $get_instance_type) {
+                    return getFrameworkVersion(
+                        $container_id,
+                        $get_instance_type()
+                    );
+                }
+            ],
+            'sources' => [
+                'description' => "Source directories and their current Git branches.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id, $get_instance_type) {
+                    return getSourcesOfInstance(
+                        $container_id,
+                        $get_instance_type()
                     );
                 }
             ],
@@ -251,30 +276,64 @@ function getTypeOfInstance(string $instance): string {
     throw new Exception('missing_instance_type', 500);
 }
 
-function getBranchesOfInstance(string $instance, bool $with_packages): array {
-    $project_dir = "/home/$instance/www";
-    $branches = [
-        'root' => getGitBranch($project_dir)
-    ];
-
-    if($with_packages) {
-        $branches['packages'] = getGitBranch("$project_dir/packages");
+function getFrameworkFromInstanceType(string $instance_type): ?string {
+    if($instance_type === 'wordpress') {
+        return 'wordpress';
     }
 
-    return $branches;
+    if(in_array($instance_type, ['equal', 'equalpress', 'symbiose', 'fmt'], true)) {
+        return 'equal';
+    }
+
+    return null;
 }
 
-function getGitBranch(string $repository): ?string {
-    $real_repository = realpath($repository);
-    if($real_repository === false || !is_dir($real_repository)) {
-        return null;
+function getFrameworkVersion(string $container_id, string $instance_type): ?string {
+    $framework = getFrameworkFromInstanceType($instance_type);
+
+    if($framework === 'wordpress') {
+        return getContainerWordpressVersion($container_id);
     }
 
+    if($framework === 'equal') {
+        return getContainerEqualVersion($container_id);
+    }
+
+    return null;
+}
+
+/**
+ * @return array<int, array{path: string, branch: string|null}>
+ */
+function getSourcesOfInstance(string $container_id, string $instance_type): array {
+    $framework = getFrameworkFromInstanceType($instance_type);
+    if($framework === null) {
+        return [];
+    }
+
+    $sources = [
+        [
+            'path'   => '/var/www/html',
+            'branch' => getContainerGitBranch($container_id, '/var/www/html')
+        ]
+    ];
+
+    if(in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)) {
+        $sources[] = [
+            'path'   => '/var/www/html/packages',
+            'branch' => getContainerGitBranch($container_id, '/var/www/html/packages')
+        ];
+    }
+
+    return $sources;
+}
+
+function getContainerGitBranch(string $container_id, string $repository): ?string {
     $output = [];
     $exit_code = 0;
-    $git_command = 'git -c '
-        .escapeshellarg('safe.directory='.$real_repository)
-        .' -C '.escapeshellarg($real_repository);
+    $git_command = 'docker exec '.escapeshellarg($container_id)
+        .' git -c '.escapeshellarg('safe.directory='.$repository)
+        .' -C '.escapeshellarg($repository);
     exec(
         $git_command.' rev-parse --show-toplevel 2>/dev/null',
         $output,
@@ -285,8 +344,8 @@ function getGitBranch(string $repository): ?string {
         return null;
     }
 
-    $repository_root = realpath(end($output));
-    if($repository_root === false || $repository_root !== $real_repository) {
+    $repository_root = rtrim(end($output), '/');
+    if($repository_root !== rtrim($repository, '/')) {
         return null;
     }
 
@@ -302,6 +361,46 @@ function getGitBranch(string $repository): ?string {
     }
 
     return end($output);
+}
+
+function getContainerEqualVersion(string $container_id): ?string {
+    $output = [];
+    $exit_code = 0;
+    exec(
+        'docker exec '.escapeshellarg($container_id)
+        .' cat '.escapeshellarg('/var/www/html/VERSION')
+        .' 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    $version = trim(implode("\n", $output));
+    return $version !== '' ? $version : null;
+}
+
+function getContainerWordpressVersion(string $container_id): ?string {
+    $output = [];
+    $exit_code = 0;
+    exec(
+        'docker exec '.escapeshellarg($container_id)
+        .' php -r '.escapeshellarg(
+            'require "/var/www/html/wp-includes/version.php"; echo $wp_version ?? "";'
+        )
+        .' 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    $version = trim(end($output));
+    return $version !== '' ? $version : null;
 }
 
 /**
