@@ -39,6 +39,7 @@
   *         version: string|null,           // The installed framework version.
   *         sources: array<int, array{
   *             path: string,
+  *             repository: string|null,
   *             branch: string|null
   *         }>,
   *         mem_limit: float,               // Memory limit in MB.
@@ -303,7 +304,7 @@ function getFrameworkVersion(string $container_id, string $instance_type): ?stri
 }
 
 /**
- * @return array<int, array{path: string, branch: string|null}>
+ * @return array<int, array{path: string, repository: string|null, branch: string|null}>
  */
 function getSourcesOfInstance(string $container_id, string $instance_type): array {
     $framework = getFrameworkFromInstanceType($instance_type);
@@ -311,24 +312,36 @@ function getSourcesOfInstance(string $container_id, string $instance_type): arra
         return [];
     }
 
-    $sources = [
-        [
-            'path'   => '/var/www/html',
-            'branch' => getContainerGitBranch($container_id, '/var/www/html')
-        ]
-    ];
+    $root_source = getContainerGitSource($container_id, '/var/www/html');
+    $sources = [[
+        'path'       => '/var/www/html',
+        'repository' => $root_source['repository'],
+        'branch'     => $root_source['branch']
+    ]];
 
     if(in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)) {
+        $packages_source = getContainerGitSource(
+            $container_id,
+            '/var/www/html/packages'
+        );
         $sources[] = [
-            'path'   => '/var/www/html/packages',
-            'branch' => getContainerGitBranch($container_id, '/var/www/html/packages')
+            'path'       => '/var/www/html/packages',
+            'repository' => $packages_source['repository'],
+            'branch'     => $packages_source['branch']
         ];
     }
 
     return $sources;
 }
 
-function getContainerGitBranch(string $container_id, string $repository): ?string {
+/**
+ * @return array{repository: string|null, branch: string|null}
+ */
+function getContainerGitSource(string $container_id, string $repository): array {
+    $source = [
+        'repository' => null,
+        'branch'     => null
+    ];
     $output = [];
     $exit_code = 0;
     $git_command = 'docker exec '.escapeshellarg($container_id)
@@ -341,12 +354,12 @@ function getContainerGitBranch(string $container_id, string $repository): ?strin
     );
 
     if($exit_code !== 0 || count($output) === 0) {
-        return null;
+        return $source;
     }
 
     $repository_root = rtrim(end($output), '/');
     if($repository_root !== rtrim($repository, '/')) {
-        return null;
+        return $source;
     }
 
     $output = [];
@@ -356,11 +369,35 @@ function getContainerGitBranch(string $container_id, string $repository): ?strin
         $exit_code
     );
 
-    if($exit_code !== 0 || count($output) === 0) {
-        return null;
+    if($exit_code === 0 && count($output) > 0) {
+        $source['branch'] = end($output);
     }
 
-    return end($output);
+    $output = [];
+    exec(
+        $git_command.' remote get-url origin 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code === 0 && count($output) > 0) {
+        $remote = trim(end($output));
+        if($remote !== '') {
+            $remote = preg_replace(
+                '#^([a-z][a-z0-9+.-]*://)(?:[^/@]+@)+#i',
+                '$1',
+                $remote
+            ) ?? '';
+            $remote = preg_replace(
+                '/^[^@\s]+@(?=[^:\s]+:)/',
+                '',
+                $remote
+            ) ?? '';
+            $source['repository'] = $remote !== '' ? $remote : null;
+        }
+    }
+
+    return $source;
 }
 
 function getContainerEqualVersion(string $container_id): ?string {
