@@ -2,6 +2,5 @@
 .vscode
 desktop.ini
 .env
-/conf/b2-listener.env
 /secrets/*
 !/secrets/.gitkeep

@@ -36,6 +36,7 @@ print_help() {
     echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
     echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
+    echo "    PRIVATE_IP       - Private IPv4 address assigned to ens4 (required)"
     echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
     echo ""
     echo "Example of a .env file:"
@@ -43,6 +44,7 @@ print_help() {
     echo "  HOSTNAME=b2-host-01"
     echo "  GPG_PASSPHRASE=your-passphrase"
     echo "  PUBLIC_IP=192.168.1.1"
+    echo "  PRIVATE_IP=10.0.0.1"
     echo "  ROOT_PASSWORD=your-root-password"
     echo ""
     echo "Note:"
@@ -93,7 +95,7 @@ else
     # stop auto export
     set +a
 
-    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
+    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "PRIVATE_IP" "ROOT_PASSWORD" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -131,7 +133,7 @@ service ssh restart
 echo "root:$ROOT_PASSWORD" | chpasswd
 
 ################################
-### Asssign Public IP (IPFO) ###
+### Assign Public IP (IPFO) ###
 ################################
 
 if [[ "$PUBLIC_IP" != "0.0.0.0" && "$PUBLIC_IP" != "127.0.0.1" && -n "$PUBLIC_IP" ]]; then
@@ -315,23 +317,7 @@ systemctl restart fail2ban
 ### Install listener ###
 ########################
 
-# Bind the listener to the first global IPv4 address assigned to the private
-# network interface. The systemd unit reads this host-specific value from its
-# optional environment file.
-LISTEN_ADDR=$(
-    ip -4 -o addr show dev ens4 scope global 2>/dev/null \
-        | awk 'NR == 1 { sub(/\/.*/, "", $4); print $4 }'
-)
-
-if [[ -z "$LISTEN_ADDR" ]]; then
-    echo "Error: Cannot configure the B2 listener because ens4 has no global IPv4 address."
-    exit 1
-fi
-
-printf 'LISTEN_ADDR=%s\n' "$LISTEN_ADDR" > "$INSTALL_DIR/conf/b2-listener.env"
-chmod 644 "$INSTALL_DIR/conf/b2-listener.env"
-
-echo "B2 listener will listen on $LISTEN_ADDR:8000."
+echo "B2 listener will listen on $PRIVATE_IP:8000."
 
 # Add a symbolic link for the b2 listener service
 ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service

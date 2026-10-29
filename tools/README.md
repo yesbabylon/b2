@@ -23,7 +23,7 @@ require access to the Docker daemon.
 | Tool | Arguments | Purpose | Access |
 | --- | --- | --- | --- |
 | `host-b2_listener-disable.sh` | none | Stop and disable the B2 listener service. | root |
-| `host-b2_listener-enable.sh` | none | Install, enable and restart the B2 listener service. | root |
+| `host-b2_listener-enable.sh` | none | Install, enable and restart the B2 listener on `PRIVATE_IP:8000`. | root |
 | `host-docker_images-export.sh` | `OUTPUT IMAGE...` | Export and gzip one or more Docker images. | Docker |
 | `host-docker_images-import.sh` | `ARCHIVE` | Import Docker images from a tar or gzip archive. | Docker |
 | `host-docker_images-unused.sh` | none | List Docker images unused by any container. | Docker/read |

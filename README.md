@@ -16,7 +16,7 @@ For more information about the eQual framework, visit the [eQual GitHub reposito
 
 The `./install.sh` script :
   - **setup essential services** on an Ubuntu server
-  - **starts a listener API** that allows to smoothly manage the host and its instances through a [ReST API](doc/api.md).
+  - **installs a listener API service** that allows the host and its instances to be managed through a [ReST API](DOC/api.md).
 
 ### Prerequisite
 * The b2 repository must be placed in the `/root` folder of the server.
@@ -31,7 +31,7 @@ The `./install.sh` script :
 5. Installs Docker for instances
 6. Installs cron and configure it, it'll start `./cron.php` every minute
 7. Installs fail2ban
-8. Installs [API](./doc/api.md) service that will listen for requests on port :8000
+8. Installs the [API](./DOC/api.md) service configured to listen on `PRIVATE_IP:8000`
 9. Installs Portainer that will listen on :9000
 
 
@@ -78,6 +78,7 @@ ADMIN_HOST=admin.local
 BACKUP_HOST=backup.local
 STATS_HOST=stats.local
 PUBLIC_IP=192.168.1.1
+PRIVATE_IP=10.0.0.1
 GPG_PASSPHRASE=your-passphrase-here
 ROOT_PASSWORD=your-root-password
 ```
@@ -101,10 +102,17 @@ ROOT_PASSWORD=your-root-password
 - **`PUBLIC_IP`**  
   Fail-over / Public IPv4 address (required).
 
+- **`PRIVATE_IP`**
+  Private IPv4 address assigned to `ens4`. The B2 listener binds to this
+  address on port `8000` (required).
+
 - **`ROOT_PASSWORD`**  
   Password for the root account of the host (required).
 
-**Note:** `GPG_PASSPHRASE` and `ROOT_PASSWORD` are automatically removed from the `.env` file after the successful execution of the `install.sh` script.
+**Note:** `GPG_PASSPHRASE` and `ROOT_PASSWORD` are automatically removed from
+the `.env` file after the successful execution of the `install.sh` script.
+`PRIVATE_IP` remains in the file because `b2-listener.service` reads it when
+the service starts.
 
 ## Instance secrets
 
