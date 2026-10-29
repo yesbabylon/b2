@@ -216,7 +216,14 @@ Get the status of an instance.
 
 Without `scope`, the response contains `instant`, `state` and `config`.
 `config.php.build_date` is an ISO 8601 string or `null` when PHP information
-cannot be read from the container.
+cannot be read from the container. `config.framework` is `equal`, `wordpress`
+or `null` for an unsupported stack type. `config.version` is the installed
+framework version when it can be determined. For eQual, it is read from
+`/var/www/html/VERSION`. Source paths use their paths inside the application
+container. `repository` is the URL of the Git remote `origin`, without embedded
+HTTP credentials. Repository and branch values are `null` when the source
+directory is not the root of a Git repository. Framework and source
+information is read from the targeted application container.
 
 ```json
 {
@@ -238,10 +245,20 @@ cannot be read from the container.
     "id": "76197eca3602",
     "image": "b2-equal:2.1-r1",
     "type": "equal",
-    "branches": {
-      "root": "main",
-      "packages": "main"
-    },
+    "framework": "equal",
+    "version": "2.0.1",
+    "sources": [
+      {
+        "path": "/var/www/html",
+        "repository": "https://github.com/equalframework/equal.git",
+        "branch": "2.0.1"
+      },
+      {
+        "path": "/var/www/html/packages",
+        "repository": "https://github.com/example/packages.git",
+        "branch": "main"
+      }
+    ],
     "php": {
       "version": "8.5.12",
       "build_date": "2026-07-30T15:39:15+00:00"

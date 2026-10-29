@@ -145,7 +145,10 @@ decides when the controller is due.
 
 Without `scope`, the result contains `instant`, `state` and `config`.
 `config.php` contains `version` and `build_date`; `build_date` is an ISO 8601
-string or `null`.
+string or `null`. `config.framework` identifies the installed framework,
+`config.version` reports its version when available, and `config.sources`
+lists the source paths inside the application container with their Git
+repository and branch.
 
 ### `/instance/backup`
 - **Parameters**:
