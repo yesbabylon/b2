@@ -238,6 +238,7 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `host-network_private_ip-set.sh`              | Configure the host private IP address.                     |
 | ├── `host-network_public_ip-add.sh`               | Add a public IP address to the host.                        |
 | ├── `host-network_public_ip-remove.sh`            | Remove a public IP address from the host.                   |
+| ├── `host-network_public_ip-set.sh`               | Set the host's first public IP address.                     |
 | ├── `host-network_public_ip_firewall-disable.sh`  | Disable firewall rules for public IP addresses.            |
 | ├── `host-network_public_ip_firewall-enable.sh`   | Enable firewall rules for public IP addresses.             |
 | ├── `host-ssl_certificates-export.sh`     | Export instance certificates from the host.                |

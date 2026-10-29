@@ -36,6 +36,7 @@ require access to the Docker daemon.
 | `host-network_private_ip-set.sh` | `PRIVATE_IP MAC_ADDRESS` | Replace the host Netplan configuration for its private network. | root |
 | `host-network_public_ip-add.sh` | `PUBLIC_IP` | Add a public IPv4 address to the failover Netplan configuration. | root |
 | `host-network_public_ip-remove.sh` | `PUBLIC_IP` | Remove a public IPv4 address from the failover Netplan configuration. | root |
+| `host-network_public_ip-set.sh` | `PUBLIC_IP` | Set the first public IPv4 address, refusing to replace an existing address. | root |
 | `host-network_public_ip_firewall-disable.sh` | none | Remove failover-IP firewall rules from `iptables`. | root |
 | `host-network_public_ip_firewall-enable.sh` | none | Restrict failover-IP input traffic to HTTP and HTTPS. | root |
 | `host-ssl_certificates-export.sh` | `USERNAME [OUTPUT] [CERT_DIR]` | Export one instance's NGINX certificates. | root/read |

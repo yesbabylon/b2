@@ -9,6 +9,9 @@ fi
 IP_PRIVATE=$1
 MAC_ADDRESS=$2
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+ENV_FILE="$(dirname -- "$SCRIPT_DIR")/.env"
+
 # Retrieve IPv6 address and MAC address of ens3
 ENS3_IPV6=$(ip -6 addr show ens3 | grep 'inet6 ' | awk '{print $2}' | head -n 1)
 ENS3_MAC=$(cat /sys/class/net/ens3/address)
@@ -66,5 +69,17 @@ fi
 
 # Apply Netplan configuration
 netplan apply
+
+if [ -f "$ENV_FILE" ]; then
+    if grep -q '^PRIVATE_IP=' "$ENV_FILE"; then
+        sed -i "s/^PRIVATE_IP=.*/PRIVATE_IP=$IP_PRIVATE/" "$ENV_FILE"
+    elif [ -s "$ENV_FILE" ]; then
+        sed -i "\$aPRIVATE_IP=$IP_PRIVATE" "$ENV_FILE"
+    else
+        printf 'PRIVATE_IP=%s\n' "$IP_PRIVATE" > "$ENV_FILE"
+    fi
+
+    echo "Environment configuration updated: $ENV_FILE"
+fi
 
 echo "Netplan configuration updated: $NETPLAN_FILE"
