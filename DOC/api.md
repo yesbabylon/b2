@@ -32,6 +32,18 @@ Get the status of the b2 host.
 |--------------|------------------|
 | Content-Type | application/json |
 
+#### Params
+
+| key   | required | default | values                    | Note                                      |
+|-------|:--------:|:-------:|---------------------------|-------------------------------------------|
+| scope |  false   |         | instant \| state \| config | Return only the selected status category. |
+
+#### Response
+
+Without `scope`, the response contains `instant`, `state`, `config` and the
+legacy top-level `type`. The same value is also available as `config.type`.
+With `scope=instant`, only `instant` is returned.
+
 ### POST _/ip_
 
 Set the public interface ip address.

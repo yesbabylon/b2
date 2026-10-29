@@ -45,6 +45,7 @@
  *              cpu: string             // Average CPU load since the last reboot.
  *          },
  *          config: array{
+ *              type: string,           // Host type ("b2").
  *              host: string,           // Hostname of the server.
  *              platform_ver: string,   // Operating system version.
  *              kernel_ver: string,     // Kernel version.
@@ -292,7 +293,14 @@ function status(array $data): array {
         }
     }
 
-    $result['type'] = 'b2';
+    if(!isset($data['scope']) || $data['scope'] === 'config') {
+        $result['config']['type'] = 'b2';
+    }
+
+    // Keep the legacy top-level field, except when only instant data is requested.
+    if(!isset($data['scope']) || $data['scope'] !== 'instant') {
+        $result['type'] = 'b2';
+    }
 
     // #memo - this adds up too much info and could reveal sensitive data
     // $result['config']['env'] = getenv();

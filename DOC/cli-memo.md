@@ -32,6 +32,10 @@ Example:
   ./run.sh --route=/status --scope=state
   ```
 
+Without `scope`, `type` is returned both at the top level for backward
+compatibility and as `config.type`. With `scope=instant`, only `instant` is
+returned.
+
 ### `/instances`
 - **Purpose**: list instances.
 - **Parameters**:
