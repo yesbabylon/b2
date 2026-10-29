@@ -14,9 +14,9 @@ For more information about the eQual framework, visit the [eQual GitHub reposito
 
 ## Install
 
-The `./install.sh` script :
-  - **setup essential services** on an Ubuntu server
-  - **installs a listener API service** that allows the host and its instances to be managed through a [ReST API](DOC/api.md).
+The `./install.sh` script:
+  - **sets up essential services** on an Ubuntu server
+  - **installs a listener API service**, when `PRIVATE_IP` is configured, that allows the host and its instances to be managed through a [REST API](DOC/api.md).
 
 ### Prerequisite
 * The b2 repository must be placed in the `/root` folder of the server.
@@ -24,22 +24,26 @@ The `./install.sh` script :
 
 ### Steps performed by the script
 
-1. Checks that script run on correct directory and checks required args
-2. Creates .env file from .env.example and add/update GPG_* with command given args
+1. Checks that the script runs from the correct directory and validates the required environment variables
+2. Loads the host configuration from `.env`
 3. Does base server configurations and installs base services that are needed (vnstat, php-cli, apache2-utils, vsftpd)
 4. Creates the gpg keys for backup encryption
 5. Installs Docker for instances
 6. Installs cron and configure it, it'll start `./cron.php` every minute
 7. Installs fail2ban
-8. Installs the [API](./DOC/api.md) service configured to listen on `PRIVATE_IP:8000`
+8. Installs the [API](./DOC/api.md) service configured to listen on `PRIVATE_IP:8000` (`PRIVATE_IP` is required on Ubuntu 24.04 and optional on Ubuntu 26.04)
 9. Installs Portainer that will listen on :9000
 
 
 ### Usage
 
 ```bash
+./config.sh
 ./install.sh
 ```
+
+`config.sh` creates `.env` interactively. Alternatively, copy `.env.example`
+to `.env` and replace every placeholder before running the installer.
 
 ### Scheduled maintenance
 
@@ -74,9 +78,7 @@ The script expects a `.env` file with the following values (exported as environm
 
 ```env
 HOSTNAME=b2-host-01
-ADMIN_HOST=admin.local
 BACKUP_HOST=backup.local
-STATS_HOST=stats.local
 PUBLIC_IP=192.168.1.1
 PRIVATE_IP=10.0.0.1
 GPG_PASSPHRASE=your-passphrase-here
@@ -87,14 +89,8 @@ ROOT_PASSWORD=your-root-password
 - **`HOSTNAME`**  
   Identifier/name of the host (required).
 
-- **`ADMIN_HOST`**  
-  Hostname or IP address of the admin host API endpoint (required).
-
 - **`BACKUP_HOST`**  
   Hostname or IP address of the backup host API endpoint (required).
-
-- **`STATS_HOST`**  
-  Hostname or IP address of the stats host API endpoint (required).
 
 - **`GPG_PASSPHRASE`**  
   Passphrase for the PGP key (required).
@@ -104,7 +100,8 @@ ROOT_PASSWORD=your-root-password
 
 - **`PRIVATE_IP`**
   Private IPv4 address assigned to `ens4`. The B2 listener binds to this
-  address on port `8000` (required).
+  address on port `8000`. It is required on Ubuntu 24.04. On Ubuntu 26.04 it
+  is optional; when omitted, the listener service is not installed.
 
 - **`ROOT_PASSWORD`**  
   Password for the root account of the host (required).
@@ -175,11 +172,10 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | ├── `default.key`                         | Default private SSL key.                                   |
 | ├── `dhparam.pem`                         | Diffie-Hellman parameters for SSL.                         |
 | ├── `docker/`                             | Docker-related configuration files.                        |
-| │   ├── `images/docked-nginx/`            | Configuration for the NGINX Docker image.                  |
-| │   │   ├── `Dockerfile`                  | Dockerfile to build the NGINX image.                       |
-| │   │   ├── `build.sh`                    | Script to build the NGINX Docker image.                    |
-| │   │   ├── `maintenance.html`            | Maintenance page for NGINX.                                |
-| │   │   └── `nginx.tmpl`                  | Template for NGINX configuration.                          |
+| │   ├── `images/<application>/<version>/` | Versioned Docker image build definitions.                   |
+| │   │   ├── `Dockerfile`                  | Dockerfile for the selected application image.             |
+| │   │   ├── `build.sh`                    | Script that builds and tags the image.                     |
+| │   │   └── `manifest.json`               | Runtime component and path metadata.                       |
 | │   ├── `nginx-proxy/docker-compose.yml`  | Docker Compose configuration for the NGINX proxy.          |
 | │   ├── `portainer.service`               | Systemd service file for Portainer.                        |
 | │   └── `portainer_start.sh`              | Script to start Portainer.                                 |
@@ -198,7 +194,9 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | │   ├── `equal/`                          | `equal` assets (compose/config/scripts + `init.sh`).       |
 | │   ├── `wordpress/`                      | `wordpress` assets (compose/config/scripts + `init.sh`).   |
 | │   ├── `equalpress/`                     | `equalpress` assets (compose/config/scripts + `init.sh`).  |
-| │   └── `symbiose/`                       | `symbiose` assets (compose/config/scripts + `init.sh`).    |
+| │   ├── `symbiose/`                       | `symbiose` assets (compose/config/scripts + `init.sh`).    |
+| │   ├── `fmt/`                            | `fmt` assets (compose/config/scripts + `init.sh`).         |
+| │   └── `mkdocs/`                         | `mkdocs` assets and Compose configuration.                 |
 | ├── `key-gen.conf`                        | Configuration for key generation.                          |
 | ├── `nginx.conf`                          | Main NGINX configuration file.                             |
 | ├── `ssh-login`                           | Configuration or script for SSH login setup.               |
@@ -206,7 +204,8 @@ During FMT initialization, `conf/instance/fmt/prepare.php` optionally reads `/ro
 | `DOC/`                                    | Documentation files directory.                             |
 | ├── `api.md`                              | API documentation.                                         |
 | ├── `cli-memo.md`                         | CLI memo for `run.sh` routes/actions and examples.         |
-| └── `docker-image-versioning.md`          | Docker image versioning and lifecycle policy.              |
+| ├── `docker-image-versioning.md`          | Docker image versioning and lifecycle policy.              |
+| └── `folder-structure-proposals.md`       | Repository organization improvement proposals.             |
 | `keyring/`                                | Directory containing cryptographic keys.                   |
 | ├── `gpg-private-key.pgp`                 | Private GPG key.                                           |
 | └── `gpg-public-key.pgp`                  | Public GPG key.                                            |

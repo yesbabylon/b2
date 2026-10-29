@@ -24,6 +24,7 @@ touch "$ENV_FILE"
 ask_and_save "HOSTNAME" "Enter the host identifier (hostname): "
 ask_and_save "BACKUP_HOST" "Enter the backup server IP address: "
 ask_and_save "PUBLIC_IP" "Enter the public IP address: "
+ask_and_save "PRIVATE_IP" "Enter the private IP address for the B2 listener (required on Ubuntu 24.04): "
 ask_and_save "GPG_PASSPHRASE" "Enter the GPG passphrase: "
 ask_and_save "ROOT_PASSWORD" "Enter the root password: "
 

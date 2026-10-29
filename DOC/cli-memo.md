@@ -41,6 +41,24 @@ Example:
   ./run.sh --route=/instances --with_deleted=1
   ```
 
+### `/images`
+
+- **Purpose**: list Docker image references installed on the host.
+- **Parameters**: none.
+- **Example**:
+  ```bash
+  ./run.sh --route=/images
+  ```
+
+### `/stacks`
+
+- **Purpose**: list the Docker image references used by each instance stack.
+- **Parameters**: none.
+- **Example**:
+  ```bash
+  ./run.sh --route=/stacks
+  ```
+
 ### `/ip`
 - **Purpose**: add the public IP on `veth0`.
 - **Parameters**:
@@ -101,6 +119,8 @@ decides when the controller is due.
   - `HTTPS_REDIRECT` *(string)*: `redirect` or `noredirect`.
   - `MEM_LIMIT` *(string)*: format `\d+[MG]` (examples: `512M`, `2G`).
   - `CPU_LIMIT` *(number / numeric string)*.
+  - `EQ_MEM_FREE_LIMIT` *(string, default: `256M`)*.
+  - `INIT` *(bool, default: `false`)*: start the template's `init.sh` in the background after creation.
 - **Example**:
   ```bash
   ./run.sh --route=/instance/create --USERNAME=example.com --PASSWORD='StrongPass123' --MEM_LIMIT=1024M --CPU_LIMIT=1
@@ -122,6 +142,10 @@ decides when the controller is due.
   ```bash
   ./run.sh --route=/instance/status --instance=example.com --scope=instant
   ```
+
+Without `scope`, the result contains `instant`, `state` and `config`.
+`config.php` contains `version` and `build_date`; `build_date` is an ISO 8601
+string or `null`.
 
 ### `/instance/backup`
 - **Parameters**:
@@ -217,6 +241,26 @@ without an explicit tag are compared as `:latest`.
   ./run.sh --route=/instance/restore --instance=example.com --backup_id=20241210091621 --passphrase='your-gpg-passphrase'
   ```
 
+### `/instance/start`
+
+- **Purpose**: start the instance's Docker Compose services.
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/start --instance=example.com
+  ```
+
+### `/instance/stop`
+
+- **Purpose**: stop the instance's Docker Compose services.
+- **Parameters**:
+  - `instance` *(string, required)*.
+- **Example**:
+  ```bash
+  ./run.sh --route=/instance/stop --instance=example.com
+  ```
+
 ### `/instance/enable-maintenance`
 - **Parameters**:
   - `instance` *(string, required)*.
@@ -235,6 +279,8 @@ without an explicit tag are compared as `:latest`.
 
 ## Practical notes
 
-- HTTP routes exposed by `listener.php` include `/status`, `/instances`, `/ip`, `/reboot`, and all `/instance/*` routes listed above.
+- HTTP routes exposed by `listener.php` include `/status`, `/instances`,
+  `/images`, `/stacks`, `/ip`, `/reboot`, and all `/instance/*` routes listed
+  above.
 - `/backup` and `/logrotate` are available in CLI (direct controller execution), but they are not part of the HTTP listener route list.
 - `run.sh` forwards arguments to `src/run.php`; `--method` exists in the parser but is not used to choose the controller.

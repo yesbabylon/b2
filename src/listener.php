@@ -38,7 +38,6 @@ $routes = [
 		'/instance/import-backup-stack',    /* @link instance_import_backup_stack() */
 		'/instance/integrate-backup-stack', /* @link instance_integrate_backup_stack() */
 		'/instance/create',                 /* @link instance_create() */
-		'/instance/fmt/create',             /* @link instance_fmt_create() */
 		'/instance/delete',                 /* @link instance_delete() */
 		'/instance/restore',                /* @link instance_restore() */
 		'/instance/start',                  /* @link instance_start() */

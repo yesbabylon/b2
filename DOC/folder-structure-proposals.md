@@ -16,9 +16,9 @@ The goal here is to keep behavior unchanged while improving discoverability.
 ### 1) Docker image path depth is high
 Current examples:
 
-- `conf/docker/images/docked-nginx/...`
-- `conf/docker/images/docked-equal/...`
-- `conf/docker/images/docked-wordpresss/...`
+- `conf/docker/images/nginx/1.11-r2/...`
+- `conf/docker/images/equal/2.1-r1/...`
+- `conf/docker/images/wordpress/7.1-r2/...`
 
 This is a depth of 4-5 levels before reaching the files you edit most often.
 
@@ -39,7 +39,8 @@ The README script inventory must remain synchronized with the files present in
 
 ### 4) Historical naming inconsistencies
 - `doc/` vs `docs/` (industry standard is often `docs/`)
-- typo-like folder: `docked-wordpresss` (triple `s`)
+- historical image folder prefixes and spelling were inconsistent before the
+  current `nginx`, `equal`, `wordpress` and `mkdocs` application folders
 - before normalization, shell scripts used several incompatible naming orders, such as
   `get_php_version.sh`, `docker-export-images.sh` and
   `ssl_certificate-export.sh`
@@ -170,8 +171,9 @@ b2/
 
 1. **Align docs with reality now**
    - keep the README script inventory aligned with `tools/`.
-2. **Normalize `docked-wordpresss` naming**
-   - rename to `wordpress` (or `docked-wordpress` if you want to keep prefix pattern).
+2. **Keep application image folders normalized**
+   - use the application name directly (`nginx`, `equal`, `wordpress`,
+     `mkdocs`) without a `docked-` prefix.
 3. **Apply the script convention to every new script**
    - use `<scope>-<resource_name>-<operation>.sh` for every new operator script.
 4. **Audit external automation after renames**

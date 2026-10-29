@@ -1,8 +1,24 @@
 # API documentation
 
-The B2 host API allows the host and its instances to be managed. Its listener
-binds to `PRIVATE_IP:8000`, where `PRIVATE_IP` is configured in
-`/root/b2/.env` and must be assigned to the host's `ens4` interface.
+The B2 host API allows the host and its instances to be managed. When the
+listener is installed, it binds to `PRIVATE_IP:8000`, where `PRIVATE_IP` is
+configured in `/root/b2/.env` and assigned to the host's `ens4` interface.
+`PRIVATE_IP` is required by the Ubuntu 24.04 installer. With Ubuntu 26.04 it is
+optional, and the listener is not installed when the variable is omitted.
+
+## Authentication
+
+The installers create `/root/b2/host.secrets`, so HTTP requests normally use
+Basic authentication with the user `root` and the root password supplied at
+installation time. For example:
+
+```bash
+curl --user root:'<root-password>' http://<private-ip>:8000/status
+```
+
+If `host.secrets` is deliberately absent or unreadable, the listener does not
+enforce authentication. This fallback is intended for controlled recovery or
+development situations, not for exposing an unauthenticated listener.
 
 ## Host
 
@@ -76,6 +92,26 @@ Get the list of instances present on the b2 host.
 |--------------|:--------:|:-------:|--------|-------------------------------------------------------------|
 | with_deleted |  false   |  false  |        | When set to true, includes instances that have been deleted |
 
+### GET _/images_
+
+Return the Docker image references installed on the host.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+### GET _/stacks_
+
+Return the Docker image references used by each instance stack.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
 ## Instance
 
 ### POST _/instance/create_
@@ -102,12 +138,13 @@ Create a new instance.
 |----------------|:--------:|:----------:|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
 | USERNAME       |   true   |            |                                                     | Name of the instance. Must be a valid domain name and cannot exceed 32 characters (Linux username limit). |
 | PASSWORD       |   true   |            |                                                     | Password for all accesses (Must be at least 8 characters long).                                           |
-| INSTANCE_TYPE  |  false   |   equal    | equal \| wordpress \| equalpress \| symbiose \| fmt | Defines which instance stack template to use.                                                             |
+| INSTANCE_TYPE  |  false   |   equal    | equal \| wordpress \| equalpress \| symbiose \| fmt \| mkdocs | Defines which instance stack template to use.                                                    |
 | CIPHER_KEY     |  false   |            |                                                     | The default value is a 32 characters long randomly generated key.                                         |
 | HTTPS_REDIRECT |  false   | noredirect | redirect \| noredirect                              | Noredirect is for HTTP and redirect for HTTPS.                                                            |
 | MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
-| MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
-| MEM_LIMIT      |  false   |   1000M    |                                                     | Memory limit of the equal_svr container.                                                                  |
+| CPU_LIMIT      |  false   |      1     |                                                     | CPU limit applied to the application container.                                                           |
+| EQ_MEM_FREE_LIMIT | false |    256M    |                                                     | Memory reserve passed to eQual-compatible templates.                                                      |
+| INIT            |  false  |    false   | true \| false                                      | Start the selected template's `init.sh` in the background after creation.                                 |
 
 
 fmt additional options :
@@ -173,6 +210,47 @@ Get the status of an instance.
 | key      | required | default | values | Note                                            |
 |----------|:--------:|:-------:|--------|-------------------------------------------------|
 | instance |   true   |         |        | Must be a valid instance installed on the host. |
+| scope    |  false   |         | instant \| state \| config | Return only the selected status category. |
+
+#### Response
+
+Without `scope`, the response contains `instant`, `state` and `config`.
+`config.php.build_date` is an ISO 8601 string or `null` when PHP information
+cannot be read from the container.
+
+```json
+{
+  "instant": {
+    "dsk_use": "2.07%",
+    "cpu_use": "0.01%",
+    "ram_use": "5.46%",
+    "total_proc": "12"
+  },
+  "state": {
+    "up": true,
+    "pid": "12345",
+    "maintenance": false,
+    "containers": ["example.org", "sql.example.org"],
+    "net": "89MB / 19MB",
+    "dsk": "84.8MB / 4.1kB"
+  },
+  "config": {
+    "id": "76197eca3602",
+    "image": "b2-equal:2.1-r1",
+    "type": "equal",
+    "branches": {
+      "root": "main",
+      "packages": "main"
+    },
+    "php": {
+      "version": "8.5.12",
+      "build_date": "2026-07-30T15:39:15+00:00"
+    },
+    "mem_limit": 1000,
+    "cpu_limit": 1
+  }
+}
+```
 
 ### POST _/instance/backup_
 
@@ -470,6 +548,46 @@ Restore an instance state with a backup.
 | instance   |    true    |         |        | Must be a valid instance installed on the host.                         |
 | backup_id  |    true    |         |        | Must be a valid backup existing in either export or import directories. |
 | passphrase | true/false |         |        | Only required if the backup is encrypted.                               |
+
+### POST _/instance/start_
+
+Start the Docker Compose services of an instance.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{"instance":"equal.local"}
+```
+
+| key      | required | default | values | Note                                            |
+|----------|:--------:|:-------:|--------|-------------------------------------------------|
+| instance |   true   |         |        | Must be a valid instance installed on the host. |
+
+### POST _/instance/stop_
+
+Stop the Docker Compose services of an instance.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Body
+
+```json
+{"instance":"equal.local"}
+```
+
+| key      | required | default | values | Note                                            |
+|----------|:--------:|:-------:|--------|-------------------------------------------------|
+| instance |   true   |         |        | Must be a valid instance installed on the host. |
 
 ### POST _/instance/enable-maintenance_
 

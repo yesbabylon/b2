@@ -29,16 +29,18 @@
   *     },
   *     config: array{
   *         id: string,                     // The Docker container ID (e.g., "76197eca3602").
-  *         image: string,                  // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         image: string,                  // The Docker image used by the container (e.g., "b2-wordpress:7.1-r2").
   *         php: array{
   *             version: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
-  *             build_date: string|null     // The PHP build date (e.g., "Jul 30 2026 15:39:15").
+  *             build_date: string|null     // The PHP build date in ISO 8601 format (e.g., "2026-07-30T15:39:15+00:00").
   *         },
   *         type: string,                   // The instance stack type (e.g., "equal").
   *         branches: array{
   *             root: string|null,
   *             packages?: string|null      // Present for equal, symbiose and fmt instances.
-  *         }
+  *         },
+  *         mem_limit: float,               // Memory limit in MB.
+  *         cpu_limit: float                // CPU limit.
   *     }
   * }
   */
