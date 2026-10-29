@@ -34,10 +34,10 @@ print_help() {
     echo "  Variables:"
     echo "    HOSTNAME         - Identifier/name of the host (required)"
     echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
-    echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
+    echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required - will be removed from .env)"
     echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
-    echo "    PRIVATE_IP       - Private IPv4 address assigned to ens4 (required)"
-    echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
+    echo "    PRIVATE_IP       - Private IPv4 address used by b2-listener (optional)"
+    echo "    ROOT_PASSWORD    - Password for the root account of the host (required - will be removed from .env)"
     echo ""
     echo "Example of a .env file:"
     echo "  BACKUP_HOST=backup.local"
@@ -95,7 +95,7 @@ else
     # stop auto export
     set +a
 
-    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "PRIVATE_IP" "ROOT_PASSWORD" "BACKUP_HOST")
+    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -317,13 +317,17 @@ systemctl restart fail2ban
 ### Install listener ###
 ########################
 
-echo "B2 listener will listen on $PRIVATE_IP:8000."
+if [[ -n "${PRIVATE_IP:-}" ]]; then
+    echo "B2 listener will listen on $PRIVATE_IP:8000."
 
-# Add a symbolic link for the b2 listener service
-ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service
+    # Add a symbolic link for the b2 listener service
+    ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service
 
-# Reload daemon to update after symlink added
-systemctl daemon-reload
+    # Reload daemon to update after symlink added
+    systemctl daemon-reload
+else
+    echo "PRIVATE_IP is not set; skipping b2-listener installation."
+fi
 
 
 #########################

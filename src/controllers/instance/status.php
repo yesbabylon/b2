@@ -14,28 +14,30 @@
   *
   * @return array{
   *     instant: array{
-  *         dsk_use: string,        // Disk usage percentage (e.g., "2.07%").
-  *         cpu_use: string,        // CPU usage percentage (e.g., "0.01%").
-  *         ram_use: string,        // RAM usage percentage (e.g., "5.46%").
-  *         total_proc: string,     // Total number of processes running in the container.
+  *         dsk_use: string,                // Disk usage percentage (e.g., "2.07%").
+  *         cpu_use: string,                // CPU usage percentage (e.g., "0.01%").
+  *         ram_use: string,                // RAM usage percentage (e.g., "5.46%").
+  *         total_proc: string,             // Total number of processes running in the container.
   *     },
   *     state: array{
-  *         up: bool,               // Indicates if the container is running (true if running).
-  *         pid: string,            // The PID of the container's main process on the host.
-  *         maintenance: bool,      // Indicates if the container is in maintenance mode.
-  *         containers: string[],   // List of container names associated with this instance.
-  *         net: string,            // Network I/O usage in the format "<received> / <transmitted>" (e.g., "89MB / 19MB").
-  *         dsk: string             // Disk I/O usage in the format "<written> / <read>" (e.g., "84.8MB / 4.1kB").
+  *         up: bool,                       // Indicates if the container is running (true if running).
+  *         pid: string,                    // The PID of the container's main process on the host.
+  *         maintenance: bool,              // Indicates if the container is in maintenance mode.
+  *         containers: string[],           // List of container names associated with this instance.
+  *         net: string,                    // Network I/O usage in the format "<received> / <transmitted>" (e.g., "89MB / 19MB").
+  *         dsk: string                     // Disk I/O usage in the format "<written> / <read>" (e.g., "84.8MB / 4.1kB").
   *     },
   *     config: array{
-  *         id: string,             // The Docker container ID (e.g., "76197eca3602").
-  *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
-  *         php: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
-  *         php_build_date: string|null, // The PHP build date (e.g., "Jul 30 2026 15:39:15").
-  *         type: string,           // The instance stack type (e.g., "equal").
+  *         id: string,                     // The Docker container ID (e.g., "76197eca3602").
+  *         image: string,                  // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         php: array{
+  *             version: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
+  *             build_date: string|null     // The PHP build date (e.g., "Jul 30 2026 15:39:15").
+  *         },
+  *         type: string,                   // The instance stack type (e.g., "equal").
   *         branches: array{
   *             root: string|null,
-  *             packages?: string|null // Present for equal, symbiose and fmt instances.
+  *             packages?: string|null      // Present for equal, symbiose and fmt instances.
   *         }
   *     }
   * }
@@ -177,12 +179,10 @@ function instance_status(array $data): array {
                 }
             ],
             'php' => [
-                'description' => "PHP version installed in the container.",
+                'description' => "PHP information for the container.",
                 'command'     => 'true',
                 'adapt'       => function ($res) use($container_id) {
-                    $php_info = getContainerPhpInfo($container_id);
-
-                    return "{$php_info['version']} ({$php_info['build_date']})";
+                    return getContainerPhpInfo($container_id);
                 }
             ],
             'mem_limit' => [
@@ -306,42 +306,20 @@ function getGitBranch(string $repository): ?string {
  * @return array{version: string|null, build_date: string|null}
  */
 function getContainerPhpInfo(string $container_id): array {
-    static $cache = [];
-
-    if(isset($cache[$container_id])) {
-        return $cache[$container_id];
-    }
-
-    $php_info = [
-        'version'    => null,
-        'build_date' => null
-    ];
-    $output = [];
-    $exit_code = 0;
-    exec(
-        'docker exec '.escapeshellarg($container_id).' php -i 2>/dev/null',
-        $output,
-        $exit_code
+    $version = exec(
+        'docker exec '.escapeshellarg($container_id)
+        .' php -r '.escapeshellarg('echo PHP_VERSION;')
+        .' 2>/dev/null'
     );
-
-    if($exit_code === 0) {
-        foreach($output as $line) {
-            if(
-                $php_info['version'] === null
-                && preg_match('/^PHP Version\s*=>\s*(.+)$/', $line, $matches)
-            ) {
-                $php_info['version'] = trim($matches[1]);
-            }
-
-            if(preg_match('/^Build Date\s*=>\s*(.+)$/', $line, $matches)) {
-                $php_info['build_date'] = trim($matches[1]);
-            }
-        }
-    }
-
-    $cache[$container_id] = $php_info;
-
-    return $php_info;
+    $build_date = exec(
+        'docker exec '.escapeshellarg($container_id)
+        .' php -i 2>/dev/null'
+        .' | sed -n '.escapeshellarg('s/^Build Date => //p')
+    );
+    return [
+        'version'    => $version !== false && $version !== '' ? $version : null,
+        'build_date' => $build_date !== false && $build_date !== '' ? $build_date : null
+    ];
 }
 
 function fetchDockerStats(string $instance): array {
