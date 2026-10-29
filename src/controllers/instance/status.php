@@ -318,7 +318,7 @@ function getContainerPhpInfo(string $container_id): array {
     );
     return [
         'version'    => $version !== false && $version !== '' ? $version : null,
-        'build_date' => $build_date !== false && $build_date !== '' ? $build_date : null
+        'build_date' => $build_date !== false && $build_date !== '' ? date('c', strtotime($build_date)) : null
     ];
 }
 
