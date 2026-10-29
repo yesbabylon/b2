@@ -1,6 +1,8 @@
 # API documentation
 
-The b2 host's api allows to manage the host and its instances.
+The B2 host API allows the host and its instances to be managed. Its listener
+binds to `PRIVATE_IP:8000`, where `PRIVATE_IP` is configured in
+`/root/b2/.env` and must be assigned to the host's `ens4` interface.
 
 ## Host
 

@@ -36,6 +36,7 @@ print_help() {
     echo "    BACKUP_HOST      - Hostname or IP address of the backup host API endpoint (required)"
     echo "    GPG_PASSPHRASE   - Passphrase for the PGP key (required)"
     echo "    PUBLIC_IP        - Fail-over / Public IPv4 address (required)"
+    echo "    PRIVATE_IP       - Private IPv4 address assigned to ens4 (required)"
     echo "    ROOT_PASSWORD    - Password for the root account of the host (required)"
     echo ""
     echo "Example of a .env file:"
@@ -43,6 +44,7 @@ print_help() {
     echo "  HOSTNAME=b2-host-01"
     echo "  GPG_PASSPHRASE=your-passphrase"
     echo "  PUBLIC_IP=192.168.1.1"
+    echo "  PRIVATE_IP=10.0.0.1"
     echo "  ROOT_PASSWORD=your-root-password"
     echo ""
     echo "Note:"
@@ -93,7 +95,7 @@ else
     # stop auto export
     set +a
 
-    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "ROOT_PASSWORD" "BACKUP_HOST")
+    REQUIRED_ENV_VARS=("HOSTNAME" "GPG_PASSPHRASE" "PUBLIC_IP" "PRIVATE_IP" "ROOT_PASSWORD" "BACKUP_HOST")
 
     for var in "${REQUIRED_ENV_VARS[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -131,7 +133,7 @@ service ssh restart
 echo "root:$ROOT_PASSWORD" | chpasswd
 
 ################################
-### Asssign Public IP (IPFO) ###
+### Assign Public IP (IPFO) ###
 ################################
 
 if [[ "$PUBLIC_IP" != "0.0.0.0" && "$PUBLIC_IP" != "127.0.0.1" && -n "$PUBLIC_IP" ]]; then
@@ -315,7 +317,9 @@ systemctl restart fail2ban
 ### Install listener ###
 ########################
 
-# Add a symbolic link for the eQual instance listener service
+echo "B2 listener will listen on $PRIVATE_IP:8000."
+
+# Add a symbolic link for the b2 listener service
 ln -s /root/b2/conf/b2-listener.service /etc/systemd/system/b2-listener.service
 
 # Reload daemon to update after symlink added

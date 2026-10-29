@@ -8,7 +8,7 @@
  /**
   * Retrieves Docker container statistics as an associative array.
   *
-  * @param array{instance: string} $data
+  * @param array{instance: string, scope: string} $data
   *
   * @throws Exception
   *
@@ -29,7 +29,14 @@
   *     },
   *     config: array{
   *         id: string,             // The Docker container ID (e.g., "76197eca3602").
-  *         image: string           // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         image: string,          // The Docker image used by the container (e.g., "docked-wordpress:latest").
+  *         php: string|null,       // The PHP version installed in the container (e.g., "8.4.11").
+  *         php_build_date: string|null, // The PHP build date (e.g., "Jul 30 2026 15:39:15").
+  *         type: string,           // The instance stack type (e.g., "equal").
+  *         branches: array{
+  *             root: string|null,
+  *             packages?: string|null // Present for equal, symbiose and fmt instances.
+  *         }
   *     }
   * }
   */
@@ -150,6 +157,34 @@ function instance_status(array $data): array {
                     return exec("docker inspect -f '{{.Config.Image}}' {$container_id}");
                 }
             ],
+            'type' => [
+                'description' => "Instance stack type.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    return getTypeOfInstance($data['instance']);
+                }
+            ],
+            'branches' => [
+                'description' => "Current Git branches of the project repositories.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($data) {
+                    $instance_type = getTypeOfInstance($data['instance']);
+
+                    return getBranchesOfInstance(
+                        $data['instance'],
+                        in_array($instance_type, ['equal', 'symbiose', 'fmt'], true)
+                    );
+                }
+            ],
+            'php' => [
+                'description' => "PHP version installed in the container.",
+                'command'     => 'true',
+                'adapt'       => function ($res) use($container_id) {
+                    $php_info = getContainerPhpInfo($container_id);
+
+                    return "{$php_info['version']} ({$php_info['build_date']})";
+                }
+            ],
             'mem_limit' => [
                 'description' => "Amount of memory allocated to the container (in MB).",
                 'command'     => 'true',
@@ -185,6 +220,128 @@ function instance_status(array $data): array {
         'code' => 200,
         'body' => $result
     ];
+}
+
+function getTypeOfInstance(string $instance): string {
+    $env_file = "/home/$instance/.env";
+    if(!is_readable($env_file)) {
+        throw new Exception('could_not_read_instance_env', 500);
+    }
+
+    $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if($lines === false) {
+        throw new Exception('could_not_read_instance_env', 500);
+    }
+
+    foreach($lines as $line) {
+        if(!preg_match('/^\s*INSTANCE_TYPE\s*=\s*(.+?)\s*$/', $line, $matches)) {
+            continue;
+        }
+
+        $instance_type = trim($matches[1], "'\"");
+        if(!preg_match('/^[A-Za-z0-9_-]+$/', $instance_type)) {
+            throw new Exception('invalid_instance_type', 500);
+        }
+
+        return strtolower($instance_type);
+    }
+
+    throw new Exception('missing_instance_type', 500);
+}
+
+function getBranchesOfInstance(string $instance, bool $with_packages): array {
+    $project_dir = "/home/$instance/www";
+    $branches = [
+        'root' => getGitBranch($project_dir)
+    ];
+
+    if($with_packages) {
+        $branches['packages'] = getGitBranch("$project_dir/packages");
+    }
+
+    return $branches;
+}
+
+function getGitBranch(string $repository): ?string {
+    $real_repository = realpath($repository);
+    if($real_repository === false || !is_dir($real_repository)) {
+        return null;
+    }
+
+    $output = [];
+    $exit_code = 0;
+    $git_command = 'git -c '
+        .escapeshellarg('safe.directory='.$real_repository)
+        .' -C '.escapeshellarg($real_repository);
+    exec(
+        $git_command.' rev-parse --show-toplevel 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    $repository_root = realpath(end($output));
+    if($repository_root === false || $repository_root !== $real_repository) {
+        return null;
+    }
+
+    $output = [];
+    exec(
+        $git_command.' symbolic-ref --quiet --short HEAD 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code !== 0 || count($output) === 0) {
+        return null;
+    }
+
+    return end($output);
+}
+
+/**
+ * @return array{version: string|null, build_date: string|null}
+ */
+function getContainerPhpInfo(string $container_id): array {
+    static $cache = [];
+
+    if(isset($cache[$container_id])) {
+        return $cache[$container_id];
+    }
+
+    $php_info = [
+        'version'    => null,
+        'build_date' => null
+    ];
+    $output = [];
+    $exit_code = 0;
+    exec(
+        'docker exec '.escapeshellarg($container_id).' php -i 2>/dev/null',
+        $output,
+        $exit_code
+    );
+
+    if($exit_code === 0) {
+        foreach($output as $line) {
+            if(
+                $php_info['version'] === null
+                && preg_match('/^PHP Version\s*=>\s*(.+)$/', $line, $matches)
+            ) {
+                $php_info['version'] = trim($matches[1]);
+            }
+
+            if(preg_match('/^Build Date\s*=>\s*(.+)$/', $line, $matches)) {
+                $php_info['build_date'] = trim($matches[1]);
+            }
+        }
+    }
+
+    $cache[$container_id] = $php_info;
+
+    return $php_info;
 }
 
 function fetchDockerStats(string $instance): array {
