@@ -27,7 +27,7 @@ $routes = [
         '/instance/status',                 /* @link instance_status() */
         '/instance/backups',                /* @link instance_backups() */
     ],
-	'POST' 	=> [
+    'POST' 	=> [
         '/reboot',                          /* @link reboot() */
         '/ip',                              /* @link ip() */
         '/instance/backup',                 /* @link instance_backup() */
