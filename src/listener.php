@@ -19,7 +19,7 @@ $request = [
 ];
 
 $routes = [
-    'GET' 	=> [
+    'GET'     => [
         '/status',                          /* @link status() */
         '/instances',                       /* @link instances() */
         '/images',                          /* @link images() */
@@ -27,7 +27,7 @@ $routes = [
         '/instance/status',                 /* @link instance_status() */
         '/instance/backups',                /* @link instance_backups() */
     ],
-    'POST' 	=> [
+    'POST'     => [
         '/reboot',                          /* @link reboot() */
         '/ip',                              /* @link ip() */
         '/instance/backup',                 /* @link instance_backup() */
@@ -54,7 +54,7 @@ trigger_error('result: '.serialize((array) $body), E_USER_NOTICE);
 send_http_response($body, $code);
 
 function enforce_security() {
-	is_readable(HOST_SECRET_FILE) && check_basic_auth();
+    is_readable(HOST_SECRET_FILE) && check_basic_auth();
 }
 
 function check_basic_auth() {
