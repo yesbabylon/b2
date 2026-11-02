@@ -7,7 +7,7 @@
 
 include_once './boot.lib.php';
 
-const HOST_SECRET_FILE = '/root/b2/host.secrets';
+const HOST_SECRET_FILE = '/root/b2/secrets/host.secrets';
 
 enforce_security();
 
@@ -19,32 +19,32 @@ $request = [
 ];
 
 $routes = [
-	'GET' 	=> [
-		'/status',                          /* @link status() */
-		'/instances',                       /* @link instances() */
-		'/images',                          /* @link images() */
-		'/stacks',                          /* @link stacks() */
-		'/instance/status',                 /* @link instance_status() */
-		'/instance/backups',                /* @link instance_backups() */
-	],
+    'GET' 	=> [
+        '/status',                          /* @link status() */
+        '/instances',                       /* @link instances() */
+        '/images',                          /* @link images() */
+        '/stacks',                          /* @link stacks() */
+        '/instance/status',                 /* @link instance_status() */
+        '/instance/backups',                /* @link instance_backups() */
+    ],
 	'POST' 	=> [
-		'/reboot',                          /* @link reboot() */
-		'/ip',                              /* @link ip() */
-		'/instance/backup',                 /* @link instance_backup() */
-		'/instance/backup-stack',           /* @link instance_backup_stack() */
-		'/instance/export-backup',          /* @link instance_export_backup() */
-		'/instance/export-backup-stack',    /* @link instance_export_backup_stack() */
-		'/instance/import-backup',          /* @link instance_import_backup() */
-		'/instance/import-backup-stack',    /* @link instance_import_backup_stack() */
-		'/instance/integrate-backup-stack', /* @link instance_integrate_backup_stack() */
-		'/instance/create',                 /* @link instance_create() */
-		'/instance/delete',                 /* @link instance_delete() */
-		'/instance/restore',                /* @link instance_restore() */
-		'/instance/start',                  /* @link instance_start() */
-		'/instance/stop',                   /* @link instance_stop() */
-		'/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
-		'/instance/disable-maintenance',    /* @link instance_disable_maintenance() */
-	]
+        '/reboot',                          /* @link reboot() */
+        '/ip',                              /* @link ip() */
+        '/instance/backup',                 /* @link instance_backup() */
+        '/instance/backup-stack',           /* @link instance_backup_stack() */
+        '/instance/export-backup',          /* @link instance_export_backup() */
+        '/instance/export-backup-stack',    /* @link instance_export_backup_stack() */
+        '/instance/import-backup',          /* @link instance_import_backup() */
+        '/instance/import-backup-stack',    /* @link instance_import_backup_stack() */
+        '/instance/integrate-backup-stack', /* @link instance_integrate_backup_stack() */
+        '/instance/create',                 /* @link instance_create() */
+        '/instance/delete',                 /* @link instance_delete() */
+        '/instance/restore',                /* @link instance_restore() */
+        '/instance/start',                  /* @link instance_start() */
+        '/instance/stop',                   /* @link instance_stop() */
+        '/instance/enable-maintenance',     /* @link instance_enable_maintenance() */
+        '/instance/disable-maintenance',    /* @link instance_disable_maintenance() */
+    ]
 ];
 
 ['body' => $body, 'code' => $code] = handle_request($request, $routes);
@@ -60,7 +60,7 @@ function enforce_security() {
 function check_basic_auth() {
     [$user, $pass] = parse_basic_auth();
 
-	if($user !== 'root' || !check_password($pass)) {
+    if($user !== 'root' || !check_password($pass)) {
         send_http_response(
             ['error' => 'Unauthorized'],
             401,
@@ -71,21 +71,20 @@ function check_basic_auth() {
 }
 
 function check_password($password) {
-	static $hash = null;
+    static $hash = null;
 
-	if($hash === null) {
-		if(!is_readable(HOST_SECRET_FILE)) {
-			return false;
-		}
-		$hash = trim(file_get_contents(HOST_SECRET_FILE));
-	}
+    if($hash === null) {
+        if(!is_readable(HOST_SECRET_FILE)) {
+            return false;
+        }
+        $hash = trim(file_get_contents(HOST_SECRET_FILE));
+    }
 
     return $hash !== '' && password_verify($password, $hash);
 }
 
 function parse_basic_auth(): array {
-
-	$headers = array_change_key_case(getallheaders(), CASE_LOWER);
+    $headers = array_change_key_case(getallheaders(), CASE_LOWER);
 
     if(!isset($headers['authorization'])) {
         return [null, null];

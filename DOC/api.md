@@ -8,7 +8,7 @@ optional, and the listener is not installed when the variable is omitted.
 
 ## Authentication
 
-The installers create `/root/b2/host.secrets`, so HTTP requests normally use
+The installers create `/root/b2/secrets/host.secrets`, so HTTP requests normally use
 Basic authentication with the user `root` and the root password supplied at
 installation time. For example:
 
