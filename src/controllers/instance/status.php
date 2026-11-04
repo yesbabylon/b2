@@ -8,7 +8,7 @@
  /**
   * Retrieves Docker container statistics as an associative array.
   *
-  * @param array{instance: string, scope: string} $data
+  * @param array{instance: string, scope: ?string, scopes: ?string[]} $data
   *
   * @throws Exception
   *
@@ -232,15 +232,40 @@ function instance_status(array $data): array {
         ]
     ];
 
+    $scopes = array_keys($commands);
+
+    if(isset($data['scope']) && isset($data['scopes'])) {
+        throw new InvalidArgumentException("invalid_only_one_of_scope_or_scopes_are_allowed", 400);
+    }
+
+    if(isset($data['scope']) && (!is_string($data['scope']) || !in_array($data['scope'], $scopes, true))) {
+        throw new InvalidArgumentException("invalid_scope", 400);
+    }
+
+    if(isset($data['scopes'])) {
+        if(!is_array($data['scopes'])) {
+            throw new InvalidArgumentException("invalid_scopes", 400);
+        }
+        foreach($data['scopes'] as $scope) {
+            if(!is_string($scope) || !in_array($scope, $scopes, true)) {
+                throw new InvalidArgumentException("invalid_scopes", 400);
+            }
+        }
+    }
+
     $result = [];
 
-    foreach($commands as $cat => $cat_commands) {
-        if(isset($data['scope']) && $data['scope'] !== $cat) {
-            continue;
-        }
-        foreach($cat_commands as $cmd => $command) {
+    if(!empty($data['scopes'] ?? [])) {
+        $scopes = $data['scopes'];
+    }
+    elseif(!empty($data['scope'] ?? '')) {
+        $scopes = [$data['scope']];
+    }
+
+    foreach($scopes as $scope) {
+        foreach($commands[$scope] as $cmd => $command) {
             $res = exec_status_cmd($command['command']);
-            $result[$cat][$cmd] = $command['adapt']($res);
+            $result[$scope][$cmd] = $command['adapt']($res);
         }
     }
 

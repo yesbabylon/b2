@@ -34,15 +34,19 @@ Get the status of the b2 host.
 
 #### Params
 
-| key   | required | default | values                    | Note                                      |
-|-------|:--------:|:-------:|---------------------------|-------------------------------------------|
-| scope |  false   |         | instant \| state \| config | Return only the selected status category. |
+| key    | required | default | values                    | Note                                                |
+|--------|:--------:|:-------:|---------------------------|-----------------------------------------------------|
+| scope  |  false   |         | instant \| state \| config | Return only the selected status category.           |
+| scopes |  false   |         | instant \| state \| config | Return the selected status categories as an array.  |
 
 #### Response
 
-Without `scope`, the response contains `instant`, `state`, `config` and the
-legacy top-level `type`. The same value is also available as `config.type`.
-With `scope=instant`, only `instant` is returned.
+Without `scope` or `scopes`, the response contains `instant`, `state`, `config`
+and the legacy top-level `type`. The same value is also available as
+`config.type`. With `scope=instant`, only `instant` is returned. Use array query
+syntax to select multiple categories, for example
+`/status?scopes[]=instant&scopes[]=state`. `scope` and `scopes` cannot be used
+together.
 
 ### POST _/ip_
 
@@ -219,14 +223,18 @@ Get the status of an instance.
 /instance/status?instance=equal.local
 ```
 
-| key      | required | default | values | Note                                            |
-|----------|:--------:|:-------:|--------|-------------------------------------------------|
-| instance |   true   |         |        | Must be a valid instance installed on the host. |
-| scope    |  false   |         | instant \| state \| config | Return only the selected status category. |
+| key      | required | default | values                    | Note                                                |
+|----------|:--------:|:-------:|---------------------------|-----------------------------------------------------|
+| instance |   true   |         |                           | Must be a valid instance installed on the host.     |
+| scope    |  false   |         | instant \| state \| config | Return only the selected status category.           |
+| scopes   |  false   |         | instant \| state \| config | Return the selected status categories as an array.  |
 
 #### Response
 
-Without `scope`, the response contains `instant`, `state` and `config`.
+Without `scope` or `scopes`, the response contains `instant`, `state` and
+`config`. Use array query syntax to select multiple categories, for example
+`/instance/status?instance=equal.local&scopes[]=instant&scopes[]=state`.
+`scope` and `scopes` cannot be used together.
 `config.php.build_date` is an ISO 8601 string or `null` when PHP information
 cannot be read from the container. `config.framework` is `equal`, `wordpress`
 or `null` for an unsupported stack type. `config.version` is the installed
