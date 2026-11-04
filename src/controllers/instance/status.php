@@ -264,8 +264,17 @@ function instance_status(array $data): array {
 
     foreach($scopes as $scope) {
         foreach($commands[$scope] as $cmd => $command) {
-            $res = exec_status_cmd($command['command']);
-            $result[$scope][$cmd] = $command['adapt']($res);
+            try {
+                $res = exec_status_cmd($command['command']);
+                if($res === null) {
+                    $result[$scope][$cmd] = null;
+                    continue;
+                }
+                $result[$scope][$cmd] = $command['adapt']($res);
+            }
+            catch(Throwable $e) {
+                $result[$scope][$cmd] = null;
+            }
         }
     }
 
