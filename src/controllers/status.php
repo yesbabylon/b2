@@ -41,7 +41,7 @@
  *          state: array{
  *              uptime: string,         // Uptime in days (e.g., "3days").
  *              fw_secured: bool,       // Indicates if the firewall secures the public IP.
- *              net: string             // Network usage metrics.
+ *              net: string,            // Network usage metrics.
  *              cpu: string             // Average CPU load since the last reboot.
  *          },
  *          config: array{
