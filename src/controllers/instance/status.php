@@ -1,11 +1,11 @@
 <?php
- /*
+/*
     This file is part of the B2 package <http://github.com/yesbabylon/b2>
-    Some Rights Reserved, Yesbabylon, 2025
+    Some Rights Reserved, Yesbabylon, 2026
     Licensed under MIT License <https://opensource.org/licenses/MIT>
 */
 
- /**
+/**
   * Retrieves Docker container statistics as an associative array.
   *
   * @param array{instance: string, scope: ?string, scopes: ?string[]} $data
