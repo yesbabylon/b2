@@ -17,6 +17,11 @@ if [[ -z "${USERNAME:-}" ]]; then
     exit 1
 fi
 
+if [[ -z "${PASSWORD:-}" ]]; then
+    printf "Missing PASSWORD environment variable.\n" >&2
+    exit 1
+fi
+
 HOME_DIR="/home/$USERNAME"
 LOCK_FILE="$HOME_DIR/.init.lock"
 INITIALIZED_FILE="$HOME_DIR/.initialized"
