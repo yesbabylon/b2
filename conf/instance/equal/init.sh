@@ -51,6 +51,8 @@ fi
 
 cd "$HOME_DIR"
 
+./ensure-b2-images.sh
+
 docker compose build
 docker compose up -d
 sleep 15
