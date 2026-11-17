@@ -4,6 +4,7 @@
     Some Rights Reserved, Yesbabylon, 2026
     Licensed under MIT License <https://opensource.org/licenses/MIT>
 */
+
 include_once './boot.lib.php';
 
 function parse_arguments($argv) {

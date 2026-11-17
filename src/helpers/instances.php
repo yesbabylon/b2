@@ -6,7 +6,7 @@
 */
 
 /**
- * Returns instances depending on /home sub directories
+ * Returns instances depending on /home subdirectories
  *
  * @param bool $with_deleted
  * @return array|false
