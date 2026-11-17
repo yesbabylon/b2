@@ -82,6 +82,8 @@ if [[ "$FORCE" -eq 1 ]]; then
     rm -f "$INITIALIZED_FILE"
 fi
 
+./ensure-b2-images.sh
+
 cd "$HOME_DIR"
 
 printf "Trigger docker compose up\n"
@@ -106,7 +108,7 @@ git config --global credential.helper 'cache --timeout=450'
 "
 
 docker exec "$USERNAME" bash -c "
-yes | git clone -b 2.0.1 https://github.com/equalframework/equal.git .
+yes | git clone -b 2.0.2 https://github.com/equalframework/equal.git .
 "
 
 docker cp "$CONFIG_FILE" "$USERNAME":/var/www/html/config/config.json

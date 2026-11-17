@@ -49,9 +49,9 @@ if [[ -d "$WWW_DIR" ]] && find "$WWW_DIR" -mindepth 1 -print -quit | grep -q . &
     exit 1
 fi
 
-cd "$HOME_DIR"
-
 ./ensure-b2-images.sh
+
+cd "$HOME_DIR"
 
 docker compose build
 docker compose up -d
