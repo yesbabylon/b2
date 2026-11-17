@@ -24,7 +24,7 @@
  * @return array{
  *     code: int,
  *     body: array{
- *         type: string,
+ *         type: string,                // Host type ("b2").
  *         instant: array{
  *              mysql_mem: string,      // Memory consumption by MySQL as a percentage.
  *              apache_mem: string,     // Memory consumption by Apache as a percentage.
@@ -303,8 +303,6 @@ function status(array $data): array {
         }
     }
 
-    $result = [];
-
     if(!empty($data['scopes'] ?? [])) {
         $scopes = $data['scopes'];
     }
@@ -312,6 +310,7 @@ function status(array $data): array {
         $scopes = [$data['scope']];
     }
 
+    $result = [];
     foreach($scopes as $scope) {
         foreach($commands[$scope] as $cmd => $command) {
             try {
