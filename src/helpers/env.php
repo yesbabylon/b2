@@ -27,6 +27,14 @@ function load_env(string $file) {
 
         [$key, $value] = explode('=', $line, 2);
 
-        putenv(trim($key) . '=' . trim($value));
+        $value = trim($value);
+        if(strlen($value) >= 2) {
+            $quote = $value[0];
+            if(($quote === "'" || $quote === '"') && $value[-1] === $quote) {
+                $value = substr($value, 1, -1);
+            }
+        }
+
+        putenv(trim($key) . '=' . $value);
     }
 }
