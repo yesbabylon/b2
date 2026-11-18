@@ -25,6 +25,7 @@ $routes = [
         '/images',                          /* @link images() */
         '/stacks',                          /* @link stacks() */
         '/instance/status',                 /* @link instance_status() */
+        '/backups',                         /* @link backups() */
         '/instance/backups',                /* @link instance_backups() */
     ],
     'POST'     => [

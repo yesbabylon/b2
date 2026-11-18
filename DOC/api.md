@@ -128,6 +128,29 @@ Return the Docker image references used by each instance stack.
 |--------------|------------------|
 | Content-Type | application/json |
 
+### GET _/backups_
+
+Return the backups stored on the configured backup host, grouped by instance. B2
+requests the listing from `http://{BACKUP_HOST}:8000/backups`; `BACKUP_HOST` must
+be configured in the host `.env` file.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Response
+
+```json
+{
+  "equal.local": [
+    "equal.local_2026111839841_7.tar.gpg",
+    "equal.local_2026111839841_stack.tar.gz"
+  ]
+}
+```
+
 ## Instance
 
 ### POST _/instance/create_
