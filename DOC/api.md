@@ -128,6 +128,39 @@ Return the Docker image references used by each instance stack.
 |--------------|------------------|
 | Content-Type | application/json |
 
+### GET _/backups_
+
+Return the backups stored locally on the B2 host, grouped by instance. Each
+instance has the same `export` and `import` lists returned by
+`GET /instance/backups`.
+
+#### Request Headers
+
+| key          | value            |
+|--------------|------------------|
+| Content-Type | application/json |
+
+#### Response
+
+```json
+{
+  "equal.local": {
+    "export": [
+      {
+        "id": "2026111839841_7",
+        "filename": "equal.local_2026111839841_7.tar.gpg"
+      }
+    ],
+    "import": [
+      {
+        "id": "2026111736000_7",
+        "filename": "equal.local_2026111736000_7.tar.gpg"
+      }
+    ]
+  }
+}
+```
+
 ## Instance
 
 ### POST _/instance/create_

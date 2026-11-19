@@ -17,6 +17,11 @@ if [[ -z "${USERNAME:-}" ]]; then
     exit 1
 fi
 
+if [[ -z "${PASSWORD:-}" ]]; then
+    printf "Missing PASSWORD environment variable.\n" >&2
+    exit 1
+fi
+
 HOME_DIR="/home/$USERNAME"
 LOCK_FILE="$HOME_DIR/.init.lock"
 INITIALIZED_FILE="$HOME_DIR/.initialized"
@@ -43,6 +48,8 @@ if [[ -d "$WWW_DIR" ]] && find "$WWW_DIR" -mindepth 1 -print -quit | grep -q . &
     printf "Directory ./www already contains data. Use --force to reinitialize.\n" >&2
     exit 1
 fi
+
+./ensure-b2-images.sh
 
 cd "$HOME_DIR"
 

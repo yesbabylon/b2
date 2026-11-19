@@ -82,6 +82,8 @@ if [[ "$FORCE" -eq 1 ]]; then
     rm -f "$INITIALIZED_FILE"
 fi
 
+./ensure-b2-images.sh
+
 cd "$HOME_DIR"
 
 printf "Trigger docker compose up\n"

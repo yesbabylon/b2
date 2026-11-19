@@ -20,7 +20,6 @@
     "VERSIONING_ENABLED": true,
     "AUTH_SECRET_KEY": "{{AUTH_SECRET_KEY}}",
     "AUTH_ACCESS_TOKEN_VALIDITY": "10d",
-    "AUTH_TOKEN_HTTPS": false,
     "USER_ACCOUNT_DISPLAYNAME": "mail",
     "BACKEND_URL": "https://{{USERNAME}}",
     "REST_API_URL": "https://{{USERNAME}}/",

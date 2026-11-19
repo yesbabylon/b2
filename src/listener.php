@@ -1,7 +1,7 @@
 <?php
- /*
+/*
     This file is part of the B2 package <http://github.com/yesbabylon/b2>
-    Some Rights Reserved, Yesbabylon, 2025
+    Some Rights Reserved, Yesbabylon, 2026
     Licensed under MIT License <https://opensource.org/licenses/MIT>
 */
 
@@ -25,6 +25,7 @@ $routes = [
         '/images',                          /* @link images() */
         '/stacks',                          /* @link stacks() */
         '/instance/status',                 /* @link instance_status() */
+        '/backups',                         /* @link backups() */
         '/instance/backups',                /* @link instance_backups() */
     ],
     'POST'     => [

@@ -370,5 +370,4 @@ sed -i '/ROOT_PASSWORD=/d' "$INSTALL_DIR"/.env
 ################
 
 echo "Setup is now finished."
-echo "Make sure to setup services accordingly to the desired configuration."
-echo -e "Then run ${GREEN}docker compose up -d${NC}"
+echo -e "B2 listener is running on ${GREEN}${PRIVATE_IP}:8000${NC}."
