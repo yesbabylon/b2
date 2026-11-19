@@ -160,7 +160,7 @@ function instance_backup(array $data): array {
 			if($return_var === 0 && file_exists("$backup_file.gpg")) {
 				// Remove non-encrypted backup (keep only crypted one)
 				unlink($backup_file);
-				$backup_file = $backup_file.'.gpg';			
+				$backup_file = $backup_file.'.gpg';
 			}
 		}
     }
